@@ -74,9 +74,9 @@ function getDomibus {
 }
 
 function getDocker {
-   rm -rf ${WORKING_DIR}/docker
-   git clone https://dhenech:'3xbdztof!!!'@ec.europa.eu/cefdigital/code/scm/edelivery/docker2.git ${WORKING_DIR}/docker
-   cd ${WORKING_DIR}/docker
+	rm -rf ${WORKING_DIR}/docker
+	git clone https://ec.europa.eu/cefdigital/code/scm/edelivery/docker.git
+	cd ${WORKING_DIR}/docker
 
    if [ ! "$1" == "" ] ; then
       git checkout origin/$1
