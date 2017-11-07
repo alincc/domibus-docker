@@ -1,0 +1,3 @@
+embed-server --server-config=standalone-full.xml
+
+deploy --force   /home/wildflyc/domibus-wildfly-install/downloads/Domibus/3.1.1/domibus-distribution-3.1.1-wildfly.war

@@ -1,0 +1,17 @@
+embed-server --server-config=standalone-full.xml
+
+xa-data-source add \
+--name=eDeliveryOracleXADS \
+--driver-name=oracle \
+--jndi-name=java:/jdbc/cipaeDeliveryDs \
+--user-name=edelivery32 \
+--password=eDelivery_2016 \
+--use-ccm=true \ 
+--valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker \
+--exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter \
+--background-validation=true
+
+/subsystem=datasources/xa-data-source=eDeliveryOracleXADS/xa-datasource-properties=URL:add(value=jdbc:oracle:thin:@domibus01.edelivery.local:1521:domibus)
+
+xa-data-source enable --name=eDeliveryOracleXADS
+

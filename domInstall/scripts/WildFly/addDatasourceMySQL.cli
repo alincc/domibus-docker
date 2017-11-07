@@ -1,0 +1,19 @@
+embed-server --server-config=standalone-full.xml
+
+xa-data-source add \
+--name=eDeliveryMysqlXADS \
+--driver-name=mysql \
+--jndi-name=java:/jdbc/cipaeDeliveryDs \
+--user-name=${databaseUser} \
+--password=edelivery_320 \
+--use-ccm=true \ 
+--valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker \
+--exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter \
+--background-validation=true
+
+/subsystem=datasources/xa-data-source=eDeliveryMysqlXADS/xa-datasource-properties=ServerName:add(value=localhost)
+/subsystem=datasources/xa-data-source=eDeliveryMysqlXADS/xa-datasource-properties=PortNumber:add(value=3306)
+/subsystem=datasources/xa-data-source=eDeliveryMysqlXADS/xa-datasource-properties=DatabaseName:add(value=domibus320)
+
+xa-data-source enable --name=eDeliveryMysqlXADS
+

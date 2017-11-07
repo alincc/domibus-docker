@@ -1,0 +1,174 @@
+#!/bin/bash
+
+functionsFile="${BASH_SOURCE[0]}"
+echo "   - ${functionsFile}"
+
+function dropMySQLDomibusUser {
+   displayFunctionBanner ${FUNCNAME[0]}
+   echo "   Delete Domibus User: mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseAdminUser} -p\${MySQLDatabaseAdminPwd} -e \"drop user '${MySQLDatabaseUserId}';\""
+   mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseAdminUser}  -p${MySQLDatabaseAdminPwd} -e "drop user '${MySQLDatabaseUserId}';"
+}
+
+function dropMySQLDomibusDatabase {
+   displayFunctionBanner ${FUNCNAME[0]}
+   echo "   Drop Domibus Schema:  mysql -h ${MySQLDatabaseHost} -u  ${MySQLDatabaseAdminUser} -p\${MySQLDatabaseAdminPwd} -e \"drop schema ${MySQLDatabaseName};\""
+   mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseAdminUser} -p${MySQLDatabaseAdminPwd} -e "drop schema ${MySQLDatabaseName};"
+}
+
+function createMySQLDomibusSchema {
+   displayFunctionBanner ${FUNCNAME[0]}
+  echo
+  echo "   Create Domibus Schema: mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseAdminUser} -p\${MySQLDatabaseAdminPwd} -e \"create schema ${MySQLDatabaseName} ; alter database ${MySQLDatabaseName} charset=utf8;\""
+  mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseAdminUser} -p${MySQLDatabaseAdminPwd} -e "create schema ${MySQLDatabaseName} ; alter database ${MySQLDatabaseName} charset=utf8;"
+}
+
+function createMySQLDomibusUser {
+   displayFunctionBanner ${FUNCNAME[0]}
+   echo "   Create Domibus MySQL User: mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseAdminUser} -p\${MySQLDatabaseAdminPwd} -e \"create user '${MySQLDatabaseUserId}' identified by '${MySQLDatabaseUserPassword}';\""
+   mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseAdminUser} -p${MySQLDatabaseAdminPwd} -e "create user '${MySQLDatabaseUserId}' identified by '${MySQLDatabaseUserPassword}';"
+}
+
+function grantDomibusUserSchema {
+   displayFunctionBanner ${FUNCNAME[0]}
+   echo "   Grant all Privileges to Domibus user on Domibus Schema: mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseAdminUser} -p\${MySQLDatabaseAdminPwd} -e \"grant all on ${MySQLDatabaseName}.* to '${MySQLDatabaseUserId}';\""
+   mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseAdminUser} -p${MySQLDatabaseAdminPwd} -e "grant all on ${MySQLDatabaseName}.* to '${MySQLDatabaseUserId}';"
+}
+
+function QuickFixDB311-01 {
+   displayFunctionBanner ${FUNCNAME[0]}
+   echo "  Fix MySQL 3.1.1 issue: ALTER TABLE qrtz_triggers RENAME QRTZ_TRIGGERS;"
+   echo "ALTER TABLE qrtz_triggers RENAME QRTZ_TRIGGERS;" | mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseAdminUser} -p\$MySQLDatabaseUserPassword} ${MySQLDatabaseName}
+   echo "ALTER TABLE qrtz_locks RENAME QRTZ_LOCKS;" | mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseAdminUser} -p$MySQLDatabaseUserPassword} ${MySQLDatabaseName}
+}
+
+function CreateMySQLDomibusTables311 {
+   displayFunctionBanner ${FUNCNAME[0]}
+  echo "   Create Domibus311 Tables :  mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseUserId} -p\${MySQLDatabaseUserPassword} ${MySQLDatabaseName} < $DOMIBUS_INSTALL/downloads/Domibus/mysql5innoDb-3.1.1.ddl"
+  unzip -p $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip sql-scripts/mysql5innoDb-3.1.1.ddl | \
+  mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseUserId} -p${MySQLDatabaseUserPassword} ${MySQLDatabaseName}
+
+  #QuickFixDB311-01
+}
+
+function CreateMySQLDomibusTables320 {
+   displayFunctionBanner ${FUNCNAME[0]}
+  echo "unzip $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip -d $TEMP_DIR"
+  echo "   Create Domibus320  Tables :  mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseAdminUser} -p\${MySQLDatabaseUserPassword} ${MySQLDatabaseName} < ysql5innoDb-3.2.0.ddl"
+  unzip -p $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip sql-scripts/mysql5innoDb-3.2.0.ddl | \
+  mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseUserId} -p${MySQLDatabaseUserPassword} ${MySQLDatabaseName}
+}
+
+function CreateMySQLDomibusTables321 {
+   displayFunctionBanner ${FUNCNAME[0]}
+  echo "unzip $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip -d $TEMP_DIR"
+  echo "   Create Domibus320  Tables :  mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseAdminUser} -p\${MySQLDatabaseUserPassword} ${MySQLDatabaseName} < myysql5innoDb-3.2.1.ddl"
+  # BugFix for 3.2.1: Wrong Filename mysql5innoDb-3.2.1.ddl does not exists, use  mysql5innoDb-3.2.0 instead
+  #unzip -p $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip sql-scripts/mysql5innoDb-3.2.1.ddl | \
+  unzip -p $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip sql-scripts/mysql5innoDb-3.2.1.ddl | \
+  mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseUserId} -p${MySQLDatabaseUserPassword} ${MySQLDatabaseName}
+}
+
+function CreateMySQLDomibusTables322 {
+   displayFunctionBanner ${FUNCNAME[0]}
+  echo "unzip $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip -d $TEMP_DIR"
+  echo "   Create Domibus320  Tables :  mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseAdminUser} -p\{MySQLDatabaseUserPassword} ${MySQLDatabaseName} < myysql5innoDb-3.2.2.ddl"
+  unzip -p $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip sql-scripts/mysql5innoDb-3.2.2.ddl | \
+  mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseUserId} -p${MySQLDatabaseUserPassword} ${MySQLDatabaseName}
+}
+
+function CreateMySQLDomibusTables323 {
+   displayFunctionBanner ${FUNCNAME[0]}
+  echo "   Create Domibus323  Tables :  unzip -p $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip sql-scripts/mysql5innoDb-3.2.3.ddl | mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseUserId} -p\${MySQLDatabaseUserPassword} ${MySQLDatabaseName}"
+  unzip -p $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip sql-scripts/mysql5innoDb-3.2.3.ddl | \
+  mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseUserId} -p${MySQLDatabaseUserPassword} ${MySQLDatabaseName}
+}
+
+function CreateMySQLDomibusTables324 {
+   displayFunctionBanner ${FUNCNAME[0]}
+  echo "   Create Domibus324  Tables :  unzip -p $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip sql-scripts/mysql5innoDb-3.2.4.ddl | mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseUserId} -p\${MySQLDatabaseUserPassword} ${MySQLDatabaseName}"
+  unzip -p $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip sql-scripts/mysql5innoDb-3.2.4.ddl | \
+  mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseUserId} -p${MySQLDatabaseUserPassword} ${MySQLDatabaseName}
+}
+
+function CreateMySQLDomibusTables325 {
+   displayFunctionBanner ${FUNCNAME[0]}
+  echo "   Create Domibus325  Tables :  unzip -p $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip sql-scripts/mysql5innoDb-3.2.5.ddl | mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseUserId} -p\${MySQLDatabaseUserPassword} ${MySQLDatabaseName}"
+  unzip -p $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip sql-scripts/mysql5innoDb-3.2.5.ddl | \
+  mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseUserId} -p${MySQLDatabaseUserPassword} ${MySQLDatabaseName}
+}
+
+function CreateMySQLDomibusTables33 {
+   displayFunctionBanner ${FUNCNAME[0]}
+  echo "   Create Domibus 3.3  Tables :  unzip -p $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip sql-scripts/mysql5innoDb-3.3.ddl | mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseUserId} -p\${MySQLDatabaseUserPassword} ${MySQLDatabaseName}"
+  unzip -p $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip sql-scripts/mysql5innoDb-3.3.ddl | \
+  mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseUserId} -p${MySQLDatabaseUserPassword} ${MySQLDatabaseName}
+}
+
+function CreateMySQLDomibusTablesLATEST {
+   displayFunctionBanner ${FUNCNAME[0]}
+  echo "   Create DomibusLATEST  Tables :  unzip -p $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip sql-scripts/mysql5innoDb-3.3.ddl | mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseUserId} -p\${MySQLDatabaseUserPassword} ${MySQLDatabaseName}"
+  unzip -p $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip sql-scripts/mysql5innoDb-3.3.ddl | \
+  mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseUserId} -p${MySQLDatabaseUserPassword} ${MySQLDatabaseName}
+}
+
+function CreateMySQLDomibusTables {
+   displayFunctionBanner ${FUNCNAME[0]}
+   if [ "${DomibusVersion}" == "3.1.1" ] ; then
+      CreateMySQLDomibusTables311
+   fi
+   if [ "${DomibusVersion}" == "3.2.0" ] ; then
+      CreateMySQLDomibusTables320
+   fi
+   if [ "${DomibusVersion}" == "3.2.1" ] ; then
+      CreateMySQLDomibusTables321
+   fi
+   if [ "${DomibusVersion}" == "3.2.2" ] ; then
+      CreateMySQLDomibusTables322
+   fi
+   if [ "${DomibusVersion}" == "3.2.3" ] ; then
+      CreateMySQLDomibusTables323
+   fi
+   if [ "${DomibusVersion}" == "3.2.4" ] ; then
+      CreateMySQLDomibusTables324
+   fi
+   if [ "${DomibusVersion}" == "3.2.5" ] ; then
+      CreateMySQLDomibusTables325
+   fi
+   if [ "${DomibusVersion}" == "3.3" ] ; then
+      CreateMySQLDomibusTables33
+   fi
+   if [ "${DomibusVersion}" == "4.0-SNAPSHOT" ] ; then
+      CreateMySQLDomibusTablesLATEST
+   fi
+}
+
+function initDatabaseMySQL {
+   displayFunctionBanner ${FUNCNAME[0]}
+   if [ "${DatabaseInit}" == "FORCEINIT" ] ; then
+      echo
+      echo "Database Initialization (FORCEINIT) has been requested"
+      echo
+      echo "The Mysql Database ${MySQLDatabaseHost}:${MySQLDatabasePort}/${MySQLDatabaseName} will be reinitialized..."
+
+      dropMySQLDomibusUser
+      dropMySQLDomibusDatabase
+      createMySQLDomibusSchema
+      createMySQLDomibusUser
+      grantDomibusUserSchema
+      CreateMySQLDomibusTables
+   fi
+
+   if [ "${DatabaseInit}" == "INIT" ] ; then
+      echo
+      echo "Database Initialization has been requested"
+      RESULT=`mysqlshow -h ${MySQLDatabaseHost} -p${MySQLDatabasePort} -u${MySQLDatabaseUserId} -p${MySQLDatabaseUserPassword} ${MySQLDatabaseName} | grep -v Wildcard | grep -o ${MySQLDatabaseName}`
+      if [ "$RESULT" == "${MySQLDatabaseName}" ] ; then
+         ABORT_JOB "Mysql Database ${MySQLDatabaseName} ALREADY EXISTS... ABORTING !!!!"
+      else
+         createMySQLDomibusSchema
+         grantDomibusUserSchema
+         CreateMySQLDomibusTables
+      fi
+   fi
+}
+

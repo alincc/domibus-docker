@@ -1,0 +1,27 @@
+#/subsystem=datasources/xa-data-source=mysql:remove
+#/subsystem=datasources/jdbc-driver=com.mysql:remove
+#module remove --name=com.mysql
+
+module add --name=com.mysql --resources=/home/wildflyc/totof/downloads/mysql-connector-java-5.1.40-bin.jar --dependencies=javax.api,javax.transaction.api
+
+/subsystem=datasources/jdbc-driver=com.mysql:add(driver-name=com.mysql, \
+driver-module-name=com.mysql, \
+driver-xa-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource \
+)
+
+batch
+
+/subsystem=datasources/xa-data-source=mysql:add(driver-name=com.mysql, \
+jndi-name="java:/jdbc/cipaeDeliveryDs", \
+use-ccm=true, enabled=true, use-ccm=true, \
+user-name=edelivery32, \
+password=eDelivery_2016, \
+valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker, \
+exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter, \
+xa-datasource-class=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource)
+#/subsystem=datasources/xa-data-source=mysql/xa-datasource-properties=URL:add(value="jdbc:mysql://domibus01.edelivery.local:3306/domibus32?autoReconnevtrue&useUnicode=true&characterEncoding=UTF-8")
+/subsystem=datasources/xa-data-source=mysql/xa-datasource-properties=ServerName:add(value="domibus01.edelivery.local")
+/subsystem=datasources/xa-data-source=mysql/xa-datasource-properties=DatabaseName:add(value="domibus32")
+
+run-batch
+

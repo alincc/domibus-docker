@@ -1,0 +1,4 @@
+embed-server --server-config=standalone-full.xml
+
+/subsystem=datasources/jdbc-driver=oracle:add(driver-name="com.oracle",driver-module-name="com.oracle",driver-xa-datasource-class-name=oracle.jdbc.xa.client.OracleXADataSource)
+

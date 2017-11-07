@@ -1,0 +1,37 @@
+#!/bin/bash
+
+functionsFile="${BASH_SOURCE[0]}"
+echo "   - ${functionsFile}"
+
+function configurePMode {
+   echo ; echo "Configuring Pmode"
+
+}
+
+function UploadPMode {
+   echo ; echo "Uploadling Pmode"
+
+   echo "   Logging to tomibus to obtain cookies"
+   curl http://192.168.123.120:8080/domibus/rest/security/authentication \
+   -i \
+   -H "Content-Type: application/json" \
+   -X POST -d '{"username":"admin","password":"domadmin322"}' \
+   -c ${TEMP_DIR}cookie.txt
+
+
+   JSESSIONID=`grep JSESSIONID cookie.txt |  cut -d$'\t' -f 7`
+   XSRFTOKEN=`grep XSRF-TOKEN cookie.txt |  cut -d$'\t' -f 7`
+
+   echo "   JSESSIONID=${JSESSIONID}"
+   echo "   XSRFTOKEN=${XSRFTOKEN}"
+   echo  "X-XSRF-TOKEN: ${XSRFTOKEN}"
+
+   echo "   Uploading Pmode"
+
+   curl http://192.168.123.120:8080/domibus/rest/pmode \
+   -b ${TEMP_DIR}cookie.txt \
+   -v \
+   -H "X-XSRF-TOKEN: ${XSRFTOKEN}" \
+   -F  file=@/data/docker_edelquality/docker/domInstall/scripts/functions/pmodeBlue.xml
+}
+

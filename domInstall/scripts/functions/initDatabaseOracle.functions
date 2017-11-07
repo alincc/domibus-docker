@@ -1,0 +1,123 @@
+#!/bin/bash
+
+functionsFile="${BASH_SOURCE[0]}"
+echo "   - ${functionsFile}"
+
+function dropOracleDomibusUser {
+   displayFunctionBanner "${FUNCNAME[0]}"
+
+   echo ; echo "========= function: dropOracleDomibusUser"
+   cat << EOF
+   echo "DROP USER ${OracleDatabaseUserId} CASCADE;" |
+   sqlplus sys/"${OracleDatabaseSYSPassword}"@"(DESCRIPTION= \
+        (ADDRESS=(PROTOCOL=TCP) \
+        (Host=${OracleDatabaseHost}) \
+        (Port=${OracleDatabasePort})) \
+        (CONNECT_DATA=(SID=${OracleDatabaseSID})))" \
+        as sysdba
+EOF
+
+   echo "DROP USER ${OracleDatabaseUserId} CASCADE;" |
+   sqlplus sys/"${OracleDatabaseSYSPassword}"@"(DESCRIPTION= \
+	(ADDRESS=(PROTOCOL=TCP) \
+	(Host=${OracleDatabaseHost}) \
+	(Port=${OracleDatabasePort})) \
+	(CONNECT_DATA=(SID=${OracleDatabaseSID})))" \
+	as sysdba
+}
+
+function createOracleDomibusUser {
+   displayFunctionBanner "${FUNCNAME[0]}"
+
+   echo ; echo "========= function: createOracleDomibusUser"
+   cat << EOF
+   echo "create user ${OracleDatabaseUserId} identified by ${OracleDatabaseUserPassword}\";" |
+   sqlplus sys/"${OracleDatabaseSYSPassword}"@"(DESCRIPTION= \
+        (ADDRESS=(PROTOCOL=TCP) \
+        (Host=${OracleDatabaseHost}) \
+        (Port=${OracleDatabasePort})) \
+        (CONNECT_DATA=(SID=${OracleDatabaseSID})))" \
+        as sysdba
+EOF
+   
+   echo "create user ${OracleDatabaseUserId} identified by \"${OracleDatabaseUserPassword}\";" |
+   sqlplus sys/"${OracleDatabaseSYSPassword}"@"(DESCRIPTION= \
+	(ADDRESS=(PROTOCOL=TCP) \
+	(Host=${OracleDatabaseHost}) \
+	(Port=${OracleDatabasePort})) \
+	(CONNECT_DATA=(SID=${OracleDatabaseSID})))" \
+	as sysdba
+}
+
+function grantOracleDomibusUserPrivs {
+   displayFunctionBanner "${FUNCNAME[0]}"
+
+   echo ; echo "========= function: grantOracleDomibusUserPrivs"
+   cat << EOF
+   echo "grant all privileges to ${OracleDatabaseUserId};" |
+   sqlplus sys/"${OracleDatabaseSYSPassword}"@"(DESCRIPTION= \
+        (ADDRESS=(PROTOCOL=TCP) \
+        (Host=${OracleDatabaseHost}) \
+        (Port=${OracleDatabasePort})) \
+        (CONNECT_DATA=(SID=${OracleDatabaseSID})))" \
+        as sysdba
+EOF
+
+sqlCmd="
+grant all privileges to ${OracleDatabaseUserId} ;
+grant execute on dbms_xa to ${OracleDatabaseUserId};
+grant select on pending_trans$ to ${OracleDatabaseUserId}; 
+grant select on dba_2pc_pending to ${OracleDatabaseUserId};
+grant select on dba_pending_transactions to ${OracleDatabaseUserId};
+"
+   echo "${sqlCmd}" |
+   sqlplus sys/"${OracleDatabaseSYSPassword}"@"(DESCRIPTION= \
+	(ADDRESS=(PROTOCOL=TCP) \
+	(Host=${OracleDatabaseHost}) \
+	(Port=${OracleDatabasePort})) \
+	(CONNECT_DATA=(SID=${OracleDatabaseSID})))" \
+	as sysdba
+}
+
+function CreateOracleDomibusTables {
+   displayFunctionBanner "${FUNCNAME[0]}"
+
+   echo ; echo "========= function: CreateOracleDomibusTables"
+   cat << EOF
+   unzip -p $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip sql-scripts/oracle10g-${DOMIBUS_VERSION}.ddl | \
+   sqlplus ${OracleDatabaseUserId}/"${OracleDatabaseUserPassword}"@"(DESCRIPTION= \
+        (ADDRESS=(PROTOCOL=TCP) \
+        (Host=${OracleDatabaseHost}) \
+        (Port=${OracleDatabasePort})) \
+        (CONNECT_DATA=(SID=${OracleDatabaseSID})))"
+EOF
+
+   unzip -p $DOWNLOAD_DIR/Domibus/${DomibusVersion}/domibus-${DOMIBUS_PREFIX}-sql-scripts.zip sql-scripts/oracle10g-${DOMIBUS_VERSION}.ddl | \
+   sqlplus ${OracleDatabaseUserId}/"${OracleDatabaseUserPassword}"@"(DESCRIPTION= \
+	(ADDRESS=(PROTOCOL=TCP) \
+	(Host=${OracleDatabaseHost}) \
+	(Port=${OracleDatabasePort})) \
+	(CONNECT_DATA=(SID=${OracleDatabaseSID})))"
+}
+
+function initDatabaseOracle {
+   displayFunctionBanner "${FUNCNAME[0]}"
+
+   if [ "${DatabaseInit}" == "FORCEINIT" ] ; then
+      echo
+      echo "Database Initialization (FORCEINIT) has been requested"
+      echo
+      echo "The Oracle Database ${OracleDatabaseHost}:${OracleDatabasePort}/${OracleDatabaseUserId} will be reinitialized..."
+
+      dropOracleDomibusUser
+      createOracleDomibusUser
+      grantOracleDomibusUserPrivs
+      CreateOracleDomibusTables
+   fi
+
+   if [ "${DatabaseInit}" == "INIT" ] ; then
+      echo
+      echo "Database Initialization has been requested"
+   fi
+}
+

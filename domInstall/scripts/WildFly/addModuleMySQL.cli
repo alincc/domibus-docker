@@ -1,0 +1,4 @@
+embed-server --server-config=standalone-full.xml
+
+module add --name=com.mysql --resources={domibusInstallDir}/downloads/jdbc/mysql-connector-java-5.1.40-bin.jar --dependencies=javax.api,javax.transaction.api
+

@@ -1,0 +1,4 @@
+embed-server --server-config=standalone-full.xml
+
+module add --name=com.oracle --resources=/home/wildflyc/domibus-wildfly-install/downloads/jdbc/ojdbc7.jar --dependencies=javax.api,javax.transaction.api
+

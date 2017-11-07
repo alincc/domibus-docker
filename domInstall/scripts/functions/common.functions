@@ -1,0 +1,94 @@
+#!/bin/bash
+
+functionsFile="${BASH_SOURCE[0]}"
+echo "   - ${functionsFile}"
+
+function displayFunctionBanner {
+   echo ;
+   echo "####################################################################"
+   echo "### FUNCTION: $1"
+   echo "####################################################################"
+}
+
+function ABORT_JOB {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   message="${1}"
+   echo
+   echo "#################################################################################################"
+   echo "### FATAL ERROR ABORTING: ${message}"
+   echo "#################################################################################################"
+   exit 9
+}
+
+function updateJavaPropertiesFile {
+   propertyName=$1
+   propertyNewValue=$2
+   propertyFile=$3
+
+   if  [ "${propertyFile}" == "" ] ; then
+      ABORT_JOB "The specified Java Property file was not specified as Parameter \$3"
+   fi
+   if [ ! -f "${propertyFile}" ] ; then
+      cat ${propertyFile}
+      sleep 100000
+      ABORT_JOB "The specified Java Properties file DOES NOT EXIST OR NOT READABLE: ${propertyFile}"
+   fi
+   if  [ "${propertyName}" == "" ] ; then
+      ABORT_JOB "The specified Java Property value was not specified as Parameter $1"
+   fi
+
+   if [ "`grep \"^${propertyName}\" ${propertyFile}`" == "" ] ; then
+         cat ${propertyFile}
+         sleep 100000
+       ABORT_JOB "The specified Java Property ${propertyName} was not found in ${propertyFile}"
+   else
+	   propertyOldValue="`grep \"^${propertyName}\" ${propertyFile} | cut -d'=' -f2`"
+      echo
+      echo "   Updating Java property	  : ${propertyName}"
+      echo "   In file			  : ${propertyFile}"
+      echo "   Old value                      : ${propertyOldValue}"
+      echo "   New Value                      : ${propertyNewValue}"
+      sed -i -e "/^${propertyName}=/ s|=.*|=${propertyNewValue}|" ${propertyFile}
+   fi
+}
+
+function updateStringInFile {
+   initialString=${1}
+   replacedString=${2}
+   targetFile=${3}
+   echo
+   echo "   Replacing   : ${initialString}"
+   echo "   By          : ${replacedString}"
+   echo "   In file     : ${targetFile}"
+
+    sed -i -e "s|${initialString}|${replacedString}|" ${targetFile}
+}
+
+function generateSHA256Password {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   tmp_Password="$1"
+   if [ "$tmp_Password" == "" ] ; then
+      echo "Function generateSHA256Password password cannot be empty."
+   else
+      #SHA256GHash=`echo -n $tmp_Password | shasum -a256 -p | cut -d" " -f1`
+      SHA256GHash=`echo -n $tmp_Password | sha256sum | cut -d" " -f1`
+      echo $SHA256GHash
+   fi
+}
+
+function generateBCRYPTPassword {
+   displayFunctionBanner "${FUNCNAME[0]}: param=${1}"
+
+   tmp_Password="$1"
+   if [ "$tmp_Password" == "" ] ; then
+      echo "Function generateBCRYPTPassword password cannot be empty."
+   else
+      BCRYPTHash=`htpasswd -n -B -b -C10 dummy $tmp_Password | cut -d: -f2`
+
+      BCRYPTHash=`echo $BCRYPTHash | sed 's/\\$2y\\$10\\$/\\$2a\\$10\\$/'`
+      echo $BCRYPTHash
+   fi
+}
+

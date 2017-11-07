@@ -1,0 +1,703 @@
+#!/bin/bash
+
+functionsFile="${BASH_SOURCE[0]}"
+echo "   - ${functionsFile}"
+
+function wait4WLSServerStart {
+   displayFunctionBanner "${FUNCNAME[0]} \${1}=${1}"
+
+   serversList="${1}"
+
+   for serverName in ${serversList} ; do
+
+      logFile="${DomibusInstallationDir}/${WebLogicDomainName}/${serverName}.log"
+
+      echo ; echo "Waiting for WebLogic Server Startup: ${serverName}"
+      echo
+      echo "Waiting for	: \"<WebLogicServer> <BEA-000365> <Server state changed to RUNNING.>\""
+      echo "In file		: ${logFile}"
+
+      while ! grep "<WebLogicServer> <BEA-000365> <Server state changed to RUNNING.>" ${logFile} ; do
+         echo -n . ; sleep 2
+      done
+   done
+}
+
+function createWLSBootProperties {
+   displayFunctionBanner "${FUNCNAME[0]} \${1}=${1}"
+
+   serversList="${1}"
+
+   for serverName in ${serversList} ; do
+      echo ; echo "Creating  ${DomibusInstallationDir}/${WebLogicDomainName}/servers/${serverName}/security/boot.properties"
+      mkdir -p ${DomibusInstallationDir}/${WebLogicDomainName}/servers/${serverName}/security
+      echo "username=${WebLogicAdminUserName}"		\
+         >  ${DomibusInstallationDir}/${WebLogicDomainName}/servers/${serverName}/security/boot.properties
+      echo "password=${WebLogicAdminUserPassword}"	\
+         >> ${DomibusInstallationDir}/${WebLogicDomainName}/servers/${serverName}/security/boot.properties
+   done
+}
+
+function createStartupScriptWebLogic {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "Creating ${DomibusInstallationDir}/${WebLogicDomainName}/runIt.sh"
+   cat << EOF >  ${DomibusInstallationDir}/${WebLogicDomainName}/runIt.sh
+#!/bin/bash
+
+echo "nohup ${DomibusInstallationDir}/${WebLogicDomainName}/startWebLogic.sh > ${DomibusInstallationDir}/${WebLogicDomainName}/${WebLogicAdminServerName}.log 2>&1 &"
+nohup ${DomibusInstallationDir}/${WebLogicDomainName}/startWebLogic.sh > ${DomibusInstallationDir}/${WebLogicDomainName}/${WebLogicAdminServerName}.log 2>&1 &
+
+echo "Waiting for ${WebLogicAdminServerName} to start..."
+while ! grep '<Notice> <WebLogicServer> <BEA-000365> <Server state changed to RUNNING.>' ${DomibusInstallationDir}/${WebLogicDomainName}/${WebLogicAdminServerName}.log ; do
+   echo -n "."
+   sleep 1
+done
+
+echo "nohup ${DomibusInstallationDir}/${WebLogicDomainName}/bin/startManagedWebLogic.sh ${WebLogicManagedServer1Name} > ${DomibusInstallationDir}/${WebLogicDomainName}/${WebLogicManagedServer1Name}.log 2>&1 &"
+nohup ${DomibusInstallationDir}/${WebLogicDomainName}/bin/startManagedWebLogic.sh ${WebLogicManagedServer1Name} > ${DomibusInstallationDir}/${WebLogicDomainName}/${WebLogicManagedServer1Name}.log 2>&1 &
+
+echo "Waiting for ${WebLogicManagedServer1Name} to start..."
+while ! grep '<Notice> <WebLogicServer> <BEA-000365> <Server state changed to RUNNING.>' ${DomibusInstallationDir}/${WebLogicDomainName}/${WebLogicManagedServer1Name}.log ; do
+   echo -n "."
+   sleep 1
+done
+
+exit
+
+EOF
+
+   chmod +x ${DomibusInstallationDir}/${WebLogicDomainName}/runIt.sh
+}
+
+function createStopScriptWebLogic {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   cat << EOF >  ${DomibusInstallationDir}/${WebLogicDomainName}/stopIt.sh
+#!/bin/bash
+
+echo "${DomibusInstallationDir}/${WebLogicDomainName}/bin/stopManagedWebLogic.sh ${WebLogicManagedServer1Name}"
+${DomibusInstallationDir}/${WebLogicDomainName}/bin/stopManagedWebLogic.sh ${WebLogicManagedServer1Name}
+
+echo "${DomibusInstallationDir}/${WebLogicDomainName}/bin/stopWebLogic.sh"
+${DomibusInstallationDir}/${WebLogicDomainName}/bin/stopWebLogic.sh
+
+exit
+EOF
+
+   chmod +x ${DomibusInstallationDir}/${WebLogicDomainName}/stopIt.sh
+}
+
+function setJMXAccess {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+echo TEMP_DIR="\"${TEMP_DIR}\" - ${DomibusInstallationDir}"
+    cat << EOF > ${TEMP_DIR}/JMXAccessProtect.py
+# Setting 'Use Authorization Providers to Protect JMX Access' to True
+readDomain("${DomibusInstallationDir}/${WebLogicDomainName}")
+cd('SecurityConfiguration/${WebLogicDomainName}/Realm/myrealm')
+set('DelegateMBeanAuthorization', 'true')
+updateDomain()
+closeDomain()
+# Exiting
+print('Exiting...')
+exit()
+EOF
+
+   echo ; echo " Setting 'Use Authorization Providers to Protect JMX Access' to True"
+   echo "   /data/WebLogic/wls_12.1.3.0.0/Oracle_Home/wlserver/common/bin/wlst.sh ${TEMP_DIR}/JMXAccessProtect.py"
+   cat ${TEMP_DIR}/JMXAccessProtect.py
+   /data/WebLogic/wls_12.1.3.0.0/Oracle_Home/wlserver/common/bin/wlst.sh ${TEMP_DIR}/JMXAccessProtect.py
+}
+
+function createWLSDomain {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+echo TEMP_DIR="\"${TEMP_DIR}\" - ${DomibusInstallationDir}"
+   cat << EOF > ${TEMP_DIR}/createWLSDomain.py
+# This is an Offline WLST script to create a WLS 10.3.4 (Oracle Weblogic Server 11gR1) Domain
+#
+# Domain consists of:
+# 1. Admin Server
+# 2. One Standalone Managed Server
+# 5. One Machine which all Managed Servers will be configured
+# Read a domain template
+# Change the path to wls.jar according to your setup
+print('Reading Template - /data/WebLogic/wls_12.1.3.0.0/Oracle_Home/wlserver/common/templates/wls/wls.jar')
+readTemplate('/data/WebLogic/wls_12.1.3.0.0/Oracle_Home/wlserver/common/templates/wls/wls.jar')
+
+# Admin Server SSL and Non-SSL
+print("Creating Server - Admin Server (${WebLogicAdminServerName}/${WebLogicAdminServerListenAddress}/${WebLogicAdminServerPort}")
+cd("Servers/AdminServer")
+set('Name', "${WebLogicAdminServerName}")
+set('ListenAddress', "${WebLogicAdminServerListenAddress}")
+set('ListenPort', ${WebLogicAdminServerPort})
+
+# Security
+print('Creating Password')
+cd('/')
+cd("Security/base_domain/User/weblogic")
+set('Name', "${WebLogicAdminUserName}")
+cmo.setPassword("${WebLogicAdminUserPassword}")
+
+# Start Up
+print('Setting StartUp Options')
+#setOption('CreateStartMenu', 'false')
+setOption('ServerStartMode', 'prod')
+# Setting the JDK home. Change the path to your installed JDK for weblogic
+setOption('JavaHome','/usr/local/java/jdk1.7.0_80')
+setOption('OverwriteDomain', 'true')
+
+# Create Domain to File System
+print('Writing Domain To File System')
+# Change the path to your domain accordingly
+writeDomain("${DomibusInstallationDir}/${WebLogicDomainName}")
+closeTemplate()
+
+# Read the Created Domain
+print('Reading the Domain from In Offline Mode')
+readDomain("${DomibusInstallationDir}/${WebLogicDomainName}")
+
+# Creating Managed Servers
+#Change the ports accordingly for TPMS1,TPMS2 and TPMS3
+print("Creating Server ${WebLogicManagedServer1Name} ${WebLogicAdminServerListenAddress}/${WebLogicManagedServer1Port}")
+cd('/')
+print("create(\"${WebLogicManagedServer1Name}\", 'Server')")
+create("${WebLogicManagedServer1Name}", 'Server')
+cd("Server/${WebLogicManagedServer1Name}")
+#print("set('ListenAddress', "${WebLogicAdminServerListenAddress}")
+set('ListenAddress', "${WebLogicAdminServerListenAddress}")
+#print("set('ListenPort', "${WebLogicManagedServer1Port}")
+set('ListenPort', ${WebLogicManagedServer1Port})
+
+# Create and configure a machine and assign the Managed Servers to that Machine
+print("Creating Machine ${WebLogicMachineName} and adding ${WebLogicManagedServer1Name}")
+cd('/')
+print("Creating Machine ${WebLogicAdminServerListenAddress}")
+create("${WebLogicMachineName}", 'Machine')
+assign('Server', "${WebLogicManagedServer1Name}",'Machine',"${WebLogicMachineName}")
+cd('Machines/' + "${WebLogicMachineName}/")
+create("${WebLogicMachineName}", 'NodeManager')
+cd('NodeManager/' + "${WebLogicMachineName}")
+set('NMType', 'SSL')
+set('ListenAddress', "${WebLogicAdminServerListenAddress}")
+set('DebugEnabled', 'false')
+
+# updating the changes
+print('Finalizing the changes')
+updateDomain()
+closeDomain()
+
+# Exiting
+print('Exiting...')
+exit()
+EOF
+
+   #/data/WebLogic/wls_12.1.3.0.0/Oracle_Home/wlserver/common/bin/wlst.sh ${TEMP_DIR}/createWLSDomain.py
+   /data/WebLogic/wls_12.1.3.0.0/Oracle_Home/wlserver/common/bin/wlst.sh ${TEMP_DIR}/createWLSDomain.py
+
+   createWLSBootProperties "${WebLogicAdminServerName} ${WebLogicManagedServer1Name}"
+   createStartupScriptWebLogic
+   createStopScriptWebLogic
+}
+
+function updateProperty {
+   initialString=${1}
+   replacedString=${2}
+   targetFile=${3}
+
+   if [ ! -f "${targetFile}" ] ; then
+      ABORT_JOB "the mentionned file does not exists: "${targetFile}
+   else
+      echo
+      echo "   Replacing	: ${initialString}"
+      echo "   By		: ${replacedString}"
+      echo "   In file	: ${targetFile}"
+
+      sed -i -e "s|${initialString}|${replacedString}|" ${targetFile}
+   fi
+}
+
+function installWlstScript {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo "   Installing WLST Tool & Scripts":
+   echo ; echo "   - Downloading WLST Tool & Scripts"
+   # cefdigital is down, local copy
+   wget -P /data/WebLogic/ https://ec.europa.eu/cefdigital/artifact/content/repositories/eDelivery/eu/europa/ec/digit/ipcis/wslt-api/1.9.1/wslt-api-1.9.1.zip --no-check-certificate
+   echo "   - Unzipping dowloaded wslt-api-1.9.1.zip to: ${TEMP_DIR}"
+   unzip /data/WebLogic/wslt-api-1.9.1.zip -d ${TEMP_DIR}/wlst
+}
+
+function updateEntityManagerOracle {
+   echo : echo "Domibus Entity Manager ALREADY CONFIGURED for Oracle Database"
+}
+
+function updateEntityManagerMySQL {
+   displayFunctionBanner ${FUNCNAME[0]}
+   echo ; echo "Configuring Domibus Entity Manager for ${DatabaseType}"
+   if [ ${DOMIBUS_VERSION:0:3} == "3.3" || ${DOMIBUS_VERSION:0:3} == "4.0" ] ; then
+      echo "   Configuring EntityManagerFactory in ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/domibus.properties:"
+      updateProperty "domibus.entityManagerFactory.jpaProperty.hibernate.connection.driver_class=oracle.jdbc.xa.client.OracleXADataSource" \
+                     "#domibus.entityManagerFactory.jpaProperty.hibernate.connection.driver_class=oracle.jdbc.xa.client.OracleXADataSource" \
+                     "${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/domibus.properties"
+      updateProperty "domibus.entityManagerFactory.jpaProperty.hibernate.dialect=org.hibernate.dialect.Oracle10gDialect" \
+                     "#domibus.entityManagerFactory.jpaProperty.hibernate.dialect=org.hibernate.dialect.Oracle10gDialect" \
+                     "${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/domibus.properties"
+      updateProperty "#domibus.entityManagerFactory.jpaProperty.hibernate.connection.driver_class=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" \
+                     "domibus.entityManagerFactory.jpaProperty.hibernate.connection.driver_class=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" \
+                     "${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/domibus.properties"
+      updateProperty "#domibus.entityManagerFactory.jpaProperty.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect" \
+                     "domibus.entityManagerFactory.jpaProperty.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect" \
+                     "${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/domibus.properties"
+   else
+      echo ; echo "   Updating hibernate properties in ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/domibus-datasources.xml"
+      initialString="oracle.jdbc.xa.client.OracleXADataSource"
+      replacedString="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource"
+      echo "   Replacing : ${initialString}"
+      echo "   By        : ${replacedString}"
+      sed -i -e "s#${initialString}#${replacedString}#" "${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/domibus-datasources.xml"
+
+      initialString="org.hibernate.dialect.Oracle10gDialect"
+      replacedString="org.hibernate.dialect.MySQL5InnoDBDialect"
+      echo "   Replacing : ${initialString}"
+      echo "   By        : ${replacedString}"
+      sed -i -e "s#${initialString}#${replacedString}#" "${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/domibus-datasources.xml"
+   fi
+}
+
+function updateEntityManager {
+   case "${DatabaseType}" in
+      "Oracle")
+	updateEntityManagerOracle
+	;;
+      "MySQL")
+	updateEntityManagerMySQL
+	;;
+      *)
+	ABORT_JOB "Unsupported Database Type: ${DatabaseType}"
+	;;
+   esac
+}
+
+function configureWebLogicDomibusSingle {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "QuickFix: Copying Domibus artefact in: ${TEMP_DIR}"
+   if  [ ${DOMIBUS_VERSION} == "3.3" ] ; then
+      for file in `ls -1 /data/domInstall/downloads/Domibus/${DOMIBUS_VERSION}` ; do
+         echo "   - cp ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/${file} ${TEMP_DIR}"
+         cp ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/${file} ${TEMP_DIR}
+      done
+   else
+      for file in `ls -1 ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}` ; do
+         echo "   - cp ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/${file} ${TEMP_DIR}"
+         cp ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/${file} ${TEMP_DIR}
+      done
+   fi
+      
+   echo ; echo "   Copying Domibus Artefacts:"
+   echo "      From: ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION} "
+   echo "      To  : ${TEMP_DIR}"
+
+   for file in `ls -1 ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}` ; do
+      echo "   - cp ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/${file} ${TEMP_DIR}"
+      cp ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/${file} ${TEMP_DIR}
+   done
+
+   mkdir -p ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus
+
+   echo ; echo " unzip \${TEMP_DIR}/domibus-\${DOMIBUS_PREFIX}-weblogic-configuration.zip -d \${DomibusInstallationDir}/\${WebLogicDomainName}/conf/domibus"
+   unzip $TEMP_DIR/domibus-${DOMIBUS_PREFIX}-weblogic-configuration.zip -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus
+
+   echo ; echo "cp \${DomibusInstallationDir}/\${WebLogicDomainName}/conf/domibus/scripts/WeblogicSingleServer.properties \${TEMP_DIR}"
+   cp ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/scripts/WeblogicSingleServer.properties $TEMP_DIR
+
+   updateProperty	"^domain.connect.url ="	\
+		 	"domain.connect.url = t3:\/\/${WebLogicAdminServerListenAddress}:${WebLogicAdminServerPort}"	\
+			"${TEMP_DIR}/WeblogicSingleServer.properties"
+   #updateJavaPropertiesFile	"domain.connect.url " ${WebLogicAdminUserName}	"${TEMP_DIR}/WeblogicSingleServer.properties"
+
+   updateProperty 	"^domain.connect.username ="	\
+			"domain.connect.username = ${WebLogicAdminUserName}" \
+			"${TEMP_DIR}/WeblogicSingleServer.properties"
+
+   updateProperty	"^domain.connect.password ="	\
+			"domain.connect.password = ${WebLogicAdminUserPassword}"	\
+			"${TEMP_DIR}/WeblogicSingleServer.properties"
+
+   # Save all JDBC datasources properties for later use
+   echo
+   echo "Saving WLST Script Configuration Properties:"
+   echo
+   grep "^script.log."		${TEMP_DIR}/WeblogicSingleServer.properties | tee	${TEMP_DIR}/WeblogicSingleServer-script-conf.properties
+   grep "^domain.loading.type"	${TEMP_DIR}/WeblogicSingleServer.properties | tee -a	${TEMP_DIR}/WeblogicSingleServer-script-conf.properties
+   grep "^domain.connect."	${TEMP_DIR}/WeblogicSingleServer.properties | tee -a	${TEMP_DIR}/WeblogicSingleServer-script-conf.properties
+
+   cp ${TEMP_DIR}/WeblogicSingleServer-script-conf.properties ${TEMP_DIR}/WeblogicSingleServer-JDBC-Oracle.properties
+   cp ${TEMP_DIR}/WeblogicSingleServer-script-conf.properties ${TEMP_DIR}/WeblogicSingleServer-JDBC-MySQL.properties
+
+   echo ; echo "   Extracting JDBC properties for OFFline creation"
+   echo ; echo "      Creating Datasource Properties for Oracle Database in file: ${TEMP_DIR}/WeblogicSingleServer-JDBC-Oracle.properties"
+   grep "^jdbc.datasource." ${TEMP_DIR}/WeblogicSingleServer.properties | tee -a ${TEMP_DIR}/WeblogicSingleServer-JDBC-Oracle.properties
+
+   echo ; echo "      Creating Datasource Properties for MySQL Database	in file: ${TEMP_DIR}/WeblogicSingleServer-JDBC-MySQL.properties"
+   grep "^#jdbc.datasource." ${TEMP_DIR}/WeblogicSingleServer.properties | tee -a ${TEMP_DIR}/WeblogicSingleServer-JDBC-MySQL.properties
+
+   # Need also the jdbc.datasource.items property for MySQL
+   echo "Adding 'jdbc.datasource.items' property for MySQL,in file; ${TEMP_DIR}/WeblogicSingleServer-JDBC-MySQL.properties"
+   grep "jdbc.datasource.items" ${TEMP_DIR}/WeblogicSingleServer.properties | tee -a ${TEMP_DIR}/WeblogicSingleServer-JDBC-MySQL.properties
+
+   # echo"   Commenting out all JDBC Properties for MySQL in file: ${TEMP_DIR}/WeblogicSingleServer-JDBC-MySQL.properties
+   sed -i -e 's/^#jdbc.datasource./jdbc.datasource./g' ${TEMP_DIR}/WeblogicSingleServer-JDBC-MySQL.properties
+
+   # Remove all reference to data source
+   echo ; echo "   Removing datasource properties for online WLST Creation" 
+   sed -i -e "/jdbc.datasource./d" $TEMP_DIR/WeblogicSingleServer.properties
+
+   updateJavaPropertiesFile	jms.module.0.targets		${WebLogicManagedServer1Name}					"${TEMP_DIR}/WeblogicSingleServer.properties"
+   updateJavaPropertiesFile	jms.server.0.target		${WebLogicManagedServer1Name}					"${TEMP_DIR}/WeblogicSingleServer.properties"
+   updateJavaPropertiesFile	persistent.filestore.0.target	${WebLogicManagedServer1Name}					"${TEMP_DIR}/WeblogicSingleServer.properties"
+   updateJavaPropertiesFile	persistent.filestore.0.location	${DomibusInstallationDir}/${WebLogicDomainName}/filestore	"${TEMP_DIR}/WeblogicSingleServer.properties"
+
+   if [ ${DOMIBUS_VERSION:0:3} == "3.3" || ${DOMIBUS_VERSION:0:3} == "4.0" ] ; then
+      updateJavaPropertiesFile	domain.workmanager.0.targets	${WebLogicManagedServer1Name}					"${TEMP_DIR}/WeblogicSingleServer.properties"
+      updateJavaPropertiesFile	domain.workmanager.1.targets	${WebLogicManagedServer1Name}					"${TEMP_DIR}/WeblogicSingleServer.properties"
+   fi
+
+   if [ "${createWlsDatasources}" == "Yes"  ] ; then
+      case "${DatabaseType}" in
+         "Oracle")
+            updateJavaPropertiesFile	jdbc.datasource.0.targets 		${WebLogicManagedServer1Name}	"${TEMP_DIR}/WeblogicSingleServer-JDBC-Oracle.properties"
+            updateJavaPropertiesFile	jdbc.datasource.0.driver.url		"jdbc:oracle:thin:@${OracleDatabaseHost}:${OracleDatabasePort}/${OracleDatabaseSID}.edelivery.local" \
+														"${TEMP_DIR}/WeblogicSingleServer-JDBC-Oracle.properties"
+            updateJavaPropertiesFile	jdbc.datasource.0.driver.username	${OracleDatabaseUserId}		"${TEMP_DIR}/WeblogicSingleServer-JDBC-Oracle.properties"
+            updateJavaPropertiesFile	jdbc.datasource.0.driver.password	${OracleDatabaseUserPassword}	"${TEMP_DIR}/WeblogicSingleServer-JDBC-Oracle.properties"
+
+            if [ ${DOMIBUS_VERSION:0:3} == "3.3" || ${DOMIBUS_VERSION:0:3} == "4.0" ] ; then
+               updateJavaPropertiesFile    jdbc.datasource.1.targets               ${WebLogicManagedServer1Name}   "${TEMP_DIR}/WeblogicSingleServer-JDBC-Oracle.properties"
+               updateJavaPropertiesFile    jdbc.datasource.1.driver.url            "jdbc:oracle:thin:@${OracleDatabaseHost}:${OracleDatabasePort}/${OracleDatabaseSID}.edelivery.local" \
+                                                                                                                "${TEMP_DIR}/WeblogicSingleServer-JDBC-Oracle.properties"
+               updateJavaPropertiesFile    jdbc.datasource.1.driver.username       ${OracleDatabaseUserId}         "${TEMP_DIR}/WeblogicSingleServer-JDBC-Oracle.properties"
+               updateJavaPropertiesFile    jdbc.datasource.1.driver.password       ${OracleDatabaseUserPassword}   "${TEMP_DIR}/WeblogicSingleServer-JDBC-Oracle.properties"
+            fi
+
+            echo -e "\n" >>  "${TEMP_DIR}/WeblogicSingleServer.properties"
+            cat  "${TEMP_DIR}/WeblogicSingleServer-JDBC-Oracle.properties" >> "${TEMP_DIR}/WeblogicSingleServer.properties"
+         ;;
+         "MySQL")
+            updateJavaPropertiesFile	jdbc.datasource.0.targets               ${WebLogicManagedServer1Name}	"${TEMP_DIR}/WeblogicSingleServer-JDBC-MySQL.properties"
+            updateJavaPropertiesFile	jdbc.datasource.0.driver.url            "jdbc:mysql://${MySQLDatabaseHost}:${MySQLDatabasePort}/${MySQLDatabaseName}" \
+														"${TEMP_DIR}/WeblogicSingleServer-JDBC-MySQL.properties"
+            updateJavaPropertiesFile	jdbc.datasource.0.driver.username       ${MySQLDatabaseUserId}		"${TEMP_DIR}/WeblogicSingleServer-JDBC-MySQL.properties"
+            updateJavaPropertiesFile	jdbc.datasource.0.driver.password       ${MySQLDatabaseUserPassword}	"${TEMP_DIR}/WeblogicSingleServer-JDBC-MySQL.properties"
+
+            if [ ${DOMIBUS_VERSION:0:3} == "3.3" || ${DOMIBUS_VERSION:0:3} == "4.0" ] ; then
+               updateJavaPropertiesFile    jdbc.datasource.1.targets               ${WebLogicManagedServer1Name}   "${TEMP_DIR}/WeblogicSingleServer-JDBC-MySQL.properties"
+               updateJavaPropertiesFile    jdbc.datasource.1.driver.url            "jdbc:mysql://${MySQLDatabaseHost}:${MySQLDatabasePort}/${MySQLDatabaseName}" \
+                                                                                                                "${TEMP_DIR}/WeblogicSingleServer-JDBC-MySQL.properties"
+               updateJavaPropertiesFile    jdbc.datasource.1.driver.username       ${MySQLDatabaseUserId}          "${TEMP_DIR}/WeblogicSingleServer-JDBC-MySQL.properties"
+               updateJavaPropertiesFile    jdbc.datasource.1.driver.password       ${MySQLDatabaseUserPassword}    "${TEMP_DIR}/WeblogicSingleServer-JDBC-MySQL.properties"
+            fi 
+
+            echo -e "\n" >>  "${TEMP_DIR}/WeblogicSingleServer.properties"
+            cat  "${TEMP_DIR}/WeblogicSingleServer-JDBC-MySQL.properties" >> "${TEMP_DIR}/WeblogicSingleServer.properties"
+         ;;
+         *)
+            echo ; echo "Database Type (DB_TYPE) MUST BE eitheir Oracle or MySQL"
+            ABORT_JOB  "This Database is not yet supported : ${iDatabaseType}"
+         ;;
+      esac
+   fi
+
+   installWlstScript
+
+   echo ; echo "Prepare WLS Environment, Sourcing: . /data/WebLogic/wls_12.1.3.0.0/Oracle_Home/wlserver/server/bin/setWLSEnv.sh"
+   . /data/WebLogic/wls_12.1.3.0.0/Oracle_Home/wlserver/server/bin/setWLSEnv.sh
+
+   echo ; echo "Configuring Weblogic:"
+   echo "    /${TEMP_DIR}/wlst/bin/wlstapi.sh ${TEMP_DIR}/wlst/scripts/import.py --property ${TEMP_DIR}/WeblogicSingleServer.properties"
+   /${TEMP_DIR}/wlst/bin/wlstapi.sh ${TEMP_DIR}/wlst/scripts/import.py --property ${TEMP_DIR}/WeblogicSingleServer.properties
+   #/${TEMP_DIR}/wlst/bin/wlstapi.sh ${TEMP_DIR}/wlst/scripts/import.py --property /data/DOCKER/myConfig.properties
+}
+
+function createWebLogicDatasourceOffline {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+DatabaseType="${1}"
+
+echo "Creating XA & NON-XA datasources for Database: ${DatabaseType}"
+
+   for dsName in `grep "^jdbc.datasource...name=" ${TEMP_DIR}/WeblogicSingleServer-JDBC-${DatabaseType}.properties | cut -d'=' -f2` ; do
+      echo ; echo "Creating WebLogic Datasource: ${dsName}"
+      dsNum="`grep \"^jdbc.datasource...name=${dsName}\" ${TEMP_DIR}/WeblogicSingleServer-JDBC-${DatabaseType}.properties | cut -d '.' -f 3`"
+      echo "   Datasource Number : ${dsNum}"
+      jdbc_datasource_name="`grep \"^jdbc.datasource.${dsNum}.name\" \
+         ${TEMP_DIR}/WeblogicSingleServer-JDBC-${DatabaseType}.properties | cut -d '=' -f 2`"
+      jdbc_datasource_jndi_name="`grep \"^jdbc.datasource.${dsNum}.jndi.name\" \
+         ${TEMP_DIR}/WeblogicSingleServer-JDBC-${DatabaseType}.properties | cut -d '=' -f 2`"
+      jdbc_datasource_pool_capacity_max="`grep \"^jdbc.datasource.${dsNum}.pool.capacity.max\" \
+         ${TEMP_DIR}/WeblogicSingleServer-JDBC-${DatabaseType}.properties | cut -d '=' -f 2`"
+      jdbc_datasource_transaction_protocol="`grep \"^jdbc.datasource.${dsNum}.transaction.protocol\" \
+         ${TEMP_DIR}/WeblogicSingleServer-JDBC-${DatabaseType}.properties | cut -d '=' -f 2`"
+      jdbc_datasource_pool_connection_test_onreserv_enable="`grep \"^jdbc.datasource.${dsNum}.pool.connection.test.onreserv.enable\" \
+         ${TEMP_DIR}/WeblogicSingleServer-JDBC-${DatabaseType}.properties | cut -d '=' -f 2`"
+      jdbc_datasource_pool_connection_test_onreserv_sql="`grep \"^jdbc.datasource.${dsNum}.pool.connection.test.onreserv.sql\" \
+         ${TEMP_DIR}/WeblogicSingleServer-JDBC-${DatabaseType}.properties | cut -d '=' -f 2`"
+      jdbc_datasource_driver_name="`grep \"^jdbc.datasource.${dsNum}.driver.name\" \
+         ${TEMP_DIR}/WeblogicSingleServer-JDBC-${DatabaseType}.properties | cut -d '=' -f 2`"
+
+      if [ "${DatabaseType}" == "mysql" ] ; then
+         jdbc_datasource_driver_url="jdbc:mysql://localhost:3306/domibus"
+      else
+         jdbc_datasource_driver_url="jdbc:oracle:thin:@localhost:1521/domibus.edelivery.local"
+      fi
+
+      jdbc_datasource_driver_username="edelivery"
+      jdbc_datasource_driver_password="edelivery"
+
+      echo "   jdbc_datasource_name= ${jdbc_datasource_name}"
+      echo "   jdbc_datasource_jndi_name= ${jdbc_datasource_jndi_name}"
+      echo "   jdbc_datasource_pool_capacity_max= ${jdbc_datasource_pool_capacity_max}"
+      echo "   jdbc_datasource_transaction_protocol= ${jdbc_datasource_transaction_protocol}"
+      echo "   jdbc_datasource_pool_connection_test_onreserv_enable= ${jdbc_datasource_pool_connection_test_onreserv_enable}"
+      echo "   jdbc_datasource_pool_connection_test_onreserv_sql= ${jdbc_datasource_pool_connection_test_onreserv_sql}"
+      echo "   jdbc_datasource_driver_name= ${jdbc_datasource_driver_name}"
+      echo "   jdbc_datasource_driver_url= ${jdbc_datasource_driver_url}"
+      echo "   jdbc_datasource_driver_username= ${jdbc_datasource_driver_username}"
+      echo "   jdbc_datasource_driver_password= ${jdbc_datasource_driver_password}"
+
+   . /data/WebLogic/wls_12.1.3.0.0/Oracle_Home/wlserver/server/bin/setWLSEnv.sh
+
+   cat <<EOF  | java weblogic.WLST
+
+readDomain('${DomibusInstallationDir}/${WebLogicDomainName}')
+
+# first delete targets
+#datasourceInstance.setTargets(None)
+
+# delete
+#cmo.destroyJDBCSystemResource(datasourceInstance)
+print 'Delete ${jdbc_datasource_name}'
+delete('${jdbc_datasource_name}', 'JDBCSystemResource')
+
+print 'create ${jdbc_datasource_name}'
+create('${jdbc_datasource_name}', 'JDBCSystemResource')
+cd('/JDBCSystemResource/${jdbc_datasource_name}')
+set('Target','${WebLogicManagedServer1Name}')
+
+cd('/JDBCSystemResource/${jdbc_datasource_name}/JdbcResource/${jdbc_datasource_name}')
+cmo.setName('${jdbc_datasource_name}')
+
+print 'create JDBCDataSourceParams'
+cd('/JDBCSystemResource/${jdbc_datasource_name}/JdbcResource/${jdbc_datasource_name}')
+create('myJdbcDataSourceParams','JDBCDataSourceParams')
+cd('JDBCDataSourceParams/NO_NAME_0')
+set('JNDIName', java.lang.String('${jdbc_datasource_jndi_name}'))
+set('GlobalTransactionsProtocol', java.lang.String('None'))
+
+print 'create JDBCDriverParams'
+cd('/JDBCSystemResource/${jdbc_datasource_name}/JdbcResource/${jdbc_datasource_name}')
+create('myJdbcDriverParams','JDBCDriverParams')
+cd('JDBCDriverParams/NO_NAME_0')
+set('DriverName','${jdbc_datasource_driver_name}')
+set('URL','${jdbc_datasource_driver_url}')
+set('PasswordEncrypted', 'edelivery')
+set('UseXADataSourceInterface', 'false')
+
+print 'create JDBCDriverParams Properties'
+create('myProperties','Properties')
+cd('Properties/NO_NAME_0')
+create('user','Property')
+cd('Property')
+cd('user')
+set('Value', 'edelivery')
+
+print 'create JDBCConnectionPoolParams'
+cd('/JDBCSystemResource/${jdbc_datasource_name}/JdbcResource/${jdbc_datasource_name}')
+create('myJdbcConnectionPoolParams','JDBCConnectionPoolParams')
+cd('JDBCConnectionPoolParams/NO_NAME_0')
+set('TestTableName','${jdbc_datasource_pool_connection_test_onreserv_sql}')
+#set('MaxCapacity','${jdbc_datasource_pool_capacity_max}')
+cmo.setMaxCapacity(50)
+
+# updating the changes
+print('Saving the changes')
+updateDomain()
+closeDomain()
+
+EOF
+
+   done
+
+}
+
+function updateXAdatasourceOffline {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   datsourceName=$1
+   DriverName=$2
+   Url=$3
+   UserName=$4
+   UserPassword=$5
+
+   echo; echo "Updating XA datasource: ${datsourceName}"
+   echo "   DriverName  = ${DriverName}"
+   echo "   Url         = ${Url}"
+   echo "   UserName    = ${UserName}"
+   echo "   UserPassword = ${UserPassword}"
+
+. /data/WebLogic/wls_12.1.3.0.0/Oracle_Home/wlserver/server/bin/setWLSEnv.sh
+
+#cat << EOF | ${TEMP_DIR}/wlst/bin/wlstapi.sh
+cat << EOF | java weblogic.WLST
+
+readDomain('/data/domibus/${WebLogicDomainName}')
+cd('/')
+cd ('JDBCSystemResource')
+dsName='${datsourceName}'
+cd ('/JDBCSystemResource/'+dsName+'/JdbcResource/'+dsName+'/JDBCDriverParams/NO_NAME_0')
+JNDIName=get('JNDIName')
+driverName=get('DriverName')
+set('DriverName','${DriverName}')
+URL=get('URL')
+set('URL','${Url}')
+Password=get('PasswordEncrypted')
+set('PasswordEncrypted', '${UserPassword}')
+cd ('/JDBCSystemResource/'+dsName+'/JdbcResource/'+dsName+'/JDBCDriverParams/NO_NAME_0/Properties/NO_NAME_0/Property/user')
+User=get('Value')
+#Password=get('PasswordEncrypted')
+print 'driverName='+driverName
+print 'URL='+URL
+print 'User='+User
+print 'Password='+str(Password)
+set('Value','${UserName}')
+# updating the changes
+print('Saving the changes')
+updateDomain()
+closeDomain()
+
+EOF
+}
+
+function startWebLogic {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   ${DomibusInstallationDir}/${WebLogicDomainName}/runIt.sh
+
+   #sleep 35
+   #wait4WLSServerStart "${WebLogicAdminServerName} ${WebLogicManagedServer1Name}"
+   wait4WLSServerStart "${WebLogicAdminServerName}"
+}
+
+function stopWebLogic {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   ${DomibusInstallationDir}/${WebLogicDomainName}/stopIt.sh
+}
+
+function restartWebLogicManagedServer {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   ${DomibusInstallationDir}/${WebLogicDomainName}/bin/stopWebLogic.sh ${WebLogicManagedServer1Name}
+   ${DomibusInstallationDir}/${WebLogicDomainName}/bin/startWebLogic.sh ${WebLogicManagedServer1Name}
+}
+
+function installWSPluginWebLogic {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo "DomibusInstallationDir=$DomibusInstallationDir"
+   echo "DOMIBUS_DIR=$DOMIBUS_DIR"
+   echo "WebLogicDomainName=$WebLogicDomainName"
+
+   echo "Installing Domibus Default WS Plugin:"
+
+   echo  "  unzip  -j \${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-default-ws-plugin.zip conf/domibus/plugins/config/weblogic/* -d \${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/config"
+   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-default-ws-plugin.zip conf/domibus/plugins/config/weblogic/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/config
+
+   echo "   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-default-ws-plugin.zip conf/domibus/plugins/lib/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/lib"
+   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-default-ws-plugin.zip conf/domibus/plugins/lib/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/lib
+}
+
+function installJMSPluginWebLogic {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo "   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-default-jms-plugin.zip conf/domibus/plugins/config/weblogic/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/config"
+   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-default-jms-plugin.zip conf/domibus/plugins/config/weblogic/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/config
+
+   echo "   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-default-jms-plugin.zip conf/domibus/plugins/lib/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/lib"
+   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-default-jms-plugin.zip conf/domibus/plugins/lib/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/lib
+}
+
+function installPluginsWebLogic {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo "   Creating directory \${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/config"
+   [ -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/config ] || mkdir -p ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/config
+   echo "   Creating directory ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/lib"
+   [ -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/lib ] || mkdir -p ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/lib
+
+   installWSPluginWebLogic
+   #installJMSPluginWebLogic
+}
+
+function deployWarFileWebLogic {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo "Deploying  domibus-${DOMIBUS_PREFIX}-weblogic war file"
+   if [ ${DOMIBUS_VERSION:0:3} == "3.3" ] || [ ${DOMIBUS_VERSION} == "4.0-SNAPSHOT" ] ; then
+      echo "   Unzipping  domibus-${DOMIBUS_PREFIX}-weblogic-war.zip"
+      unzip -d ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/ ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-weblogic-war.zip
+      if [ ${DOMIBUS_VERSION} == "3.3" ] ; then
+         mv ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-MSH-weblogic-3.3.war \
+            ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-weblogic.war
+      fi
+      if [ ${DOMIBUS_VERSION} == "4.0-SNAPSHOT" ] ; then
+         echo "   Renaming domibus-MSH-weblogic-4.0-SNAPSHOT.war to: domibus-${DOMIBUS_PREFIX}-weblogic.war"
+         mv ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-MSH-weblogic-4.0-SNAPSHOT.war \
+            ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-weblogic.war
+      fi
+   else
+      echo ; echo "Deploying  domibus-${DOMIBUS_PREFIX}-weblogic.war"
+   fi
+   echo "   Deploying domibus-${DOMIBUS_PREFIX}-weblogic.war: "
+    java weblogic.Deployer -adminurl t3://${WebLogicAdminServerListenAddress}:${WebLogicAdminServerPort} -username ${WebLogicAdminUserName} -password ${WebLogicAdminUserPassword} \
+       -deploy -name domibus-${DOMIBUS_PREFIX}-weblogic.war -targets ${WebLogicManagedServer1Name} -source ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-weblogic.war
+}
+
+function setJVMParamsWebLogic {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   dummy="\
+export DOMAIN_HOME\n# Added for Domibus ******************************************************************************\n\
+EXTRA_JAVA_PROPERTIES=\"\$EXTRA_JAVA_PROPERTIES \-Ddomibus.config.location=\$DOMAIN_HOME\/conf\/domibus\"\n\
+export EXTRA_JAVA_PROPERTIES\n\
+#*************************************************************************************************"
+
+echo "Configuring ${cef_edelivery_path}/${WebLogicDomainName}/bin/setDomainEnv.sh"
+echo "Adding: $dummy"
+sed -i -e "/export DOMAIN_HOME/c $dummy"  ${cef_edelivery_path}/${WebLogicDomainName}/bin/setDomainEnv.sh
+}
+
+function installDomibusWebLogicSingle {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   createWLSDomain
+   setJMXAccess
+   setJVMParamsWebLogic
+   startWebLogic
+   configureWebLogicDomibusSingle
+   #stopWebLogic
+   #createWebLogicDatasourceOffline ${DatabaseType}
+   updateEntityManager
+   installKeystoreTruststore
+   installPluginsWebLogic
+   #setJVMParamsWebLogic
+   #restartWebLogicManagedServer
+   ##changeWebConsolePwd
+   configureDomibus
+   #startWebLogic
+   deployWarFileWebLogic
+   stopWebLogic
+}
+

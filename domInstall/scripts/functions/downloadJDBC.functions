@@ -1,0 +1,63 @@
+#!/bin/bash
+
+functionsFile="${BASH_SOURCE[0]}"
+echo "   - ${functionsFile}"
+
+function downloadJDBCMySQL {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "Downloading JDBC Drivers for Database: ${DatabaseType}"
+
+   jdbcFile="mysql-connector-java-${MySQLJDBCDriverVersion}"
+   jdbcDownloadURL="https://dev.mysql.com/get/Downloads/Connector-J/${jdbcFile}.tar.gz"
+
+   if [ ! -f "${DOWNLOAD_DIR}/jdbc/${jdbcFile}.tar.gz" ] ; then
+      echo "   - Downloading: ${jdbcFile}.tar.gz in $DOWNLOAD_DIR/jdbc"
+      cmd="wget -P $DOWNLOAD_DIR/jdbc ${jdbcDownloadURL} --no-check-certificate"
+      echo "   - ${cmd}"
+      eval ${cmd}
+   else
+         echo "   - MySQL JDBC Driver already Downloaded: ${jdbcFile}.tar.gz"
+   fi
+
+   echo "Uncompressing ${jdbcFile}"
+   cd ${DOWNLOAD_DIR}/jdbc
+   tar xvfz ${jdbcFile}.tar.gz -C ${DOWNLOAD_DIR}/jdbc \
+      -C ${DOWNLOAD_DIR}/jdbc \
+      --strip 1 \
+      ${jdbcFile}/${jdbcFile}-bin.jar
+}
+
+function downloadJDBCOracle {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo "  - Downloading JDBC for ${DatabaseType}"
+   jdbcDownload="
+   ojdbc6.jar
+   ojdbc7.jar
+   ojdbc8.jar
+   "
+
+   for jdbcFile in $jdbcDownload ; do
+      echo "Downloading: $domfile in $DOWNLOAD_DIR/jdbc"
+      echo "wget -P $DOWNLOAD_DIR/jdbc http://download.oracle.com/otn/utilities_drivers/jdbc/122010/${jdbcFile} --no-check-certificate"
+      wget -P $DOWNLOAD_DIR/jdbc http://download.oracle.com/otn/utilities_drivers/jdbc/122010/${jdbcFile} --no-check-certificate
+   done
+}
+
+function downloadJDBC {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   if [ ! "${ApplicationServer}" == "WebLogic" ]  ; then
+      echo ; echo "Downloading JDBC Connector(s)"
+      if [ "${DatabaseType}" == "MySQL" ] ; then
+         downloadJDBCMySQL
+      fi
+      if [ "${DatabaseType}" == "Oracle" ] ; then
+         downloadJDBCOracle
+      fi
+   else
+      echo; echo "Application Server is ${ApplicationServer}: Skipping JDBC Driver Downloads..."
+   fi
+}
+

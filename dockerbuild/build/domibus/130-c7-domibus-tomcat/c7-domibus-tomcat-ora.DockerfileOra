@@ -1,0 +1,29 @@
+
+FROM c7-domibus-tomcat:3.3
+
+ARG WORKING_DIR
+
+ARG JAVA_VERSION
+
+ARG PARTY_ID
+ARG DB_TYPE
+ARG DB_HOST
+ARG DB_PORT
+ARG DB_NAME
+ARG DB_USER
+ARG DB_PASS
+
+# Copying the Domibus installation Script
+COPY ${WORKING_DIR}/temp/domInstall/downloads/jdbc/ /data/domibus/domibus/lib
+
+# Changing File ownership to 'domibus' user
+RUN chown -R domibus:domibus /data
+
+# Exposing Domibus
+EXPOSE 8080
+
+# Exposing WildFly Administration Console
+EXPOSE 9090
+
+ENTRYPOINT /data/domibus/domibus/entrypoint.sh
+

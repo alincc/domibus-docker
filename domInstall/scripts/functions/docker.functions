@@ -1,0 +1,10 @@
+#!/bin/bash
+
+docker-ip() {
+  container="$1"
+  
+  containerIP="`docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "${container}"`"
+
+  echo ${containerIP}
+}
+

@@ -1,0 +1,621 @@
+#!/bin/bash
+
+functionsFile="${BASH_SOURCE[0]}"
+echo "   - ${functionsFile}"
+
+function installWildFlyDomibusFullDist {
+   displayFunctionBanner ${FUNCNAME[0]}
+   echo
+   echo " Installing domibus-$DOMIBUS_PREFIX-wildfly-full: unzip -q \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-wildfly-full -d ${cef_edelivery_path}"
+   echo ; echo "unzip -q \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-wildfly-full -d ${cef_edelivery_path}"
+   unzip -q $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-wildfly-full -d ${cef_edelivery_path}
+   echo "   Set \$DOMIBUS_DIR/Domibus/bin/jboss-cli.sh as executable"
+   chmod +x ${cef_edelivery_path}/domibus/bin/jboss-cli.sh
+}
+
+function installWildfly902 {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo
+   echo ; echo "Installing WildFly, Unziping \$DOWNLOAD_DIR/software/wildfly-9.0.2.Final.tar.gz to \${cef_edelivery_path}/domibus"
+   mkdir ${cef_edelivery_path}/domibus
+   tar xvfz $DOWNLOAD_DIR/software/wildfly-9.0.2.Final.tar.gz -C ${cef_edelivery_path}/domibus
+   mv ${cef_edelivery_path}/domibus/wildfly-9.0.2.Final/* ${cef_edelivery_path}/domibus
+   rm -rf ${cef_edelivery_path}/domibus/wildfly-9.0.2.Final
+}
+
+function installDomibusWildFlyConfiguration {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "unzip -q \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-wildfly-configuration.zip -d ${cef_edelivery_path}/domibus/conf/domibus"
+   unzip $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-wildfly-configuration.zip -d ${cef_edelivery_path}/domibus/conf/domibus
+}
+
+function deployWildFlyJDBCAsModuleMySQL {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "Deploy $DatabaseType JDBC Driver as Module"
+
+   cat << EOF | ${cef_edelivery_path}/domibus/bin/jboss-cli.sh
+
+embed-server --server-config=${WildFlyServerConfig}.xml
+
+module add --name=com.mysql --resources=${DOWNLOAD_DIR}/jdbc/mysql-connector-java-5.1.40-bin.jar --dependencies=javax.api,javax.transaction.api
+
+exit
+EOF
+}
+
+function deployWildFlyJDBCAsModuleOracle {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "Deploy $DatabaseType JDBC Driver as Module using JBOSS Client in \$i{cef_edelivery_path}/domibus/bin/jboss-cli.sh"
+   ${cef_edelivery_path}/domibus/bin/jboss-cli.sh <<EOF
+
+embed-server --server-config=${WildFlyServerConfig}.xml
+
+module add --name=com.oracle --resources=${DOWNLOAD_DIR}/jdbc/ojdbc7.jar --dependencies=javax.api,javax.transaction.api
+
+exit
+EOF
+}
+
+function deployWildFlyJDBCAsModuleSQLServer {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "Deploy $DatabaseType JDBC Driver as Module using JBOSS Client in \$i{cef_edelivery_path}/domibus/bin/jboss-cli.sh"
+   ${cef_edelivery_path}/domibus/bin/jboss-cli.sh <<EOF
+
+embed-server --server-config=${WildFlyServerConfig}.xml
+
+module add --name=com.microsoft --resources=${DOWNLOAD_DIR}/jdbc/sqljdbc41.jar --dependencies=javax.api,javax.transaction.api,javax.xml.bind.api
+
+exit
+EOF
+}
+
+function configureWildFlyDriverMySQL {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "Adding $DatabaseType JDBC Driver"
+   ${cef_edelivery_path}/domibus/bin/jboss-cli.sh <<EOF
+
+embed-server --server-config=${WildFlyServerConfig}.xml
+
+/subsystem=datasources/jdbc-driver=mysql:add(driver-name="com.mysql", \
+driver-module-name="com.mysql",\
+driver-xa-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource)
+
+exit
+EOF
+}
+
+function configureWildFlyDriverOracle {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "Adding $DatabaseType JDBC Driver"
+   ${cef_edelivery_path}/domibus/bin/jboss-cli.sh <<EOF
+
+embed-server --server-config=${WildFlyServerConfig}.xml
+
+/subsystem=datasources/jdbc-driver=oracle:add(driver-name="com.oracle", \
+driver-module-name="com.oracle", \
+driver-xa-datasource-class-name=oracle.jdbc.xa.client.OracleXADataSource)
+
+exit
+EOF
+}
+
+function configureWildFlyDriverSQLServer {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "Adding $DatabaseType JDBC Driver"
+   ${cef_edelivery_path}/domibus/bin/jboss-cli.sh <<EOF
+
+embed-server --server-config=${WildFlyServerConfig}.xml
+
+/subsystem=datasources/jdbc-driver=sqlserver:add(driver-name="com.microsoft.sqlserver", \
+driver-module-name="com.microsoft.sqlserver", \
+driver-xa-datasource-class-name=com.microsoft.sqlserver.jdbc.SQLServerXADataSource)
+exit
+EOF
+}
+
+function createWildFlyXADatasourceMySQL {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "Adding XA Datasource in \$DOMIBUS_DIR/domibus/standalone/configuration/${WildFlyServerConfig}.xml"
+   ${cef_edelivery_path}/domibus/bin/jboss-cli.sh <<EOF
+
+embed-server --server-config=${WildFlyServerConfig}.xml
+
+xa-data-source add \
+--name=eDeliveryMysqlXADS \
+--driver-name=mysql \
+--jndi-name=java:/jdbc/cipaeDeliveryDs \
+--user-name=${MySQLDatabaseUserId} \
+--password=${MySQLDatabaseUserPassword} \
+--use-ccm=true \
+--valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker \
+--exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter \
+--background-validation=true
+
+/subsystem=datasources/xa-data-source=eDeliveryMysqlXADS/xa-datasource-properties=ServerName:add(value=${MySQLDatabaseHost})
+/subsystem=datasources/xa-data-source=eDeliveryMysqlXADS/xa-datasource-properties=PortNumber:add(value=${MySQLDatabasePort})
+/subsystem=datasources/xa-data-source=eDeliveryMysqlXADS/xa-datasource-properties=DatabaseName:add(value=${MySQLDatabaseName})
+
+xa-data-source enable --name=eDeliveryMysqlXADS
+
+exit
+EOF
+}
+
+function createWildFlyNonXADatasourceMySQL {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "Adding NON-XA Datasource in \$DOMIBUS_DIR/domibus/standalone/configuration/${WildFlyServerConfig}.xml"
+   ${cef_edelivery_path}/domibus/bin/jboss-cli.sh <<EOF
+
+embed-server --server-config=${WildFlyServerConfig}.xml
+
+data-source add \
+--name=eDeliveryMysqlNonXADS \
+--driver-name=mysql \
+--jndi-name=java:/jdbc/cipaeDeliveryNonXADs \
+--user-name=${MySQLDatabaseUserId} \
+--password=${MySQLDatabaseUserPassword} \
+--connection-url=jdbc:mysql://${MySQLDatabaseHost}:${MySQLDatabasePort}/${MySQLDatabaseName} \
+--use-ccm=true \
+--valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker \
+--exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter \
+--background-validation=true
+
+data-source enable --name=eDeliveryMysqlNonXADS
+
+exit
+EOF
+}
+
+
+function createWildFlyXADatasourceOracle {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "Adding Datasource in \${cef_edelivery_path}/domibus/standalone/configuration/${WildFlyServerConfig}.xml"
+   ${cef_edelivery_path}/domibus/bin/jboss-cli.sh <<EOF
+
+embed-server --server-config=${WildFlyServerConfig}.xml
+
+xa-data-source add \
+--name=eDeliveryOracleXADS \
+--driver-name=oracle \
+--jndi-name=java:/jdbc/cipaeDeliveryDs \
+--user-name=${OracleDatabaseUserId} \
+--password=${OracleDatabaseUserPassword} \
+--use-ccm=true \
+--valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker \
+--exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter \
+--stale-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.oracle.OracleStaleConnectionChecker \
+--background-validation=true
+
+/subsystem=datasources/xa-data-source=eDeliveryOracleXADS/xa-datasource-properties=URL:add(value=jdbc:oracle:thin:@${OracleDatabaseHost}:${OracleDatabasePort}:${OracleDatabaseSID})
+
+xa-data-source enable --name=eDeliveryOracleXADS
+
+exit
+EOF
+}
+
+function createWildFlyNonXADatasourceOracle {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "Adding NON-XA Datasource in \$DOMIBUS_DIR/domibus/standalone/configuration/${WildFlyServerConfig}.xml"
+   ${cef_edelivery_path}/domibus/bin/jboss-cli.sh <<EOF
+
+embed-server --server-config=${WildFlyServerConfig}.xml
+
+data-source add \
+--name=eDeliveryOracleNonXADS \
+--driver-name=oracle \
+--jndi-name=java:/jdbc/cipaeDeliveryNonXADs \
+--user-name=${OracleDatabaseUserId} \
+--password=${OracleDatabaseUserPassword} \
+--connection-url=jdbc:oracle:thin:@${OracleDatabaseHost}:${OracleDatabasePort}/${OracleDatabaseSID} \
+--use-ccm=true \
+--valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker \
+--exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter \
+--background-validation=true
+
+data-source enable --name=eDeliveryOracleNonXADS
+
+exit
+EOF
+}
+
+function createWildFlyXADatasourceSQLServer {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "Adding Datasource in \${cef_edelivery_path}/domibus/standalone/configuration/${WildFlyServerConfig}.xml"
+   ${cef_edelivery_path}/domibus/bin/jboss-cli.sh <<EOF
+
+embed-server --server-config=${WildFlyServerConfig}.xml
+
+xa-data-source add \
+--name=eDeliverySQLServerXADS \
+--driver-name=sqlserver \
+--jndi-name=java:/jdbc/cipaeDeliveryDs \
+--user-name=${SQLServerDatabaseUserId} \
+--password=${SQLServerDatabaseUserPassword} \
+--use-ccm=true \
+--valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mssql.MSSQLValidConnectionChecker \
+--exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mssql.MSSQLExceptionSorter \
+--background-validation=true
+
+/subsystem=datasources/xa-data-source=eDeliverySQLServerXADS/xa-datasource-properties=ServerName:add(value=${SQLServerDatabaseHost})
+/subsystem=datasources/xa-data-source=eDeliverySQLServerXADS/xa-datasource-properties=DatabaseName:add(value=${SQLServerDatabaseName})
+
+xa-data-source enable --name=eDeliverySQLServerXADS
+
+exit
+EOF
+}
+
+function configureWildFlyDomibusDatasourceMySQL {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo "  Nothing to do for MySQL (Alreday Pre-Configured)"
+}
+
+function configureWildFlyDomibusDatasourceOracle {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo 'Adapting $DOMIBUS_DIR/domibus/conf/domibus/domibus-datasources.xml for Oracle Database'
+
+   echo ; echo 'Adapting $DOMIBUS_DIR/domibus/conf/domibus/domibus-datasources.xml for MS SQL Server'
+   initialString="property name=\"showSql\" value=\"false\""
+   replacedString="property name=\"showSql\" value=\"false\""
+   echo "   Replacing : ${initialString}"
+   echo "   By        : ${replacedString}"
+   sed -i -e "s#${initialString}#${replacedString}#" ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml
+
+   initialString="property name=\"generateDdl\" value=\"false\""
+   replacedString="property name=\"generateDdl\" value=\"false\""
+   echo "   Replacing : ${initialString}"
+   echo "   By        : ${replacedString}"
+   sed -i -e "s#${initialString}#${replacedString}#" ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml
+
+   initialString="property name=\"databasePlatform\" value=\"org.hibernate.dialect.MySQL5InnoDBDialect\""
+   replacedString="property name=\"databasePlatform\" value=\"org.hibernate.dialect.Oracle10gDialect\""
+   echo "   Replacing : ${initialString}"
+   echo "   By        : ${replacedString}"
+   sed -i -e "s#${initialString}#${replacedString}#" ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml
+
+   initialString="prop key=\"hibernate.connection.driver_class\">com.mysql.jdbc.jdbc2.optional.MysqlXADataSource"
+   replacedString="prop key=\"hibernate.connection.driver_class\">oracle.jdbc.driver.OracleDriver"
+   echo "   Replacing : ${initialString}"
+   echo "   By        : ${replacedString}"
+   sed -i -e "s#${initialString}#${replacedString}#" ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml
+
+   initialString="<prop key=\"hibernate.dialect\">org.hibernate.dialect.MySQL5InnoDBDialect"
+   replacedString="<prop key=\"hibernate.dialect\">org.hibernate.dialect.Oracle10gDialect"
+   echo "   Replacing : ${initialString}"
+   echo "   By        : ${replacedString}"
+   sed -i -e "s#${initialString}#${replacedString}#" ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml
+}
+
+function configureWildFlyDomibusDatasourceSQLServer {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo 'Adapting $DOMIBUS_DIR/domibus/conf/domibus/domibus-datasources.xml for MS SQL Server'
+   initialString="property name=\"showSql\" value=\"false\""
+   replacedString="property name=\"showSql\" value=\"false\""
+   echo "   Replacing : ${initialString}"
+   echo "   By        : ${replacedString}"
+   sed -i -e "s#${initialString}#${replacedString}#" ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml
+
+   initialString="property name=\"generateDdl\" value=\"false\""
+   replacedString="property name=\"generateDdl\" value=\"false\""
+   echo "   Replacing : ${initialString}"
+   echo "   By        : ${replacedString}"
+   sed -i -e "s#${initialString}#${replacedString}#" ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml
+
+   initialString="property name=\"databasePlatform\" value=\"org.hibernate.dialect.MySQL5InnoDBDialect\""
+   replacedString="property name=\"databasePlatform\" value=\"org.hibernate.dialect.SQLServerDialect\""
+   echo "   Replacing : ${initialString}"
+   echo "   By        : ${replacedString}"
+   sed -i -e "s#${initialString}#${replacedString}#" ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml
+
+   initialString="prop key=\"hibernate.connection.driver_class\">com.mysql.jdbc.jdbc2.optional.MysqlXADataSource"
+   replacedString="prop key=\"hibernate.connection.driver_class\">com.microsoft.sqlserver.jdbc.SQLServerXADataSource"
+   echo "   Replacing : ${initialString}"
+   echo "   By        : ${replacedString}"
+   sed -i -e "s#${initialString}#${replacedString}#" ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml
+
+   initialString="<prop key=\"hibernate.dialect\">org.hibernate.dialect.MySQL5InnoDBDialect"
+   replacedString="<prop key=\"hibernate.dialect\">org.hibernate.dialect.SQLServerDialect"
+   echo "   Replacing : ${initialString}"
+   echo "   By        : ${replacedString}"
+   sed -i -e "s#${initialString}#${replacedString}#" ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml
+}
+
+function createWildFlyDatasourceALL {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo "Creating Datasource for $DatabaseType"
+   if [ "$DatabaseType" == "MySQL" ] ; then
+      deployWildFlyJDBCAsModuleMySQL
+      configureWildFlyDriverMySQL
+      if [ ${DOMIBUS_VERSION:0:3} == "3.3" ] || [ ${DOMIBUS_VERSION} == "4.0-SNAPSHOT" ] ; then
+         createWildFlyNonXADatasourceMySQL
+      fi
+      createWildFlyXADatasourceMySQL
+      #configureWildFlyDomibusDatasourceMySQL
+   fi
+   if [ "$DatabaseType" == "Oracle" ] ; then
+      deployWildFlyJDBCAsModuleOracle
+      configureWildFlyDriverOracle
+      if [ ${DOMIBUS_VERSION:0:3} == "3.3" ] || [ ${DOMIBUS_VERSION} == "4.0-SNAPSHOT" ] ; then
+         createWildFlyNonXADatasourceOracle
+      fi
+      createWildFlyXADatasourceOracle
+      #configureWildFlyDomibusDatasourceOracle
+   fi
+   if [ "$DatabaseType" == "SQLServer" ] ; then
+      deployWildFlyJDBCAsModuleSQLServer
+      configureWildFlyDriverSQLServer
+      createWildFlyDatasourceSQLServer
+      configureWildFlyDomibusDatasourceSQLServer
+   fi
+}
+
+function configureDomibusHibernateProperties {
+   if [ "$DatabaseType" == "MySQL" ] ; then
+      echo ; echo 'Adapting $DOMIBUS_DIR/domibus/conf/domibus/domibus.proerties for MySQL Database Server'
+      echo "  Nothing to do for MySQL (Alreday Pre-Configured)"
+   fi
+   if [ "$DatabaseType" == "Oracle" ] ; then
+      echo ; echo 'Adapting $DOMIBUS_DIR/domibus/conf/domibus/domibus.proerties for Oracle Database Server'
+
+      initialString="domibus.entityManagerFactory.jpaProperty.hibernate.connection.driver_class=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource"
+      replacedString="#domibus.entityManagerFactory.jpaProperty.hibernate.connection.driver_class=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource"
+      echo "   Replacing : ${initialString}"
+      echo "   By        : ${replacedString}"
+      echo "   In file   : ${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
+      sed -i -e "s/${initialString}/${replacedString}/" ${cef_edelivery_path}/domibus/conf/domibus/domibus.properties
+
+      initialString="domibus.entityManagerFactory.jpaProperty.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect"
+      replacedString="#domibus.entityManagerFactory.jpaProperty.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect"
+      echo "   Replacing : ${initialString}"
+      echo "   By        : ${replacedString}"
+      echo "   In file   : ${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
+      sed -i -e "s/${initialString}/${replacedString}/" ${cef_edelivery_path}/domibus/conf/domibus/domibus.properties
+
+      initialString="#domibus.entityManagerFactory.jpaProperty.hibernate.connection.driver_class=oracle.jdbc.xa.client.OracleXADataSource"
+      replacedString="domibus.entityManagerFactory.jpaProperty.hibernate.connection.driver_class=oracle.jdbc.xa.client.OracleXADataSource"
+      echo "   Replacing : ${initialString}"
+      echo "   By        : ${replacedString}"
+      echo "   In file   : ${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
+      sed -i -e "s/${initialString}/${replacedString}/" ${cef_edelivery_path}/domibus/conf/domibus/domibus.properties
+
+      initialString="#domibus.entityManagerFactory.jpaProperty.hibernate.dialect=org.hibernate.dialect.Oracle10gDialect"
+      replacedString="domibus.entityManagerFactory.jpaProperty.hibernate.dialect=org.hibernate.dialect.Oracle10gDialect"
+      echo "   Replacing : ${initialString}"
+      echo "   By        : ${replacedString}"
+      echo "   In file   : ${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
+      sed -i -e "s/${initialString}/${replacedString}/" ${cef_edelivery_path}/domibus/conf/domibus/domibus.properties
+   fi
+}
+
+function ConfigureWildFlyInterfaces {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo $'\nSetting-up Interfaces'
+   #sed 's/127.0.0.1/domibus01.edelivery.local/g' $DOMIBUS_DIR/domibus/standalone/configuration/${WildFlyServerConfig}.xml > $TEMP_DIR/${WildFlyServerConfig}.xml
+   #mv $TEMP_DIR/${WildFlyServerConfig}.xml $DOMIBUS_DIR/domibus/standalone/configuration/${WildFlyServerConfig}.xml
+   ${cef_edelivery_path}/domibus/bin/jboss-cli.sh <<EOF
+
+embed-server --server-config=${WildFlyServerConfig}.xml
+
+/interface=public/:write-attribute(name=inet-address,value=${WildFlyNetPublicInterface})
+/socket-binding-group=standard-sockets/socket-binding=http:write-attribute(name=port, value=${WildFlyNetPublicPort})
+/interface=management/:write-attribute(name=inet-address,value=${WildFlyNetManagementInterface})
+/socket-binding-group=standard-sockets/socket-binding=management-http:write-attribute(name=port, value=${WildFlyNetManagementPort})
+/interface=unsecure/:write-attribute(name=inet-address,value=${WildFlyNetUnsecureInterface})
+
+exit
+EOF
+}
+
+function CreateWildFlyAdmUser {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "Creating a Wilfly administrative account: /DOMIBUS_DIR/bin/add-user $WildFlyAdminUser ********"
+   ${cef_edelivery_path}/domibus/bin/add-user.sh $WildFlyAdminUser $WildFlyAdminPwd
+}
+
+function configureWildFlyStandaloneConf {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "Setting JAVA_OPTS in file: \${cef_edelivery_path}/domibus/bin/standalone.conf"
+   echo 'JAVA_OPTS="-Xms1024m -Xmx1024m -XX:MaxPermSize=1024m -Djava.net.preferIPv4Stack=true -Ddomibus.config.location=$JBOSS_HOME/conf/domibus"' >> ${cef_edelivery_path}/domibus/bin/standalone.conf
+   echo 'JAVA_OPTS="$JAVA_OPTS -Djboss.modules.system.pkgs=$JBOSS_MODULES_SYSTEM_PKGS -Djava.awt.headless=true"' >> ${cef_edelivery_path}/domibus/bin/standalone.conf
+}
+
+function enableHornetqJMXManagement {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   #TBD: Only for Domibus 3.3
+   echo ; echo "Enabling Hornetq JMX Management in \${cef_edelivery_path}/domibus/standalone/configuration/${WildFlyServerConfig}.xml file:i"
+
+   ${cef_edelivery_path}/domibus/bin/jboss-cli.sh <<EOF
+
+embed-server --server-config=standalone-full.xml
+
+/subsystem=messaging/hornetq-server=default:undefine-attribute(name=jmx-management-enabled)
+/subsystem=messaging/hornetq-server=default:write-attribute(name=jmx-management-enabled, value="true")
+
+exit
+EOF
+}
+
+function createWildFlyJMSQueues {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "Creating JMS Queues in \${cef_edelivery_path}/domibus/standalone/configuration/${WildFlyServerConfig}.xml file: \${cef_edelivery_path}/domibus/bin/jboss-cli.sh --file=\$REPO_DIR/scripts/configureJMSQueues.cli"
+   #${cef_edelivery_path}/domibus/bin/jboss-cli.sh --file=$REPO_DIR/scripts/configureJMSQueues.cli
+   ${cef_edelivery_path}/domibus/bin/jboss-cli.sh <<EOF
+
+embed-server --server-config=standalone-full.xml
+
+/subsystem=messaging/hornetq-server=default/jms-queue=DomibusBusinessMessageOutQueue:add(durable=true,entries=["java:/jms/domibus.backend.jms.outQueue","java:/jms/queue/DomibusBusinessMessageOutQueue"])
+/subsystem=messaging/hornetq-server=default/jms-queue=DomibusNotifyBackendJmsQueue:add(durable=true,entries=["java:/jms/domibus.notification.jms","java:/jms/queue/DomibusNotifyBackendJmsQueue"])
+/subsystem=messaging/hornetq-server=default/jms-queue=DomibusErrorNotifyConsumerQueue:add(durable=true,entries=[java:/jms/domibus.backend.jms.errorNotifyConsumer,java:/jms/queue/DomibusErrorNotifyConsumerQueue])
+/subsystem=messaging/hornetq-server=default/jms-queue=DomibusErrorNotifyProducerQueue:add(durable=true,entries=[java:/jms/domibus.backend.jms.errorNotifyProducer,java:/jms/queue/DomibusErrorNotifyProducerQueue])
+/subsystem=messaging/hornetq-server=default/jms-queue=DomibusBusinessMessageInQueue:add(durable=true,entries=[java:/jms/domibus.backend.jms.inQueue,java:/jms/queue/DomibusBusinessMessageInQueue])
+/subsystem=messaging/hornetq-server=default/jms-queue=DomibusPluginToBackendQueue:add(durable=true,entries=[java:/jms/domibus.backend.jms.replyQueue,java:/jms/queue/DomibusPluginToBackendQueue])
+/subsystem=messaging/hornetq-server=default/jms-queue=DomibusSendMessageQueue:add(durable=true,entries=[java:/jms/domibus.internal.dispatch.queue,java:/jms/queue/DomibusSendMessageQueue])
+/subsystem=messaging/hornetq-server=default/jms-queue=DomibusPullMessageQueue:add(durable=true,entries=[java:/jms/domibus.internal.pull.queue,java:/jms/queue/DomibusPullMessageQueue])
+/subsystem=messaging/hornetq-server=default/jms-queue=DomibusNotifyBackendWebServiceQueue:add(durable=true,entries=[java:/jms/domibus.notification.webservice,java:/jms/queue/DomibusNotifyBackendWebServiceQueue])
+/subsystem=messaging/hornetq-server=default/jms-queue=DomibusUnknownReceiverQueue:add(durable=true,entries=[java:/jms/domibus.internal.notification.unknown,java:/jms/queue/DomibusUnknownReceiverQueue])
+/subsystem=messaging/hornetq-server=default/jms-queue=DomibusNotifyBackendQueue:add(durable=true,entries=[java:/jms/domibus.internal.notification.queue,java:/jms/queue/DomibusNotifyBackendQueue])
+/subsystem=messaging/hornetq-server=default/jms-queue=DomibusDLQ:add(durable=true,entries=[java:/jms/domibus.DLQ,java:/jms/queue/DomibusDLQ])
+
+#jms-queue add --queue-address=jms-queue=DomibusDLQ --entries=[java:/jms/domibus.DLQ,java:/jms/queue/DomibusDLQ] --durable=true
+
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.DomibusSendMessageQueue/:add(dead-letter-address=jms.queue.DomibusDLQ,expiry-address=jms.queue.ExpiryQueue,redelivery-delay=1000,max-delivery-attempts=1)
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.DomibusPullMessageQueue/:add(dead-letter-address=jms.queue.DomibusDLQ,expiry-address=jms.queue.ExpiryQueue,redelivery-delay=5000,max-delivery-attempts=1)
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.DomibusBusinessMessageOutQueue/:add(dead-letter-address=jms.queue.DomibusDLQ,expiry-address=jms.queue.ExpiryQueue,redelivery-delay=300000,max-delivery-attempts=10)
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.DomibusNotifyBackendJmsQueue/:add(dead-letter-address=jms.queue.DomibusDLQ,expiry-address=jms.queue.ExpiryQueue,redelivery-delay=300000,max-delivery-attempts=10)
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.DomibusErrorNotifyConsumerQueue/:add(dead-letter-address=jms.queue.DomibusDLQ,expiry-address=jms.queue.ExpiryQueue,redelivery-delay=300000,max-delivery-attempts=10)
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.DomibusErrorNotifyProducerQueue/:add(dead-letter-address=jms.queue.DomibusDLQ,expiry-address=jms.queue.ExpiryQueue,redelivery-delay=300000,max-delivery-attempts=10)
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.DomibusBusinessMessageInQueue/:add(dead-letter-address=jms.queue.DomibusDLQ,expiry-address=jms.queue.ExpiryQueue,redelivery-delay=300000,max-delivery-attempts=10)
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.DomibusPluginToBackendQueue/:add(dead-letter-address=jms.queue.DomibusDLQ,expiry-address=jms.queue.ExpiryQueue,redelivery-delay=300000,max-delivery-attempts=10)
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.DomibusNotifyBackendWebServiceQueue/:add(dead-letter-address=jms.queue.DomibusDLQ,expiry-address=jms.queue.ExpiryQueue,redelivery-delay=300000,max-delivery-attempts=10)
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.DomibusUnknownReceiverQueue/:add(dead-letter-address=jms.queue.DomibusDLQ,expiry-address=jms.queue.ExpiryQueue,redelivery-delay=300000,max-delivery-attempts=10)
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.DomibusNotifyBackendQueue/:add(dead-letter-address=jms.queue.DomibusDLQ,expiry-address=jms.queue.ExpiryQueue,redelivery-delay=300000,max-delivery-attempts=10)
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.DomibusClusterCommandTopic/:add(dead-letter-address=jms.queue.DomibusDLQ,expiry-address=jms.queue.ExpiryQueue,redelivery-delay=10000,max-delivery-attempts=3)
+
+jms-topic add --topic-address=DomibusClusterCommandTopic --entries=[java:/jms/domibus.internal.command,java:/jms/topic/DomibusClusterCommandTopic]
+
+/subsystem=messaging/hornetq-server=default/connection-factory=edeliveryConnectionFactory:add(connector={"in-vm"=>undefined},entries=["java:/jms/ConnectionFactory"], compress-large-messages=false, failover-on-initial-connection=false, use-global-pools=true)
+
+exit
+EOF
+}
+
+function createDomibusExecutorService {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "Creating Domibus Executor Service \${cef_edelivery_path}/domibus/standalone/configuration/${WildFlyServerConfig}.xml"
+   #${cef_edelivery_path}/domibus/bin/jboss-cli.sh --file=$REPO_DIR/scripts/configureJMSQueues.cli
+   ${cef_edelivery_path}/domibus/bin/jboss-cli.sh <<EOF
+
+embed-server --server-config=standalone-full.xml
+
+/subsystem=ee/managed-executor-service=DomibusExecutorService:add(jndi-name="java:jboss/ee/concurrency/executor/DomibusExecutorService", context-service="default", hung-task-threshold="60000", core-threads="5", max-threads="25", keepalive-time="5000")
+
+exit
+EOF
+}
+
+function createQuartzExecutorService {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo ; echo "Creating JMS Queues in \${cef_edelivery_path}/domibus/standalone/configuration/${WildFlyServerConfig}.xml"
+   #${cef_edelivery_path}/domibus/bin/jboss-cli.sh --file=$REPO_DIR/scripts/configureJMSQueues.cli
+   ${cef_edelivery_path}/domibus/bin/jboss-cli.sh <<EOF
+
+embed-server --server-config=standalone-full.xml
+
+/subsystem=ee/managed-executor-service=quartzExecutorService:add(jndi-name="java:jboss/ee/concurrency/executor/QuartzExecutorService", context-service="default", hung-task-threshold="0", long-running-tasks="true", core-threads="5", max-threads="25", keepalive-time="5000")
+
+exit
+EOF
+}
+function  createExecutorServices {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   if  [ ${DOMIBUS_VERSION:0:3} == "3.3" ] || [ ${DOMIBUS_VERSION} == "4.0-SNAPSHOT" ] ; then
+      createDomibusExecutorService
+      createQuartzExecutorService
+   fi
+}
+
+function deployDomibusWarFileWildFly {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo "Deploying  domibus-${DOMIBUS_PREFIX}-wildfly war file"
+   if [ ${DOMIBUS_VERSION:0:3} == "3.3" ] || [ ${DOMIBUS_VERSION} == "4.0-SNAPSHOT" ] ; then
+      echo "   Unzipping  domibus-${DOMIBUS_PREFIX}-wildfly-war.zip"
+      unzip -d ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/ ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-wildfly-war.zip
+      if [ ${DOMIBUS_VERSION} == "3.3" ] ; then
+         mv ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-MSH-wildfly-3.3.war \
+            ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-wildfly.war
+      fi
+      if [ ${DOMIBUS_VERSION} == "4.0-SNAPSHOT" ] ; then
+         echo "   Renaming domibus-MSH-wildfly-4.0-SNAPSHOT.war to domibus-MSH-wildfly-4.0-SNAPSHOT.war"
+         mv ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-MSH-wildfly-4.0-SNAPSHOT.war \
+	    ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-wildfly.war
+      fi     
+   else
+      echo ; echo "Deploying  domibus-${DOMIBUS_PREFIX}-wildfly.war"
+   fi
+   echo "   Deploying domibus-${DOMIBUS_PREFIX}-wildfly.war: ${cef_edelivery_path}/domibus}/bin/jboss-cli.sh <<EOF"
+   ${cef_edelivery_path}/domibus/bin/jboss-cli.sh <<EOF
+
+embed-server --server-config=${WildFlyServerConfig}.xml
+
+deploy --force ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-wildfly.war
+
+exit
+EOF
+}
+
+function installDomibusWildFlyFull {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   checkMD5Signatures
+   installWildFlyDomibusFullDist
+   #CreateWildFlyAdmUser
+   ConfigureWildFlyInterfaces
+   configureWildFlyStandaloneConf
+   createWildFlyDatasourceALL
+   configureDomibusHibernateProperties
+   installKeystoreTruststore
+   installPolicies
+   installPlugins wildfly
+   #startDomibus
+   configureDomibus
+}
+
+function installDomibusWildFlySingle {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   downloadWildFly
+   checkMD5Signatures
+   installWildfly902
+   createDomibusConfDir
+   installDomibusWildFlyConfiguration
+   extractStandAloneFromFull
+   CreateWildFlyAdmUser
+   ConfigureWildFlyInterfaces
+   configureWildFlyStandaloneConf
+   createWildFlyDatasourceALL
+   configureDomibusHibernateProperties
+   enableHornetqJMXManagement
+   createWildFlyJMSQueues
+   createExecutorServices
+   installKeystoreTruststore
+   installPolicies
+   installPlugins wildfly
+   #compareXML
+   configureDomibus
+   deployDomibusWarFileWildFly
+   #startDomibus
+}
+
+function installDomibusWildFlyCluster {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   ABORT_JOB "NOT IMPLEMENTED YET... Please be patient and wait a bit for the good news ;-) "
+}
+
