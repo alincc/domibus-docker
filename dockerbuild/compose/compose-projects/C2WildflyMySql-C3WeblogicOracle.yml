@@ -38,6 +38,7 @@ services:
     container_name: domibus_red
     image: c7-domibus-weblogic
     environment:
+      - pmodeFile2Upload=/data/domInstall/domibus-gw-sample-pmode-red.xml
       - PARTY_ID=red
       - DB_TYPE=Oracle
       - DB_HOST=oraclered
