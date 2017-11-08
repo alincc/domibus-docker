@@ -1,4 +1,3 @@
-#C2TomcatMySql-C3TomcatMySqlConfigRed.yml
 version: '2'
 services:
   mysqlblue:

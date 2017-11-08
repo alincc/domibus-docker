@@ -1,4 +1,3 @@
-#C2WeblogicMySql-C3WeblogicMySql.yml
 version: '2'
 services:
   mysqlblue:

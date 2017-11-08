@@ -275,7 +275,7 @@ docker rm -f -v $(docker ps -a -q)
 
 #docker-compose -f ${WORKING_DIR}/docker/dockerbuild/compose/compose-projects/C2TomcatMySqlConfig1-C3TomcatMySqlConfig2.yml up
 #docker-compose -f ${WORKING_DIR}/docker/dockerbuild/compose/compose-projects/C2TomcatOracleConfig1-C3TomcatOracleConfig2.yml up
-#docker-compose -f ${WORKING_DIR}/docker/dockerbuild/compose/compose-projects/C2TomcatMySql-C3WeblogicOracle.yml up
+#docker-compose -f ${WORKING_DIR}/docker/dockerbuild/compose/compose-projects/C2WildflyMySql-C3WeblogicOracle.yml up
 
 exit
 
