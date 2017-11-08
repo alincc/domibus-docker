@@ -26,7 +26,7 @@ services:
       - "23306:3306"
   domibusblue:
     container_name: domibus_blue
-    image: c7-domibus-Wildfly
+    image: c7-domibus-wildfly
     environment:
       - DB_TYPE=MySQL
       - DB_HOST=mysql_blue
