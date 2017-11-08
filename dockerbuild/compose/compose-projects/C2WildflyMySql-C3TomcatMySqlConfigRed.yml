@@ -40,6 +40,7 @@ services:
     image: c7-domibus-tomcat:${DOMIBUS_VERSION}
     environment:
       - pmodeFile2Upload=/data/domInstall/domibus-gw-sample-pmode-red.xml
+      - DB_TYPE=MySQL
       - DB_HOST=mysql_red
       - DB_PORT=3306
     volumes:
