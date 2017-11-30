@@ -291,31 +291,31 @@ function initInstallation {
    if [ ! -d ${DomibusInstallationDir} ]; then
       echo ; echo "Creating \${DomibusInstallationDir}: mkdir ${DomibusInstallationDir}"
       mkdir -p ${DomibusInstallationDir}
-
-      # Temporary Directory
-      export TEMP_DIR=${DomibusInstallationDir}/temp
-      echo "Creating Temporary Directory: \${TEMP_DIR}"
-      echo " - mkdir ${TEMP_DIR}"
-      mkdir $TEMP_DIR
-
-      # Download Directories
-      #20170812
-      #export DOWNLOAD_DIR=${TEMP_DIR}/downloads
-      export DOWNLOAD_DIR="${SCRIPTPATH}/downloads"
-      echo "Creating Temporary Download Directories: \${DOWNLOAD_DIR}"
-      echo " - mkdir -p ${DOWNLOAD_DIR}"
-      mkdir -p ${DOWNLOAD_DIR}
-      echo " - mkdir -p ${DOWNLOAD_DIR}/Domibus/${DomibusVersion}"
-      mkdir -p ${DOWNLOAD_DIR}/Domibus/${DomibusVersion}
    else
       echo
-      echo "The directory ${DomibusInstallationDir} EXISTS... ABORTING !!!"
-      echo
-      echo "Please remove content manually by executing the statement below and retry..."
-      echo "chmod -R 700 ${DomibusInstallationDir} ; rm -rf  ${DomibusInstallationDir}"
+      echo "The directory ${DomibusInstallationDir} EXISTS... "
+      #echo
+      #echo "Please remove content manually by executing the statement below and retry..."
+      #echo "chmod -R 700 ${DomibusInstallationDir} ; rm -rf  ${DomibusInstallationDir}"
       #chmod -R 700 /data/dhenech/domibus321_C ; rm -rf  /data/dhenech/domibus321_C
-      ABORT_JOB "The directory ${DomibusInstallationDir} EXISTS... ABORTING !!!"
+      #ABORT_JOB "The directory ${DomibusInstallationDir} EXISTS... ABORTING !!!"
    fi
+
+    # Temporary Directory
+  export TEMP_DIR=${DomibusInstallationDir}/temp
+  echo "Creating Temporary Directory: \${TEMP_DIR}"
+  echo " - mkdir ${TEMP_DIR}"
+  mkdir $TEMP_DIR
+
+  # Download Directories
+  #20170812
+  #export DOWNLOAD_DIR=${TEMP_DIR}/downloads
+  export DOWNLOAD_DIR="${SCRIPTPATH}/downloads"
+  echo "Creating Temporary Download Directories: \${DOWNLOAD_DIR}"
+  echo " - mkdir -p ${DOWNLOAD_DIR}"
+  mkdir -p ${DOWNLOAD_DIR}
+  echo " - mkdir -p ${DOWNLOAD_DIR}/Domibus/${DomibusVersion}"
+  mkdir -p ${DOWNLOAD_DIR}/Domibus/${DomibusVersion}
 
    DOMIBUS_VERSIONS=""
    for domibus_version in `ls -1 $DOWNLOAD_DIR/Domibus` ; do
