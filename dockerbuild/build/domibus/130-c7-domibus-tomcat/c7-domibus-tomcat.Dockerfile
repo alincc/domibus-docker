@@ -23,6 +23,8 @@ COPY ${WORKING_DIR}/temp/domInstall /data/domInstall
 #  - The Domibus property file: domibus.properties (Optional)
 COPY ${WORKING_DIR}/${DOMINSTALL_PROPERTYFILE} /data/domInstall/
 
+COPY ${WORKING_DIR}/temp/domInstall/downloads/jdbc/ /data/domibus/domibus/lib
+
 # Changing File ownership to 'domibus' user
 RUN chown -R domibus:domibus /data
 
