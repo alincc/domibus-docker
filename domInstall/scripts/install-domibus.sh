@@ -294,6 +294,7 @@ function initInstallation {
    else
       echo
       echo "The directory ${DomibusInstallationDir} EXISTS... "
+      ls -la
       #echo
       #echo "Please remove content manually by executing the statement below and retry..."
       #echo "chmod -R 700 ${DomibusInstallationDir} ; rm -rf  ${DomibusInstallationDir}"
