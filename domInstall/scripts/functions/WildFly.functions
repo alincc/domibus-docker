@@ -584,7 +584,7 @@ function installDomibusWildFlyFull {
    installPolicies
    installPlugins wildfly
    #startDomibus
-   configureDomibus
+
 }
 
 function installDomibusWildFlySingle {
@@ -608,7 +608,7 @@ function installDomibusWildFlySingle {
    installPolicies
    installPlugins wildfly
    #compareXML
-   configureDomibus
+
    deployDomibusWarFileWildFly
    #startDomibus
 }

@@ -113,13 +113,6 @@ function getDomibusInstallProperties {
       echo "OracleDatabaseUserId                         : ${OracleDatabaseUserId}"
       echo "OracleDatabaseUserPassword                   : ${OracleDatabaseUserPassword}"
    fi
-   if [ "${DatabaseType}" == "SQLServer" ] ; then
-      echo "SQLServerDatabaseHost                        : ${SQLServerDatabaseHost}"
-      echo "SQLServerDatabasePort                        : ${SQLServerDatabasePort}"
-      echo "SQLServerDatabaseName                        : ${SQLServerDatabaseName}"
-      echo "SQLServerDatabaseUserId                      : ${SQLServerDatabaseUserId}"
-      echo "SQLServerDatabaseUserPassword                : ${SQLServerDatabaseUserPassword}"
-   fi
 
    echo
    echo "DatabaseInit                                 : ${DatabaseInit}"
@@ -130,11 +123,7 @@ function getDomibusInstallProperties {
    if [ "${DatabaseType}" == "Oracle" ] ; then
       echo "OracleDatabaseSYSPassword                    : ${OracleDatabaseSYSPassword}"
    fi
-   if [ "${DatabaseType}" == "SQLServer" ] ; then
-      echo "SQLServerDatabaseAdminUser                   : ${SQLServerDatabaseAdminUser}"
-      echo "SQLServerDatabaseAdminPwd                    : ${SQLServerDatabaseAdminPwd}"
-   fi
-      
+
    echo
    if [ "${ApplicationServer}" == "WebLogic" ] ; then
       echo "WebLogicDomainName                           : $WebLogicDomainName"
@@ -171,41 +160,6 @@ function getDomibusInstallProperties {
       echo "WildFlyNetManagementInterface                : $WildFlyNetManagementInterface:$WildFlyNetManagementPort"
       echo "WildFlyNetUnsecureInterface                  : $WildFlyNetUnsecureInterface:$WilfFlyNetUnsecurePort"
    fi
-
-#   domibus_msh_messageid_suffix=`grep domibus.msh.messageid.suffix ${domibusproperties} | cut -d"=" -f2-`
-
-#   domibus_security_keystore_location="`grep '^domibus.security.keystore.location' ${domibusproperties} | cut -d'=' -f2-`"
-#   domibus_security_keystore_type="`grep '^domibus.security.keystore.type' ${domibusproperties} | cut -d'=' -f2-`"
-#   domibus_security_keystore_password="`grep '^domibus.security.keystore.password' ${domibusproperties} | cut -d'=' -f2-`"
-#   domibus_security_key_private_alias="`grep '^domibus.security.key.private.alias' ${domibusproperties} | cut -d'=' -f2-`"
-#   domibus_security_key_private_password="`grep '^domibus.security.key.private.password' ${domibusproperties} | cut -d'=' -f2-`"
-
-#   domibus_security_truststore_location="`grep '^domibus.security.truststore.location' ${domibusproperties} | cut -d'=' -f2-`"
-#   domibus_security_truststore_type="`grep '^domibus.security.truststore.type' ${domibusproperties} | cut -d'=' -f2-`"
-#   domibus_security_truststore_password="`grep '^domibus.security.truststore.password' ${domibusproperties} | cut -d'=' -f2-`"
-
-#   activeMQ_broker_host="`grep '^activeMQ.broker.host' ${domibusproperties} | cut -d'=' -f2-`"
-#   activeMQ_brokerName="`grep '^activeMQ.brokerName' ${domibusproperties} | cut -d'=' -f2-`"
-#   activeMQ_embedded_configurationFile="`grep '^activeMQ.embedded.configurationFile' ${domibusproperties} | cut -d'=' -f2-`"
-#   activeMQ_JMXURL="`grep '^activeMQ.JMXURL' ${domibusproperties} | cut -d'=' -f2-`"
-#   activeMQ_connectorPort="`grep '^activeMQ.connectorPort' ${domibusproperties} | cut -d'=' -f2-`"
-#   activeMQ_rmiServerPort="`grep '^activeMQ.rmiServerPort' ${domibusproperties} | cut -d'=' -f2-`"
-#   activeMQ_transportConnector_uri="`grep '^activeMQ.transportConnector.uri' ${domibusproperties} | cut -d'=' -f2-`"
-#   activeMQ_username="`grep '^activeMQ.username' ${domibusproperties} | cut -d'=' -f2-`"
-#   activeMQ_password="`grep '^activeMQ.password' ${domibusproperties} | cut -d'=' -f2-`"
-
-   #for line in `cat ${domibus.properties}` ; do
-   # while read -r line ; do
-   #   if [ ! "${line:1:1}" == "#" ] ; then
-   #      param="$line" ; echo $param
-   #      param1="`echo ${param} | cut -d'=' -f1 | sed s'/\.//g'`"
-   #      param2="`echo ${param} | cut -d'=' -f2`"
-   #	 echo "$param1=$param2" | tee toto
-   #   else
-   #      echo "###########"
-   #   fi
-   #done < "${domibusproperties}"
-   #done
 
    echo
    echo "DOMIBUS CONFIGURATION"
@@ -252,16 +206,6 @@ function getDomibusInstallProperties {
    echo "JMSPluginAdminPassword                       : $JMSPluginAdminPassword"
    echo "JMSPluginUserPassword                        : $JMSPluginUserPassword"
 
-
-#   while true; do
-#      echo
-#      read -p "ARE YOU SATISFIED WITH THE ABOVE SETTING [YES|NO] or Press CTRL-C TO ABORT ? " answer
-#      case $answer in
-#          [YES]* ) break ;;
-#          [NO]* ) quit ;;
-#          * ) echo "Please answer one of the following choices [YES|NO] or Press CTRL-C TO ABORT ";;
-#      esac
-#  done
 }
 
 function killAllWildFlyInstance {
@@ -499,81 +443,6 @@ function setJVMParamsTomcat {
    chmod +x ${cef_edelivery_path}/domibus/bin/*.sh
 }
 
-function enableTNSTomcat {
-   displayFunctionBanner ${FUNCNAME[0]}
-if [ "enableTNS" == "yes" ] ; then
-echo > $DOMIBUS_DIR/conf/domibus/clientauthentication.xml <<EOF
-<http-conf:tlsClientParameters disableCNCheck="true" secureSocketProtocol="TLSv1.2"
-        xmlns:http-conf="http://cxf.apache.org/transports/http/configuration"
-        xmlns:security="http://cxf.apache.org/configuration/security">
-    <security:trustManagers>
-        <security:keyStore type="JKS" password="your_trustore_password"
-                           file="${domibus.config.location}/keystores/your_trustore_ssl.jks"/>
-    </security:trustManagers>
-       <security:keyManagers keyPassword="your_keystore_password">
-        <security:keyStore type="JKS" password="your_keystore_password"
-                           file="${domibus.config.location}/keystores/your_keystore_ssl.jks"/>
-    </security:keyManagers>
-</http-conf:tlsClientParameters>
-EOF
-else
-   rm -f $DOMIBUS_DIR/conf/domibus/clientauthentication.xml
-fi
-}
-
-function enableTNSWildFly {
-   displayFunctionBanner ${FUNCNAME[0]}
-   echo ; echo "Enabling TNS \${DOMIBUS_DIR}/bin/jboss-cli.sh <<EOF"
-   $DOMIBUS_DIR/bin/jboss-cli.sh <<EOF
-/core-service=management/security-realm=ApplicationRealm/server-identity=ssl:add(	\
-keystore-path=../conf/domibus/keystores/gateway_keystore.jks,				\
-keystore-relative-to=jboss.server.config.dir,						\
-keystore-password="test123", alias="blue_gw",						\
-key-password="test123")
-
-/core-service=management/security-realm=ApplicationRealm/authentication=local:remove
-
-/core-service=management/security-realm=ApplicationRealm/authentication=properties:remove
-
-/core-service=management/security-realm=ApplicationRealm/authentication=truststore:add( \
-keystore-path="../conf/domibus/keystores/gateway_truststore.jks",			\
-keystore-relative-to="jboss.server.base.dir",						\
-keystore-password="test123")
-EOF
-}
-
-function configureTNS {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   echo ; echo "Configuring TNS" 
-   echo "   To be done..."
-}
-
-function configureDisableCNCheck {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   echo ; echo "Configuring disableCNCheck in file ${cef_edelivery_path}/domibus/conf/domibus/domibus-clientauthentication.xml"
-   echo "   Setting \${disableCNCheck} to ${disableCNCheck}"
-   #sed -i -e "s#disableCNCheck=\"true\"#disableCNCheck=\"${disableCNCheck}\"#" ${cef_edelivery_path}/domibus/conf/domibus/domibus-clientauthentication.xml
-}
-
-function configureWSUnsecureLoginAllowed {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   echo ; echo "Configuring WS Plugin Basic Authentication in file \${cef_edelivery_path}/domibus/conf/domibus/domibus-configuration.xml"
-   initialString="<prop key=\"domibus.auth.unsecureLoginAllowed\">false</prop>"
-   replacedString="<prop key=\"domibus.auth.unsecureLoginAllowed\">${WSUnsecureLoginAllowed}</prop>"
-   echo "   Replacing : ${initialString}"
-   echo "   By        : ${replacedString}"
-   sed -i -e "s#${initialString}#${replacedString}#" ${cef_edelivery_path}/domibus/conf/domibus/domibus-configuration.xml
-}
-
-function configureWSPlugin {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   configureWSUnsecureLoginAllowed
-   configureWSPluginPasswords
-}
 
 #####################################################################################################################
 ##### MAIN PROGRAMM START HERE
@@ -584,7 +453,6 @@ clear
 displayBanner
 sourceExternalFunctions
 checkDomInstallPropertiesFiles
-#checkDomibusPropertiesFiles
 getDomibusInstallProperties
 initInstallation
 downloadJavaJDKJRE

@@ -695,7 +695,7 @@ function installDomibusWebLogicSingle {
    #setJVMParamsWebLogic
    #restartWebLogicManagedServer
    ##changeWebConsolePwd
-   configureDomibus
+
    #startWebLogic
    deployWarFileWebLogic
    stopWebLogic

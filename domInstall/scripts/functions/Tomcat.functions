@@ -3,12 +3,7 @@
 functionsFile="${BASH_SOURCE[0]}"
 echo "   - ${functionsFile}"
 
-function installDomibusTomcatFullDist {
-   displayFunctionBanner ${FUNCNAME[0]}
-   echo
-   echo "Installing domibus-$DOMIBUS_PREFIX-tomcat-full: unzip -q \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-tomcat-full -d ${cef_edelivery_path}"
-   unzip -q $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-tomcat-full -d ${cef_edelivery_path}
-}
+
 
 function installTomcat {
    displayFunctionBanner ${FUNCNAME[0]}
@@ -26,46 +21,7 @@ function installDomibusTomcatConf {
    unzip $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-tomcat-configuration.zip -d ${cef_edelivery_path}/domibus/conf/domibus
 }
 
-function ConfigureTomcatPorts {
-   displayFunctionBanner ${FUNCNAME[0]}
-   echo
-   echo "   Configuring Tomcat Ports"
-   echo "      Configuring Tomcat HTTP Port from 8080 to ${TomcatHTTPPort}"
-   initialString="8080"
-   replacedString="${TomcatHTTPPort}"
-   targetFile="${cef_edelivery_path}/domibus/conf/server.xml"
-   echo "   Replacing : ${initialString}"
-   echo "   By        : ${replacedString}"
-   echo "   In file   : ${targetFile}"
-   sed -i -e "s#${initialString}#${replacedString}#" ${targetFile}
-   
-   echo "      Configuring Tomcat AJP Port from 8009 to ${TomcatAJPPort}"
-   initialString="8009"
-   replacedString="${TomcatAJPPort}"
-   targetFile="${cef_edelivery_path}/domibus/conf/server.xml"
-   echo "   Replacing : ${initialString}"
-   echo "   By        : ${replacedString}"
-   echo "   In file   : ${targetFile}"
-   sed -i -e "s#${initialString}#${replacedString}#" ${targetFile}
 
-   echo "      Configuring Tomcat Redirect Port from 8443 to ${TomcatRedirectPort}"
-   initialString="8443"
-   replacedString="${TomcatRedirectPort}"
-   targetFile="${cef_edelivery_path}/domibus/conf/server.xml"
-   echo "   Replacing : ${initialString}"
-   echo "   By        : ${replacedString}"
-   echo "   In file   : ${targetFile}"
-   sed -i -e "s#${initialString}#${replacedString}#" ${targetFile}
-
-   echo "      Configuring Tomcat Shutdown Port from 8005 to ${TomcatShutdownPort}"
-   initialString="8005"
-   replacedString="${TomcatShutdownPort}"
-   targetFile="${cef_edelivery_path}/domibus/conf/server.xml"
-   echo "   Replacing : ${initialString}"
-   echo "   By        : ${replacedString}"
-   echo "   In file   : ${targetFile}"
-   sed -i -e "s#${initialString}#${replacedString}#" ${targetFile}
-}
 
 function installJDBCDriverTomcat {
    displayFunctionBanner ${FUNCNAME[0]}
@@ -79,261 +35,6 @@ function installJDBCDriverTomcat {
 
 }
 
-function createXADatasourceTomcatMySQL {
-   displayFunctionBanner ${FUNCNAME[0]}
-   echo
-   echo "Updating ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml"
-   grep -B 99999 '<bean id="domibusJDBC-XADataSource"' ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml | grep -v  '<bean id="domibusJDBC-XADataSource"' > $TEMP_DIR/domibus-datasources.xml
-   cat << EOF >> $TEMP_DIR/domibus-datasources.xml
-    <bean id="domibusJDBC-XADataSource"
-          class="com.atomikos.jdbc.AtomikosDataSourceBean"
-          init-method="init" destroy-method="close">
-        <property name="uniqueResourceName">
-            <value>domibusJDBC-XA</value>
-        </property>
-        <property name="xaDataSourceClassName">
-            <value>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</value>
-        </property>
-        <property name="xaProperties">
-            <props>
-                <prop key="serverName">${MySQLDatabaseHost}</prop>
-                <prop key="port">${MySQLDatabasePort}</prop>
-                <prop key="user">${MySQLDatabaseUserId}</prop>
-                <prop key="password">${MySQLDatabaseUserPassword}</prop>
-                <prop key="url">
-                    jdbc:mysql://${MySQLDatabaseHost}:${MySQLDatabasePort}/${MySQLDatabaseName}?pinGlobalTxToPhysicalConnection=true
-                </prop>
-            </props>
-        </property>
-        <property name="minPoolSize">
-            <value>1</value>
-        </property>
-        <property name="maxPoolSize">
-            <value>100</value>
-        </property>
-        <property name="testQuery">
-            <value>select 1</value>
-        </property>
-    </bean>
-EOF
-   #grep -A 99999 '<bean id="domibusJDBC-XADataSource"' $DOMIBUS_DIR/domibus/conf/domibus/domibus-datasources.xml | grep -A 99999 "</bean>" >> $TEMP_DIR/domibus-datasources.xml
-   grep -A 99999 '<bean id="domibusJDBC-XADataSource"' ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml | sed -e '1,/<\/bean>/d'  >> $TEMP_DIR/domibus-datasources.xml
-   mv $TEMP_DIR/domibus-datasources.xml ${cef_edelivery_path}/domibus/conf/domibus
-}
-
-function createXADatasourceTomcatOracle {
-   displayFunctionBanner ${FUNCNAME[0]}
-   echo
-   echo "Updating ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml"
-   grep -B 99999 '<bean id="domibusJDBC-XADataSource"' ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml | grep -v  '<bean id="domibusJDBC-XADataSource"' > $TEMP_DIR/domibus-datasources.xml
-   cat << EOF >> $TEMP_DIR/domibus-datasources.xml
-    <bean id="domibusJDBC-XADataSource"
-          class="com.atomikos.jdbc.AtomikosDataSourceBean"
-          init-method="init" destroy-method="close">
-        <property name="uniqueResourceName">
-            <value>domibusJDBC-XA</value>
-        </property>
-        <property name="xaDataSourceClassName">
-            <value>oracle.jdbc.xa.client.OracleXADataSource</value>
-        </property>
-        <property name="xaProperties">
-            <props>
-                <prop key="user">${OracleDatabaseUserId}</prop>
-                <prop key="password">${OracleDatabaseUserPassword}</prop>
-                <prop key="URL">
-                    jdbc:oracle:thin:@${OracleDatabaseHost}:${OracleDatabasePort}:${OracleDatabaseSID}
-                </prop>
-            </props>
-        </property>
-        <property name="testQuery">
-            <value>select 1 from dual</value>
-        </property>
-    </bean>
-EOF
-   grep -A 99999 '<bean id="domibusJDBC-XADataSource"' ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml | sed -e '1,/<\/bean>/d'  >> $TEMP_DIR/domibus-datasources.xml
-   mv $TEMP_DIR/domibus-datasources.xml ${cef_edelivery_path}/domibus/conf/domibus
-
-   echo ; echo "Updating hibernate properties in \${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml"
-   initialString="org.hibernate.dialect.MySQL5InnoDBDialect"
-   replacedString="org.hibernate.dialect.Oracle10gDialect"
-   echo "   Replacing : ${initialString}"
-   echo "   By        : ${replacedString}"
-   sed -i -e "s#${initialString}#${replacedString}#" ${cef_edeliv:ery_path}/domibus/conf/domibus/domibus-datasources.xml
-}
-
-function createXADatasourceTomcatSQLServer {
-   displayFunctionBanner ${FUNCNAME[0]}
-   echo
-   echo "Updating ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml"
-   grep -B 99999 '<bean id="domibusJDBC-XADataSource"' ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml | grep -v  '<bean id="domibusJDBC-XADataSource"' > $TEMP_DIR/domibus-datasources.xml
-   cat << EOF >> $TEMP_DIR/domibus-datasources.xml
-    <bean id="domibusJDBC-XADataSource"
-          class="com.atomikos.jdbc.AtomikosDataSourceBean"
-          init-method="init" destroy-method="close">
-        <property name="uniqueResourceName">
-            <value>domibusJDBC-XA</value>
-        </property>
-        <property name="xaDataSourceClassName">
-            <value>com.microsoft.sqlserver.jdbc.SQLServerXADataSource</value>
-        </property>
-        <property name="xaProperties">
-            <props>
-                <prop key="user">${SQLServerDatabaseUserId}</prop>
-                <prop key="password">${SQLServerDatabaseUserPassword}</prop>
-                <prop key="URL">
-                    jdbc:sqlserver://{SQLServerDatabaseHost}:${SQLServerDatabasePort};databasename=${SQLServerDatabaseName}
-                </prop>
-            </props>
-        </property>
-        <property name="minPoolSize">
-            <value>1</value>
-        </property>
-        <property name="maxPoolSize">
-            <value>100</value>
-        </property>
-        <property name="testQuery">
-            <value>select 1 from dual</value>
-        </property>
-    </bean>
-EOF
-
-   grep -A 99999 '<bean id="domibusJDBC-XADataSource"' ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml | sed -e '1,/<\/bean>/d'  >> $TEMP_DIR/domibus-datasources.xml
-   mv $TEMP_DIR/domibus-datasources.xml ${cef_edelivery_path}/domibus/conf/domibus
-
-   echo ; echo "Updating hibernate properties in \${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml"
-   initialString="org.hibernate.dialect.MySQL5InnoDBDialect"
-   replacedString="org.hibernate.dialect.SQLServerDialect"
-   echo "   Replacing : ${initialString}"
-   echo "   By        : ${replacedString}"
-   sed -i -e "s#${initialString}#${replacedString}#" ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml
-}
-
-function prepareDomibusPropertiesFile {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   if [ "${1}" == "mysql" ] ; then
-      updateJavaPropertiesFile	domibus.database.serverName			\
-				${MySQLDatabaseHost} 				\
-				"${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
-      updateJavaPropertiesFile	domibus.database.port				\
-				${MySQLDatabasePort}				\
-				"${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
-      updateJavaPropertiesFile	domibus.datasource.user				\
-				${MySQLDatabaseUserId}				\
-				"${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
-      updateJavaPropertiesFile	domibus.datasource.password			\
-				${MySQLDatabaseUserPassword}			\
-				"${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
-      updateJavaPropertiesFile domibus.datasource.xa.property.user		\
-				${MySQLDatabaseUserId}				\
-				"${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
-      updateJavaPropertiesFile domibus.datasource.xa.property.password		\
-				${MySQLDatabaseUserPassword}	 		\
-				"${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
-   fi
-
-   if [ "${1}" == "oracle" ] ; then
-      updateJavaPropertiesFile	domibus.datasource.xa.xaDataSourceClassName	\
-				oracle.jdbc.xa.client.OracleXADataSource	\
-				"${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
-      updateJavaPropertiesFile domibus.database.serverName			\
-				${OracleDatabaseHost}				\
-				"${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
-      updateJavaPropertiesFile	domibus.database.port				\
-				${OracleDatabasePort}				\
-				"${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
-      updateJavaPropertiesFile	domibus.datasource.xa.property.user		\
-				${OracleDatabaseUserId}				\
-				"${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
-      updateJavaPropertiesFile	domibus.datasource.xa.property.password 	\
-				${OracleDatabaseUserPassword}			\
-				"${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
-      updateJavaPropertiesFile 	domibus.datasource.xa.property.url		\
-				jdbc:oracle:thin:@\${domibus.datasource.xa.property.serverName}:1521/${OracleDatabaseSID} \
-				"${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
-
-      updateJavaPropertiesFile	domibus.datasource.driverClassName		\
-				oracle.jdbc.OracleDriver			\
-				"${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
-      updateJavaPropertiesFile domibus.datasource.url				\
-				jdbc:oracle:thin:@localhost:${OracleDatabasePort}/${OracleDatabaseSID}	\
-				"${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
-      updateJavaPropertiesFile	domibus.datasource.user				\
-				${OracleDatabaseUserId}				\
-				"${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
-      updateJavaPropertiesFile	domibus.datasource.password			\
-				${OracleDatabaseUserPassword}			\
-				"${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
-
-      updateJavaPropertiesFile 	domibus.entityManagerFactory.jpaProperty.hibernate.dialect 	\
-   				org.hibernate.dialect.Oracle10gDialect				\
-   				"${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
-   fi
-}
-
-function createXADatasourceTomcat {
-   displayFunctionBanner ${FUNCNAME[0]}
-   if  [ ! ${DOMIBUS_VERSION:0:3} == "3.3" ] && [ ! ${DOMIBUS_VERSION:0:3} == "4.0"  ] ; then
-      if [ "${DatabaseType}" == "MySQL" ] ; then
-         createXADatasourceTomcatMySQL
-      fi
-      if [ "${DatabaseType}" == "Oracle" ] ; then
-         createXADatasourceTomcatOracle
-      fi
-      if [ "${DatabaseType}" == "SQLServer" ] ; then
-         createXADatasourceTomcatSQLServer
-      fi
-   else
-      echo ; echo "   Domibus version ${DOMIBUS_VERSION:0:3}.X : Skipping Datasources Creation."
-      echo "   Domibus XA & NONXA datasources will be generated with domibus.properties parameters:"
-
-      # Next line commented out: To be checked with Cosmin: Does Not Work
-      #prepareDomibusPropertiesFile `echo ${DatabaseType} | tr '[:upper:]' '[:lower:]'`
-
-   fi
-}
-
-function createDatasourcesTomcat {
-   if [ ! "${DOCKER}" == "YES" ] ; then
-      createXADatasourceTomcat
-   fi
-}
-
-function ConfigureDomibusActiveMQPorts {
-   displayFunctionBanner ${FUNCNAME[0]}
-   if  [ ! ${DOMIBUS_VERSION:0:3} == "3.3" ] && [ ! ${DOMIBUS_VERSION} == "4.0-SNAPSHOT" ] ; then
-      echo
-      echo "Updating BrokerURL to align value of \${TomcatTransportConnector}"
-      initialString="brokerURL=\"tcp://localhost:61616\""
-      replacedString="brokerURL=\"${activeMQ_transportConnector_uri}\""
-      targetFile="${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml"
-      echo "   Replacing : ${initialString}"
-      echo "   By        : ${replacedString}"
-      echo "   In file   : ${targetFile}"
-      sed -i -e "s#${initialString}#${replacedString}#" ${targetFile}
-
-      echo
-      echo "Updating activeMQ.JMXURL in file \${cef_edelivery_path}/domibus/conf/domibus/domibus-configuration.xml"
-      initialString="<prop key=\"activeMQ.JMXURL\">service:jmx:rmi://localhost:1200/jndi/rmi://localhost:1199/jmxrmi</prop>"
-      replacedString="<prop key=\"activeMQ.JMXURL\">service:jmx:rmi://localhost:${TomcatRmiServerPort}/jndi/rmi://localhost:${TomcatConnectorPort}/jmxrmi</prop>"
-      targetFile=${cef_edelivery_path}/domibus/conf/domibus/domibus-configuration.xml
-      echo "   Replacing : ${initialString}"
-      echo "   By        : ${replacedString}"
-      echo "   In file   : ${targetFile}"
-      sed -i -e "s#${initialString}#${replacedString}#" ${targetFile}
-   else
-      echo ; echo "Domibus 3.3.x: Domibus Apache activeMQ configuration performed in 'domibus.properties' file."
-      updateJavaPropertiesFile	activeMQ.connectorPort \
-				${TomcatConnectorPort} \
-				"${DomibusInstallationDir}/domibus/conf/domibus/domibus.properties"
-      updateJavaPropertiesFile  activeMQ.rmiServerPort \
-				${TomcatRmiServerPort} \
-				"${DomibusInstallationDir}/domibus/conf/domibus/domibus.properties"
-      updateJavaPropertiesFile	activeMQ.transportConnector.uri \
-				tcp://\${activeMQ.broker.host}:${TomcatTransportConnector}		\
-				"${DomibusInstallationDir}/domibus/conf/domibus/domibus.properties"
-   fi
-}
 
 function deployDomibusTomcatWar {
    displayFunctionBanner ${FUNCNAME[0]}
@@ -360,88 +61,23 @@ function deployDomibusTomcatWar {
    cp $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-${DOMIBUS_PREFIX}-tomcat.war ${cef_edelivery_path}/domibus/webapps/domibus.war
 }
 
-function TomcatSingleQuickFix01 {
-   displayFunctionBanner ${FUNCNAME[0]}
-   echo
-   echo "TOMCAT QUICKFIX01: Missing domibus-plugins.xml file: unzip -p \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-tomcat-full.zip domibus/conf/domibus/domibus-plugins.xml > $DOMIBUS_DIR/conf/domibus/domibus-plugins.xml"
-   unzip -p $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-tomcat-full.zip domibus/conf/domibus/domibus-plugins.xml > $DOMIBUS_DIR/conf/domibus/domibus-plugins.xml
-}
-
-function configureTomcatConsole {
-   displayFunctionBanner ${FUNCNAME[0]}
-   cat << EOF
-  <role rolename="manager-gui"/>
-  <role rolename="manager-scripts"/>
-  <role rolename="manager-jmx"/>
-  <user username="tomcat" password="tomcat" roles="manager-gui,manager-scripts,manager-jmx"/>
-EOF
-}
-
-function resetActivemqDefaultPassword {
-   displayFunctionBanner ${FUNCNAME[0]}
-   echo ; echo "Changing Tomcat Activemq default Password and configuring Domibus to use this new Password."
-   echo "   Changing Tomcat activemq \"domibus\" Default password (changeit) to something less obvious...  in file $DOMIBUS_DIR/conf/domibus/internal/activemq.xml"
-   initialString="<authenticationUser username=\"domibus\" password=\"changeit\""
-   replacedString="<authenticationUser username=\"domibus\" password=\"HasBeenChanged!!!\""
-   echo "   Replacing : ${initialString}"
-   echo "   By        : ${replacedString}"
-   sed -i -e "s#${initialString}#${replacedString}#" ${cef_edelivery_path}/domibus/conf/domibus/internal/activemq.xml
-
-   echo "   Changing Tomcat activemq Default \"admin\" password (123456) to something less obvious...  in file $DOMIBUS_DIR/conf/domibus/internal/activemq.xml"
-   initialString="<authenticationUser username=\"admin\" password=\"123456\""
-   replacedString="<authenticationUser username=\"admin\" password=\"BeenAlsoChanged!!!\""
-   echo "   Replacing : ${initialString}"
-   echo "   By        : ${replacedString}"
-   sed -i -e "s#${initialString}#${replacedString}#" ${cef_edelivery_path}/domibus/conf/domibus/internal/activemq.xml
-
-   echo ; echo "Configuring Domibus to access Tomcat activemq  User \"admin\" password (123456) in file $DOMIBUS_DIR/conf/domibus/domibus-datasource.xml"
-   initialString="userName=\"domibus\" password=\"changeit\">"
-   replacedString="userName=\"domibus\" password=\"HasBeenChanged!!!\">"
-   echo "   Replacing : ${initialString}"
-   echo "   By        : ${replacedString}"
-   sed -i -e "s#${initialString}#${replacedString}#" ${cef_edelivery_path}/domibus/conf/domibus/domibus-datasources.xml
-}
-
-function installDomibusTomcatFull {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   checkMD5Signatures
-   installDomibusTomcatFullDist
-   #ConfigureTomcatPorts
-   #ConfigureDomibusActiveMQPorts
-   #configureTomcatConsole
-   installJDBCDriverTomcat
-   #createDatasourcesTomcat
-   installKeystoreTruststore
-   installPolicies
-   setJVMParamsTomcat
-   installPlugins tomcat
-   #startTomcatFull
-   #resetActivemqDefaultPassword
-   configureDomibus
-}
-
 function installDomibusTomcatSingle {
    displayFunctionBanner ${FUNCNAME[0]}
 
    downloadTomcat
-   #checkMD5Signatures
+   checkMD5Signatures
    installTomcat
-   #configureTomcatConsole
+
    createDomibusConfDir
    installDomibusTomcatConf
-   #ConfigureTomcatPorts
-   #ConfigureDomibusActiveMQPorts
+
    installJDBCDriverTomcat
-   #createDatasourcesTomcat
+
    deployDomibusTomcatWar
    installKeystoreTruststore
    installPolicies
    setJVMParamsTomcat
    installPlugins tomcat
-   #TomcatSingleQuickFix01
-   #resetActivemqDefaultPassword
-   #startTomcatSingle
-   configureDomibus
+
 }
 
