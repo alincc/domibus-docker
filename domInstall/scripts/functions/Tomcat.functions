@@ -72,7 +72,7 @@ function installJDBCDriverTomcat {
 
    echo "Copying \$DOWNLOAD_DIR/jdbc/mysql-connector-java-5.1.40-bin.jar to \${cef_edelivery_path}/domibus/lib"
    cp $DOWNLOAD_DIR/jdbc/mysql-connector-java-5.1.40-bin.jar ${cef_edelivery_path}/domibus/lib
-   ;;
+
 
    echo ; echo "Copying \$DOWNLOAD_DIR/jdbc/ojdbc7.jar to \${cef_edelivery_path}/domibus/lib"
    cp $DOWNLOAD_DIR/jdbc/ojdbc7.jar ${cef_edelivery_path}/domibus/lib
