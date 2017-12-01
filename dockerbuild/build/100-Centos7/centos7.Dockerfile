@@ -73,6 +73,7 @@ COPY temp/java /usr/local/java
 RUN for file in `ls -1 /usr/local/java` ; do cd /usr/local/java ; tar xvfz ${file} && rm ${file} ; done
 RUN cd /usr/local/java ; javaDir=`ls -1 | tail -1` ; echo "export JAVA_HOME=/usr/local/java/${javaDir}" > /etc/profile.d/java_env.sh
 RUN echo "export PATH=\${JAVA_HOME}/bin:\$PATH" >> /etc/profile.d/java_env.sh
+RUN echo "export TERM=xterm" >> /etc/profile.d/java_env.sh
 RUN chmod +x /etc/profile.d/java_env.sh
 
 #SQLPlus Installation
