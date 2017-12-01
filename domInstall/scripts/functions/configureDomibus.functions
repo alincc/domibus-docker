@@ -242,9 +242,9 @@ function configureDomibus {
    #configureWSPlugin
    #configureTNS
    #configureLocalPartnerId
-   configureDomibusMSHMessageIdSuffix
-   configureKeystore
-   configureTruststore
+   #configureDomibusMSHMessageIdSuffix
+   #configureKeystore
+   #configureTruststore
    #configureWebConsolePassword
    #configureDisableCNCheck
 }

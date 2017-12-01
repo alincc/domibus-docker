@@ -414,17 +414,17 @@ function installDomibusTomcatFull {
 
    checkMD5Signatures
    installDomibusTomcatFullDist
-   ConfigureTomcatPorts
-   ConfigureDomibusActiveMQPorts
-   configureTomcatConsole
+   #ConfigureTomcatPorts
+   #ConfigureDomibusActiveMQPorts
+   #configureTomcatConsole
    installJDBCDriverTomcat
-   createDatasourcesTomcat
+   #createDatasourcesTomcat
    installKeystoreTruststore
    installPolicies
    setJVMParamsTomcat
    installPlugins tomcat
    #startTomcatFull
-   resetActivemqDefaultPassword
+   #resetActivemqDefaultPassword
    configureDomibus
 }
 
@@ -432,22 +432,22 @@ function installDomibusTomcatSingle {
    displayFunctionBanner ${FUNCNAME[0]}
 
    downloadTomcat
-   checkMD5Signatures
+   #checkMD5Signatures
    installTomcat
-   configureTomcatConsole
+   #configureTomcatConsole
    createDomibusConfDir
    installDomibusTomcatConf
-   ConfigureTomcatPorts
-   ConfigureDomibusActiveMQPorts
+   #ConfigureTomcatPorts
+   #ConfigureDomibusActiveMQPorts
    installJDBCDriverTomcat
-   createDatasourcesTomcat
+   #createDatasourcesTomcat
    deployDomibusTomcatWar
    installKeystoreTruststore
    installPolicies
    setJVMParamsTomcat
    installPlugins tomcat
    #TomcatSingleQuickFix01
-   resetActivemqDefaultPassword
+   #resetActivemqDefaultPassword
    #startTomcatSingle
    configureDomibus
 }
