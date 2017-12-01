@@ -70,20 +70,13 @@ function ConfigureTomcatPorts {
 function installJDBCDriverTomcat {
    displayFunctionBanner ${FUNCNAME[0]}
 
-   case "${DatabaseType}" in
-      "MySQL")
-         echo "Copying \$DOWNLOAD_DIR/jdbc/mysql-connector-java-5.1.40-bin.jar to \${cef_edelivery_path}/domibus/lib"
-         cp $DOWNLOAD_DIR/jdbc/mysql-connector-java-5.1.40-bin.jar ${cef_edelivery_path}/domibus/lib
-         ;;
-      "Oracle")
-         echo ; echo "Copying \$DOWNLOAD_DIR/jdbc/ojdbc7.jar to \${cef_edelivery_path}/domibus/lib"
-         cp $DOWNLOAD_DIR/jdbc/ojdbc7.jar ${cef_edelivery_path}/domibus/lib
-         ;;
-      "SQLServer")
-         echo ; echo "Copying \$DOWNLOAD_DIR/jdbc/sqljdbc41.jar to \${cef_edelivery_path}/domibus/lib"
-         cp $DOWNLOAD_DIR/jdbc/sqljdbc41.jar ${cef_edelivery_path}/domibus/lib
-      ;;
-   esac
+   echo "Copying \$DOWNLOAD_DIR/jdbc/mysql-connector-java-5.1.40-bin.jar to \${cef_edelivery_path}/domibus/lib"
+   cp $DOWNLOAD_DIR/jdbc/mysql-connector-java-5.1.40-bin.jar ${cef_edelivery_path}/domibus/lib
+   ;;
+
+   echo ; echo "Copying \$DOWNLOAD_DIR/jdbc/ojdbc7.jar to \${cef_edelivery_path}/domibus/lib"
+   cp $DOWNLOAD_DIR/jdbc/ojdbc7.jar ${cef_edelivery_path}/domibus/lib
+
 }
 
 function createXADatasourceTomcatMySQL {

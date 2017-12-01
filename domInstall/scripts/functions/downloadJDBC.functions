@@ -33,9 +33,7 @@ function downloadJDBCOracle {
 
    echo "  - Downloading JDBC for ${DatabaseType}"
    jdbcDownload="
-   ojdbc6.jar
    ojdbc7.jar
-   ojdbc8.jar
    "
 
    for jdbcFile in $jdbcDownload ; do
