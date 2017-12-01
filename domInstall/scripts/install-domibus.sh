@@ -608,17 +608,7 @@ case "$ApplicationServer" in
       esac
       ;;
    "Tomcat") echo ; echo "Installing Tomcat"
-      case "${DomibusInstallationType}" in
-         "Full")  echo "Tomcat Pre-configured Full Deployment"
-            installDomibusTomcatFull
-            ;;
-         "Single")  echo  "Tomcat Single Server Deployment"
-            installDomibusTomcatSingle
-            ;;
-         "Cluster")  echo  "Tomcat Clustered Server Deployment"
-            installDomibusTomcatCluster
-            ;;
-      esac
+       installDomibusTomcatSingle
       ;;
    "WildFly") echo ; echo "Installing Wildfly"
       case "${DomibusInstallationType}" in
