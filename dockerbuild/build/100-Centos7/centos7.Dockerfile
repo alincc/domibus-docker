@@ -42,6 +42,7 @@ RUN chmod 770 /data
 # Installing extra Utilities used to automate installation
 RUN yum install wget -y
 RUN yum install unzip -y
+RUN yum install less -y
 # httpd-tools will be used by Domibus to generate BCRYPT Hashes
 RUN yum install httpd-tools -y
 # MySQL Client will be used by Domibus to Create MySQL users/schemas
