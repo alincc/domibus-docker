@@ -238,21 +238,14 @@ function copyDomibus {
       | grep -v weblogic        \
       ; done`
 
-   if [ "${3}" == "single" ] ; then     \
+
       domibus_artefacts_specific=`      \
          for artifact in ${domibus_artefacts} ; do \
             echo ${artifact}            \
             | grep ${2}                 \
             | grep -v full              \
             ; done`
-   else
-      domibus_artefacts_specific=`      \
-         for artifact in ${domibus_artefacts} ; do \
-            echo ${artifact}    \
-            | grep ${2}         \
-            | grep full         \
-            ; done`
-   fi
+
 
    echo >&2 ; echo "   Domibus ALL Artefacts in Directory	: ${1}" >&2
    for artefact in ${domibus_artefacts} ; do echo "      - ${artefact}" >&2 ; done
@@ -304,15 +297,8 @@ function getDomibusSQLScripts {
 function getDomibus { 
    displayFunctionBanner "${FUNCNAME[0]}: \$1=${1} \$2=${2} \$3=${3} \$4=${4}"
 
-   if [ ! "${1}" == "" ] ; then
-      #if [ "${1:0:1}" == "/" ] || [  "${1:0:1}" == "." ]; then
-      if [ "${1}" == "4.0-SNAPSHOT" ] ; then
-         echo "DO NOTHING: Domibus v${DomibusVersion} already copied to /data/DomInstall/downloads/Domibus/${DomibusVersion}"
-         #copyDomibus "${1}"  "`echo ${2} | tr '[:upper:]' '[:lower:]'`" "`echo ${3} | tr '[:upper:]' '[:lower:]'`" "${4}"
-         #copyDomibus "${1}"
-      else
-         downloadDomibus "${1}" "`echo ${2} | tr '[:upper:]' '[:lower:]'`" "`echo ${3} | tr '[:upper:]' '[:lower:]'`" "${4}"
-      fi
-   fi
+
+   copyDomibus "${1}"  "`echo ${2} | tr '[:upper:]' '[:lower:]'`" "`echo ${3} | tr '[:upper:]' '[:lower:]'`" "${4}"
+
 }
 
