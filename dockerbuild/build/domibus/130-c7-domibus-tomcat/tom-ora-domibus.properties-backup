@@ -4,7 +4,6 @@
 #
 #
 # Download Section
-DownloadDomibus=YES
 DownloadJAVA=NO
 JavaJDKJRE=JRE
 JavaVersion=1.8.0_121

@@ -17,9 +17,6 @@ function sourceExternalFunctions {
    echo ; echo "Sourcing External Functions:"
 
    . ${SCRIPTPATH}/scripts/functions/common.functions
-   . ${SCRIPTPATH}/scripts/functions/initDatabaseMySQL.functions
-   . ${SCRIPTPATH}/scripts/functions/initDatabaseOracle.functions
-   . ${SCRIPTPATH}/scripts/functions/initDatabaseMsSQL.functions
    . ${SCRIPTPATH}/scripts/functions/downloadJDKJRE.functions
    . ${SCRIPTPATH}/scripts/functions/downloadJDBC.functions
    . ${SCRIPTPATH}/scripts/functions/downloadSoftware.functions
@@ -88,7 +85,6 @@ function getDomibusInstallProperties {
 
    echo "DownloadJAVA					: ${DownloadJAVA}"
    echo "DownloadJDBC					: ${DownloadJDBC}"
-   echo "DownloadDomibus				: ${DownloadDomibus}"
    echo
    echo "DomibusInstallationDir				: $DomibusInstallationDir"
    echo
@@ -303,18 +299,6 @@ function initInstallation {
    echo ; echo "\$DOMIBUS_PREFIX=$DOMIBUS_PREFIX"
 }
 
-function initDatabase {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   if [ "${DatabaseType}" == "MySQL" ] ; then
-      echo "Initialazing Database : Calling initDatabaseMySQL"
-      initDatabaseMySQL
-   fi
-   if [ "${DatabaseType}" == "Oracle" ] ; then
-      echo "Initialazing Database: Calling initDatabaseOracle"
-      initDatabaseOracle
-   fi
-}
 
 function checkMD5Signatures {
    displayFunctionBanner ${FUNCNAME[0]}
@@ -362,42 +346,8 @@ function installKeystore {
    if [ ! -d  ${cef_edelivery_path}/domibus/conf/domibus/keystores ] ; then
       mkdir ${cef_edelivery_path}/domibus/conf/domibus/keystores
    fi
-   
-#   generateKeystore
-#
-#   echo "   Configuring Keystore Private Key Alias and Password"
-#   initialString="<entry key=\"blue_gw\" value=\"test123\"/>"
-#   replacedString="<entry key=\"${domibus_security_key_private_alias}\" value=\"${domibus_security_key_private_password}\"/>"
-#   targetFile="${cef_edelivery_path}/domibus/conf/domibus/domibus-security.xml"
-#   echo "   Replacing : ${initialString}"
-#   echo "   By        : ${replacedString}"
-#   echo "   In file   : ${targetFile}"
-#   sed -i -e "s#${initialString}#${replacedString}#" ${targetFile}
-#
-#   echo ; echo "   Configuring Keystore Name in \${cef_edelivery_path}/domibus/conf/domibus/domibus-security.xml"
-#   initialString="<prop key=\"org.apache.ws.security.crypto.merlin.keystore.password\">"
-#   sed -i -e "/${initialString}/!b;n;c           ${KeystorePassword}" ${cef_edelivery_path}/domibus/conf/domibus/domibus-security.xml
-#   echo "   Configuring keystore Password in ${cef_edelivery_path}/domibus/conf/domibus/domibus-security.xml"
-#   initialString="<prop key=\"org.apache.ws.security.crypto.merlin.file\">"
-#   sed -i -e "/${initialString}/!b;n;c${KeystoreName}" ${cef_edelivery_path}/domibus/conf/domibus/domibus-security.xml
-#   echo "   Configuring Private Key Password"
-#   searchString="<prop key=\"org.apache.ws.security.crypto.merlin.keystore.private.password\">"
-#   sed -i -e "/${searchString}/!b;n;c${KeystorePrivateKeyPassword}" ${cef_edelivery_path}/domibus/conf/domibus/domibus-security.xml
-#   else
-#      echo ; echo "PROVIDED BY DOMIBUS.PROPERTIES:"
-#      echo
-#      echo "domibus.security.keystore.location             : ${domibus_security_keystore_location}"
-#      echo "domibus.security.keystore.type                 : ${domibus_security_keystore_type}"
-#      echo "domibus.security.keystore.password             : ${domibus_security_keystore_password}"
-#      echo "domibus.security.key.private.alia              : ${domibus_security_key_private_alias}"
-#      echo "domibus.security_key.private.password          : ${domibus_security_key_private_password}"
+
    fi
-}
-
-function compareXML {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   diff ${cef_edelivery_path}/domibus/standalone/configuration/${WildFlyServerConfig}.xml $TEMP_DIR/${WildFlyServerConfig}.xml_FROM_FULL
 }
 
 function deployDomibusWarFile {
@@ -458,7 +408,7 @@ initInstallation
 downloadJavaJDKJRE
 downloadJDBC
 getDomibus "${DomibusVersion}" "${ApplicationServer}" "${DomibusInstallationType}" "${DOWNLOAD_DIR}/Domibus/${DomibusVersion}"
-initDatabase
+
 
 echo $'\n\nStarting Domibus Installation'
 
