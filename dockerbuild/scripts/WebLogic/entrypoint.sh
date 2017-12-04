@@ -124,6 +124,9 @@ function startWebLogic {
 function waitForMySQLDatabase {
 
    echo ; echo "Wait for MySQL Database to be ready"
+   echo "DB_HOST" ${DB_HOST}
+   echo "domibus.database.serverName" ${domibus.database.serverName}
+   echo "domibus.database.port" ${domibus.database.port}
 
    while [ ! "${MySQLTableCheck}" == "admin" ] ; do
       MySQLTableCheck=$(mysql -sN -h${DB_HOST} -uedelivery -pedelivery domibus 2> /dev/null << EOF | sed 's/[  ]//g'

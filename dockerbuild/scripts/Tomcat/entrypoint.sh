@@ -123,28 +123,6 @@ echo "   DB_NAME                 : ${DB_NAME}"
 echo "   DB_USER                 : ${DB_USER}"
 echo "   DB_PASS                 : ${DB_PASS}"
 
-if [ ! "X${PARTY_ID}" == "X" ] ; then
-   echo ; echo "PARTY_ID has been provided: ${PARTY_ID}"
-   DB_TYPE="MySQL"
-   DB_PORT=3306
-   DB_NAME="domibus"
-   DB_USER="edelivery" 
-   DB_PASS="edelivery"
-   case "${PARTY_ID}" in
-      "blue")
-         DB_TYPE="MySQL"
-         DB_HOST="mysql_blue"
-      ;;
-      "red")
-         DB_TYPE="MySQL"         
-         DB_HOST="mysql_red"
-         DB_PORT=3306            
-      ;;
-      *)
-         ABORT_JOB "PARTY_ID Provided but MUST BE EITHER 'blue' or 'red'"
-      ;;
-   esac
-fi
 
    if [ ! "${DB_HOST}" == "" ] ; then
       domStartupParams="${domStartupParams} -Ddomibus.database.serverName=${DB_HOST}"
