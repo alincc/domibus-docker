@@ -23,13 +23,6 @@ cef_edelivery_path="/data/domibus"
 TEMP_DIR="/data/domibus/domibus/temp"
 mkdir ${TEMP_DIR}
 
-#initialString="MySQLDatabaseHost=mysql$"
-#replacedString="MySQLDatabaseHost=mysql${PARTY_ID}"
-#targetFile="/data/tomcat-mysql-dom-33latest-s.properties"
-#echo "   Replacing : ${initialString}"
-#echo "   By        : ${replacedString}"
-#echo "   In file   : ${targetFile}"
-#sed -i -e "s#${initialString}#${replacedString}#" ${targetFile}
 
 if [ "${DB_TYPE}" == "MySQL" ] ; then
    echo ; echo "Sourcing installation file: /data/domInstall/tom-mys-domibus.properties"
@@ -299,12 +292,6 @@ function Wait4Domibus {
    done
 }
 
-function keepLooping {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   while true ; do sleep 1 ; done
-}
-
 function configurePmode4Tests {
     displayFunctionBanner ${FUNCNAME[0]}
 
@@ -386,5 +373,5 @@ Wait4Domibus
 configurePmode4Tests Tomcat Weblogic
 uploadPmode
 tail -f /data/domibus/domibus/logs/catalina.out
-keepLooping
+
 

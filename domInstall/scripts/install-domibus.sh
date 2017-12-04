@@ -204,15 +204,6 @@ function getDomibusInstallProperties {
 
 }
 
-function killAllWildFlyInstance {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   # Killing all WildFly Running Instance if any
-   echo ; echo "Killing  all WildFly Running Instance if any..."
-   for pid in `ps -ef | grep wildflyc | grep Djboss | grep  Dlogging.configuration | sed 's/  / /g' | cut -d" " -f2` ; do echo Killing Pid: $pid ; kill $pid ; done
-   #for pid in `ps -ef | grep Djboss | grep  Dlogging.configuration | sed 's/  / /g' | cut -d" " -f3` ; do echo Killing Pid: $pid ; kill $pid ; done
-}
-
 function initInstallation {
    displayFunctionBanner ${FUNCNAME[0]}
 
@@ -264,38 +255,7 @@ function initInstallation {
    done
 
    DOMIBUS_VERSION=$DomibusVersion
-
-   if [ "$DOMIBUS_VERSION" == "3.1.1" ] ; then
-      DOMIBUS_PREFIX="distribution-${DOMIBUS_VERSION}"
-   fi
-   if [ "$DOMIBUS_VERSION" == "3.2.0" ] ; then
-      DOMIBUS_PREFIX=`echo MSH-${DOMIBUS_VERSION}  | cut -c1-7`
-   fi
-   if [ "$DOMIBUS_VERSION" == "3.2.1" ] ; then
-      DOMIBUS_PREFIX=`echo MSH-${DOMIBUS_VERSION}  | cut -c1-9`
-   fi
-   if [ "$DOMIBUS_VERSION" == "3.2.2" ] ; then
-      DOMIBUS_PREFIX=`echo MSH-${DOMIBUS_VERSION}  | cut -c1-18`
-   fi
-   if [ "$DOMIBUS_VERSION" == "3.2.3-SNAPSHOT" ] ; then
-      DOMIBUS_PREFIX=`echo MSH-$DOMIBUS_VERSION-SNAPSHOT  | cut -c1-18`
-   fi
-   if [ "$DOMIBUS_VERSION" == "3.2.3" ] ; then
-      DOMIBUS_PREFIX=`echo MSH-${DOMIBUS_VERSION}  | cut -c1-18`
-   fi
-   if [ "$DOMIBUS_VERSION" == "3.2.4" ] ; then
-      DOMIBUS_PREFIX=`echo MSH-${DOMIBUS_VERSION}  | cut -c1-18`
-   fi
-   if [ "$DOMIBUS_VERSION" == "3.2.5" ] ; then
-      DOMIBUS_PREFIX=`echo MSH-${DOMIBUS_VERSION}  | cut -c1-18`
-   fi
-   if [ "$DOMIBUS_VERSION" == "3.3" ] ; then
-      DOMIBUS_PREFIX="distribution-${DOMIBUS_VERSION}"
-   fi
-   if [ "$DOMIBUS_VERSION" == "4.0-SNAPSHOT" ] ; then
-      DOMIBUS_PREFIX="distribution-${DOMIBUS_VERSION}"
-   fi
-
+   DOMIBUS_PREFIX="distribution-${DOMIBUS_VERSION}"
    echo ; echo "\$DOMIBUS_PREFIX=$DOMIBUS_PREFIX"
 }
 
@@ -326,28 +286,6 @@ function extractStandAloneFromFull {
 
 echo ; echo "Extracting standalone-full.xml from $DOWNLOAD_DIR/domibus-$DOMIBUS_VERSION-wildfly-full.zip to \$TEMP_DIR/standalone-full.xml_FROM_FULL"
 unzip -p $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-wildfly-full.zip domibus/standalone/configuration/standalone-full.xml > $TEMP_DIR/standalone-full.xml_FROM_FULL
-}
-
-function generateKeystore {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   echo "   Generating \" ${KeystoreName}\" Keystore in ${cef_edelivery_path}/domibus/conf/domibus/keystores"
-   keytool -genkey -keyalg RSA -alias ${KeystorePrivateKeyAlias} -keypass ${KeystorePrivateKeyPassword} \
-      -keystore ${cef_edelivery_path}/domibus/conf/domibus/keystores/${KeystoreName} -storepass ${KeystorePassword} -validity 360 \
-      -keysize 2048 \
-      -dname "CN=${LocalPartnerId}, OU=CEF Support, O=B4, L=Brussels, ST=Unknown, C=BE"
-}
-
-function installKeystore {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   if  [ ! ${DOMIBUS_VERSION:0:3} == "3.3" ] && [ ! ${DOMIBUS_VERSION:0:3} == "4.0" ] && [ ! ${DOMIBUS_VERSION} == "LATEST" ] ; then
-   echo ; echo "Installing keystore \" ${KeystoreName}\" in \${cef_edelivery_path}/domibus/conf/domibus/keystores"
-   if [ ! -d  ${cef_edelivery_path}/domibus/conf/domibus/keystores ] ; then
-      mkdir ${cef_edelivery_path}/domibus/conf/domibus/keystores
-   fi
-
-   fi
 }
 
 function deployDomibusWarFile {
@@ -437,7 +375,7 @@ case "$ApplicationServer" in
             installDomibusWildFlySingle
             ;;
          "Cluster")  echo  "Clustered Server Deployment"
-            installDomibusWildFlyCluster
+
             ;;
       esac
       ;;

@@ -612,9 +612,4 @@ function installDomibusWildFlySingle {
    #startDomibus
 }
 
-function installDomibusWildFlyCluster {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   ABORT_JOB "NOT IMPLEMENTED YET... Please be patient and wait a bit for the good news ;-) "
-}
 
