@@ -17,7 +17,6 @@ function sourceExternalFunctions {
    echo ; echo "Sourcing External Functions:"
 
    . ${SCRIPTPATH}/scripts/functions/common.functions
-   . ${SCRIPTPATH}/scripts/functions/downloadJDKJRE.functions
    . ${SCRIPTPATH}/scripts/functions/downloadJDBC.functions
    . ${SCRIPTPATH}/scripts/functions/downloadSoftware.functions
    . ${SCRIPTPATH}/scripts/functions/getDomibus.functions
@@ -213,6 +212,7 @@ function initInstallation {
 
    # Domibus Directory
    #export DOMIBUS_DIR="$REPO_DIR/domibus"
+   #baciuco DomibusInstallationDir comes from the installation property file; to be removed
    export DOMIBUS_DIR=${DomibusInstallationDir}/domibus
 
    echo ; echo "Setting \${cef_edelivery_path} to ${DomibusInstallationDir}"
@@ -226,22 +226,15 @@ function initInstallation {
       echo
       echo "The directory ${DomibusInstallationDir} EXISTS... "
       ls -la
-      #echo
-      #echo "Please remove content manually by executing the statement below and retry..."
-      #echo "chmod -R 700 ${DomibusInstallationDir} ; rm -rf  ${DomibusInstallationDir}"
-      #chmod -R 700 /data/dhenech/domibus321_C ; rm -rf  /data/dhenech/domibus321_C
-      #ABORT_JOB "The directory ${DomibusInstallationDir} EXISTS... ABORTING !!!"
    fi
 
-    # Temporary Directory
+    # Temporary Directory; used for storing the cookie.txt
   export TEMP_DIR=${DomibusInstallationDir}/temp
   echo "Creating Temporary Directory: \${TEMP_DIR}"
   echo " - mkdir ${TEMP_DIR}"
   mkdir $TEMP_DIR
 
-  # Download Directories
-  #20170812
-  #export DOWNLOAD_DIR=${TEMP_DIR}/downloads
+
   export DOWNLOAD_DIR="${SCRIPTPATH}/downloads"
   echo "Creating Temporary Download Directories: \${DOWNLOAD_DIR}"
   echo " - mkdir -p ${DOWNLOAD_DIR}"
@@ -343,7 +336,6 @@ sourceExternalFunctions
 checkDomInstallPropertiesFiles
 getDomibusInstallProperties
 initInstallation
-downloadJavaJDKJRE
 downloadJDBC
 getDomibus "${DomibusVersion}" "${ApplicationServer}" "${DomibusInstallationType}" "${DOWNLOAD_DIR}/Domibus/${DomibusVersion}"
 

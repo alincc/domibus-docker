@@ -15,6 +15,7 @@ ARG DB_USER
 ARG DB_PASS
 
 # Copying the Domibus installation Script
+RUN echo '-----------------WORKING_DIR:' ${WORKING_DIR}
 RUN mkdir -p /data/domInstall
 COPY ${WORKING_DIR}/temp/domInstall /data/domInstall
 
