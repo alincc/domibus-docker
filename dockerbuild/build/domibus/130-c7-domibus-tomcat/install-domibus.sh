@@ -21,7 +21,7 @@ function sourceExternalFunctions {
    . /data/domInstall/scripts/functions/Tomcat.functions
 }
 
-function getDomibusInstallProperties {
+function showDomibusInstallProperties {
    displayFunctionBanner ${FUNCNAME[0]}
 
    echo "DomibusInstallationDir				: $DomibusInstallationDir"
@@ -108,7 +108,7 @@ clear
 
 displayBanner
 sourceExternalFunctions
-getDomibusInstallProperties
+showDomibusInstallProperties
 initInstallation
 downloadJDBC
 getDomibus "${DomibusVersion}" "${ApplicationServer}" "${DomibusInstallationType}" "${DOWNLOAD_DIR}/Domibus/${DomibusVersion}"
