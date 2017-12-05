@@ -6,9 +6,9 @@ echo "   - ${functionsFile}"
 function installWildFlyDomibusFullDist {
    displayFunctionBanner ${FUNCNAME[0]}
    echo
-   echo " Installing domibus-$DOMIBUS_PREFIX-wildfly-full: unzip -q \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-wildfly-full -d ${cef_edelivery_path}"
-   echo ; echo "unzip -q \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-wildfly-full -d ${cef_edelivery_path}"
-   unzip -q $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-wildfly-full -d ${cef_edelivery_path}
+   echo " Installing domibus-distribution-${DOMIBUS_VERSION}-wildfly-full: unzip -q \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-wildfly-full -d ${cef_edelivery_path}"
+   echo ; echo "unzip -q \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-wildfly-full -d ${cef_edelivery_path}"
+   unzip -q $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-wildfly-full -d ${cef_edelivery_path}
    echo "   Set \$DOMIBUS_DIR/Domibus/bin/jboss-cli.sh as executable"
    chmod +x ${cef_edelivery_path}/domibus/bin/jboss-cli.sh
 }
@@ -27,8 +27,8 @@ function installWildfly902 {
 function installDomibusWildFlyConfiguration {
    displayFunctionBanner ${FUNCNAME[0]}
 
-   echo ; echo "unzip -q \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-wildfly-configuration.zip -d ${cef_edelivery_path}/domibus/conf/domibus"
-   unzip $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-wildfly-configuration.zip -d ${cef_edelivery_path}/domibus/conf/domibus
+   echo ; echo "unzip -q \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-wildfly-configuration.zip -d ${cef_edelivery_path}/domibus/conf/domibus"
+   unzip $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-wildfly-configuration.zip -d ${cef_edelivery_path}/domibus/conf/domibus
 }
 
 function deployWildFlyJDBCAsModuleMySQL {
@@ -543,28 +543,28 @@ function  createExecutorServices {
 function deployDomibusWarFileWildFly {
    displayFunctionBanner ${FUNCNAME[0]}
 
-   echo "Deploying  domibus-${DOMIBUS_PREFIX}-wildfly war file"
+   echo "Deploying  domibus-distribution-${DOMIBUS_VERSION}-wildfly war file"
    if [ ${DOMIBUS_VERSION:0:3} == "3.3" ] || [ ${DOMIBUS_VERSION} == "4.0-SNAPSHOT" ] ; then
-      echo "   Unzipping  domibus-${DOMIBUS_PREFIX}-wildfly-war.zip"
-      unzip -d ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/ ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-wildfly-war.zip
+      echo "   Unzipping  domibus-distribution-${DOMIBUS_VERSION}-wildfly-war.zip"
+      unzip -d ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/ ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-wildfly-war.zip
       if [ ${DOMIBUS_VERSION} == "3.3" ] ; then
          mv ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-MSH-wildfly-3.3.war \
-            ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-wildfly.war
+            ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-wildfly.war
       fi
       if [ ${DOMIBUS_VERSION} == "4.0-SNAPSHOT" ] ; then
          echo "   Renaming domibus-MSH-wildfly-4.0-SNAPSHOT.war to domibus-MSH-wildfly-4.0-SNAPSHOT.war"
          mv ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-MSH-wildfly-4.0-SNAPSHOT.war \
-	    ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-wildfly.war
+	    ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-wildfly.war
       fi     
    else
-      echo ; echo "Deploying  domibus-${DOMIBUS_PREFIX}-wildfly.war"
+      echo ; echo "Deploying  domibus-distribution-${DOMIBUS_VERSION}-wildfly.war"
    fi
-   echo "   Deploying domibus-${DOMIBUS_PREFIX}-wildfly.war: ${cef_edelivery_path}/domibus}/bin/jboss-cli.sh <<EOF"
+   echo "   Deploying domibus-distribution-${DOMIBUS_VERSION}-wildfly.war: ${cef_edelivery_path}/domibus}/bin/jboss-cli.sh <<EOF"
    ${cef_edelivery_path}/domibus/bin/jboss-cli.sh <<EOF
 
 embed-server --server-config=${WildFlyServerConfig}.xml
 
-deploy --force ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-wildfly.war
+deploy --force ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-wildfly.war
 
 exit
 EOF
@@ -591,7 +591,7 @@ function extractStandAloneFromFull {
    displayFunctionBanner ${FUNCNAME[0]}
 
 echo ; echo "Extracting standalone-full.xml from $DOWNLOAD_DIR/domibus-$DOMIBUS_VERSION-wildfly-full.zip to \$TEMP_DIR/standalone-full.xml_FROM_FULL"
-unzip -p $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-wildfly-full.zip domibus/standalone/configuration/standalone-full.xml > $TEMP_DIR/standalone-full.xml_FROM_FULL
+unzip -p $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-wildfly-full.zip domibus/standalone/configuration/standalone-full.xml > $TEMP_DIR/standalone-full.xml_FROM_FULL
 }
 
 

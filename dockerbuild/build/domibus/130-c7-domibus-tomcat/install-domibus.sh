@@ -17,20 +17,8 @@ function sourceExternalFunctions {
 
    . ../../../../domInstall/scripts/functions/common.functions
    . ../../../../domInstall/scripts/functions/downloadJDBC.functions
-   . ../../../../domInstall/scripts/functions/downloadSoftware.functions
    . ../../../../domInstall/scripts/functions/getDomibus.functions
-   . ../../../../domInstall/scripts/functions/configureDomibus.functions
    . ../../../../domInstall/scripts/functions/Tomcat.functions
-
-
-   #. ${SCRIPTPATH}/scripts/functions/common.functions
-   #. ${SCRIPTPATH}/scripts/functions/downloadJDBC.functions
-   #. ${SCRIPTPATH}/scripts/functions/downloadSoftware.functions
-   #. ${SCRIPTPATH}/scripts/functions/getDomibus.functions
-   #. ${SCRIPTPATH}/scripts/functions/configureDomibus.functions
-   #. ${SCRIPTPATH}/scripts/functions/Tomcat.functions
-   #. ${SCRIPTPATH}/scripts/functions/WildFly.functions
-   #. ${SCRIPTPATH}/scripts/functions/WebLogic.functions
 }
 
 function getDomibusInstallProperties {
@@ -116,8 +104,6 @@ function initInstallation {
    done
 
    DOMIBUS_VERSION=$DomibusVersion
-   DOMIBUS_PREFIX="distribution-${DOMIBUS_VERSION}"
-   echo ; echo "\$DOMIBUS_PREFIX=$DOMIBUS_PREFIX"
 }
 
 #####################################################################################################################

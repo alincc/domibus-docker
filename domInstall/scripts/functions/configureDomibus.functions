@@ -7,14 +7,14 @@ function installKeystoreTruststore {
    displayFunctionBanner ${FUNCNAME[0]}
 
    echo ; echo "   Installing the keystore and trustore:"
-   echo "      unzip \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-sample-configuration-and-testing.zip"
+   echo "      unzip \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-sample-configuration-and-testing.zip"
    if [ "${ApplicationServer}" == "WebLogic" ] ; then
       echo "      -d ${DomibusInstallationDir}/${WebLogicDomainName}"
-      unzip $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-sample-configuration-and-testing.zip \
+      unzip $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-sample-configuration-and-testing.zip \
          -d ${DomibusInstallationDir}/${WebLogicDomainName}
    else
       echo "      -d \${cef_edelivery_path}/domibus"
-      unzip $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-sample-configuration-and-testing.zip \
+      unzip $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-sample-configuration-and-testing.zip \
          -d ${cef_edelivery_path}/domibus
    fi
 }
@@ -39,9 +39,9 @@ function installWSPlugin {
    [ -d $DOMIBUS_DIR/conf/domibus/plugins/config ] || mkdir -p $DOMIBUS_DIR/conf/domibus/plugins/config
    echo ' Creating directory $DOMIBUS_DIR/conf/domibus/plugins/lib'
    [ -d $DOMIBUS_DIR/conf/domibus/plugins/lib ] || mkdir -p $DOMIBUS_DIR/domibus/conf/domibus/plugins/lib
-   echo "Installing Domibus Default WS Plugin: unzip  -j \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-default-ws-plugin.zip conf/domibus/plugins/config/wildfly/* -d \$DOMIBUS_DIR/conf/domibus/plugins/config"
-   unzip -j $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-default-ws-plugin.zip conf/domibus/plugins/config/${1}/* -d $DOMIBUS_DIR/conf/domibus/plugins/config
-   unzip -j $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-default-ws-plugin.zip conf/domibus/plugins/lib/* -d $DOMIBUS_DIR/conf/domibus/plugins/lib
+   echo "Installing Domibus Default WS Plugin: unzip  -j \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/config/wildfly/* -d \$DOMIBUS_DIR/conf/domibus/plugins/config"
+   unzip -j $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/config/${1}/* -d $DOMIBUS_DIR/conf/domibus/plugins/config
+   unzip -j $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/lib/* -d $DOMIBUS_DIR/conf/domibus/plugins/lib
 }
 
 function installJMSPlugin {
@@ -49,8 +49,8 @@ function installJMSPlugin {
    echo ; echo "Installing Domibus Default JMS Plugin for Application Server: ${1}"
    [ -d $DOMIBUS_DIR/conf/domibus/plugins/config ] || mkdir -p $DOMIBUS_DIR/conf/domibus/plugins/config
    [ -d $DOMIBUS_DIR/conf/domibus/plugins/lib ] || mkdir -p $DOMIBUS_DIR/domibus/plugins/lib
-   unzip  -j  $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-default-jms-plugin.zip conf/domibus/plugins/config/${1}/* -d $DOMIBUS_DIR/conf/domibus/plugins/config
-   unzip  -j  $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-default-jms-plugin.zip conf/domibus/plugins/lib/* -d $DOMIBUS_DIR/conf/domibus/plugins/lib
+   unzip  -j  $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/config/${1}/* -d $DOMIBUS_DIR/conf/domibus/plugins/config
+   unzip  -j  $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/lib/* -d $DOMIBUS_DIR/conf/domibus/plugins/lib
 }
 
 function installPlugins {

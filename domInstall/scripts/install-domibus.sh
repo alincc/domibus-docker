@@ -195,8 +195,6 @@ function initInstallation {
    done
 
    DOMIBUS_VERSION=$DomibusVersion
-   DOMIBUS_PREFIX="distribution-${DOMIBUS_VERSION}"
-   echo ; echo "\$DOMIBUS_PREFIX=$DOMIBUS_PREFIX"
 }
 
 #####################################################################################################################
