@@ -1,0 +1,55 @@
+#!/bin/bash
+
+functionsFile="${BASH_SOURCE[0]}"
+echo "   - ${functionsFile}"
+
+function WaitForOracleDatabase {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   SQLPLUS_HOME=/usr/local/Oracle/SQLPlus
+   export LD_LIBRARY_PATH=${SQLPLUS_HOME}
+
+   echo ; echo "Wait for Oracle Database to be ready (${DB_HOST}:${DB_PORT}/${DB_NAME})"
+
+   while [ ! "${OracleTableCheck}" == "admin" ] ; do
+      OracleTableCheck=$(${SQLPLUS_HOME}/sqlplus -s ${DB_USER}/${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME} << EOF | sed 's/[  ]//g'
+      SET heading OFF;
+      SET echo OFF;
+      SET feedback OFF;
+      set pagesize 0 feedback off verify off heading off echo off;
+      select USER_NAME from TB_USER where ID_PK=1;
+      exit;
+EOF
+)
+
+   sleep 1
+   echo -n "."
+   done
+}
+
+function waitForMySQLDatabase {
+
+   echo ; echo "Wait for MySQL Database to be ready"
+
+   while [ ! "${MySQLTableCheck}" == "admin" ] ; do
+      MySQLTableCheck=$(mysql -sN -h${DB_HOST} -uedelivery -pedelivery domibus 2> /dev/null << EOF | sed 's/[  ]//g'
+      select USER_NAME from TB_USER where ID_PK=1;
+EOF
+)
+
+   sleep 1
+   echo -n "."
+   done
+}
+
+function waitForDatabase {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   if [ "${DB_TYPE}" == "MySQL" ] ; then
+      waitForMySQLDatabase
+      #echo "DO NOT WAIT for MySQL for now..."
+   fi
+   if [ "${DB_TYPE}" == "Oracle" ] ; then
+      WaitForOracleDatabase
+   fi
+}

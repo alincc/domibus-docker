@@ -2,6 +2,7 @@
 
 echo ; echo "Sourcing domInstall Common Functions"
 . /data/domInstall/scripts/functions/common.functions
+. /data/domInstall/scripts/functions/database.functions
 
 echo ; echo "RECEIVED Parameters:"
 echo "   WORKING_DIR             : ${WORKING_DIR}"
@@ -24,63 +25,6 @@ mkdir ${TEMP_DIR}
 
 }
 
-function WaitForOracleDatabase {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   SQLPLUS_HOME=/usr/local/Oracle/SQLPlus
-   export LD_LIBRARY_PATH=${SQLPLUS_HOME}
-
-   echo ; echo "Wait for Oracle Database to be ready (${DB_HOST}:${DB_PORT}/${DB_NAME})"
-
-   while [ ! "${OracleTableCheck}" == "admin" ] ; do
-      OracleTableCheck=$(${SQLPLUS_HOME}/sqlplus -s ${DB_USER}/${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME} << EOF | sed 's/[  ]//g'
-      SET heading OFF;
-      SET echo OFF;
-      SET feedback OFF;
-      set pagesize 0 feedback off verify off heading off echo off;
-      select USER_NAME from TB_USER where ID_PK=1;
-      exit;
-EOF
-)
-
-   sleep 1
-   echo -n "."
-   done
-}
-
-function waitForMySQLDatabase {
-
-   echo ; echo "Wait for MySQL Database to be ready"
-
-   while [ ! "${MySQLTableCheck}" == "admin" ] ; do
-      MySQLTableCheck=$(mysql -sN -h${DB_HOST} -uedelivery -pedelivery domibus 2> /dev/null << EOF | sed 's/[  ]//g'
-      select USER_NAME from TB_USER where ID_PK=1;
-EOF
-)
-
-   sleep 1
-   echo -n "."
-   done
-}
-
-function waitForDatabase {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   if [ "${DB_TYPE}" == "MySQL" ] ; then
-      waitForMySQLDatabase
-      #echo "DO NOT WAIT for MySQL for now..."
-   fi
-   if [ "${DB_TYPE}" == "Oracle" ] ; then
-      WaitForOracleDatabase
-   fi
-}
-
-function configureJava {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   export JAVA_HOME=/usr/local/java/jre1.8.0_144
-   export PATH=${JAVA_HOME}/bin:${PATH}
-}
 
 function niceSleep {
    displayFunctionBanner ${FUNCNAME[0]}
@@ -95,7 +39,7 @@ function niceSleep {
 
 function buildDomibusStartupParams {
    displayFunctionBanner ${FUNCNAME[0]}
-echo "   PARTY_ID                : ${PARTY_ID}"
+
 echo "   DB_TYPE                 : ${DB_TYPE}"
 echo "   DB_HOST                 : ${DB_HOST}"
 echo "   DB_PORT                 : ${DB_PORT}"
@@ -322,8 +266,6 @@ function uploadPmode {
 
 quickFix01
 appServerURL="domibus"
-#configureJava
-#buildDomibusStartupParams
 waitForDatabase
 configureDomibusProperties
 startDomibus

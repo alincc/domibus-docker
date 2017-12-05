@@ -98,12 +98,6 @@ function initInstallation {
   echo " - mkdir -p ${DOWNLOAD_DIR}/Domibus/${DomibusVersion}"
   mkdir -p ${DOWNLOAD_DIR}/Domibus/${DomibusVersion}
 
-   DOMIBUS_VERSIONS=""
-   for domibus_version in `ls -1 $DOWNLOAD_DIR/Domibus` ; do
-      DOMIBUS_VERSIONS="$DOMIBUS_VERSIONS|$domibus_version"
-   done
-
-   DOMIBUS_VERSION=$DomibusVersion
 }
 
 #####################################################################################################################
