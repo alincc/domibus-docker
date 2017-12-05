@@ -13,7 +13,7 @@ function displayBanner {
 
 function sourceExternalFunctions {
 
-   echo ; echo "Sourcing External Functions:"
+   echo ; echo "--Sourcing External Functions:"
 
    . ../../../../domInstall/scripts/functions/common.functions
    . ../../../../domInstall/scripts/functions/downloadJDBC.functions
