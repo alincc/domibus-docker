@@ -83,6 +83,21 @@ function setJVMParamsTomcat {
    chmod +x ${cef_edelivery_path}/domibus/bin/*.sh
 }
 
+function downloadTomcat {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   TomcatVersion = "8.0.39"
+   echo "   - Downloading Apache Tomcat Software Version ${TomcatVersion}"
+
+   TomcatMainVersion="`echo ${TomcatVersion} | cut -c1-1`"
+
+   TomcatDownload=" http://archive.apache.org/dist/tomcat/tomcat-${TomcatMainVersion}/v${TomcatVersion}/bin/apache-tomcat-${TomcatVersion}.tar.gz"
+
+   echo "   - Downloading: ${TomcatDownload} in $DOWNLOAD_DIR/software"
+   echo "wget -P $DOWNLOAD_DIR/software ${TomcatDownload} --no-check-certificate"
+   wget -P $DOWNLOAD_DIR/software ${TomcatDownload} --no-check-certificate
+}
+
 function installDomibusTomcatSingle {
    displayFunctionBanner ${FUNCNAME[0]}
 

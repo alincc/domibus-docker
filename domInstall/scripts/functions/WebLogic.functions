@@ -679,6 +679,12 @@ echo "Adding: $dummy"
 sed -i -e "/export DOMAIN_HOME/c $dummy"  ${cef_edelivery_path}/${WebLogicDomainName}/bin/setDomainEnv.sh
 }
 
+function downloadWebLogic {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo "   - Tricky one to be developped.... Wait a bit more !!!"
+}
+
 function installDomibusWebLogicSingle {
    displayFunctionBanner ${FUNCNAME[0]}
 

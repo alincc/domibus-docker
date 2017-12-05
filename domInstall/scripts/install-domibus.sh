@@ -18,7 +18,6 @@ function sourceExternalFunctions {
 
    . ${SCRIPTPATH}/scripts/functions/common.functions
    . ${SCRIPTPATH}/scripts/functions/downloadJDBC.functions
-   . ${SCRIPTPATH}/scripts/functions/downloadSoftware.functions
    . ${SCRIPTPATH}/scripts/functions/getDomibus.functions
    . ${SCRIPTPATH}/scripts/functions/configureDomibus.functions
    . ${SCRIPTPATH}/scripts/functions/Tomcat.functions
