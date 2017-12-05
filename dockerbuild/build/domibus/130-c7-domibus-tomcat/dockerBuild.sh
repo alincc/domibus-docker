@@ -15,9 +15,9 @@ DomibusSnapshotLocation=$1
 ApplicationServer=Tomcat
 DatabaseType=MySQL
 
-echo "--------------DomibusSnapshotLocation: ${DomibusSnapshotLocation}"
-echo "--------------ApplicationServer: ${ApplicationServer}"
-echo "--------------DatabaseType: ${DatabaseType}"
+echo "--------------DomibusSnapshotLocation: " ${DomibusSnapshotLocation}
+echo "--------------ApplicationServer: " ${ApplicationServer}
+echo "--------------DatabaseType: " ${DatabaseType}
 
 
 rm -rf  ${WORKING_DIR}/temp ; mkdir -p ${WORKING_DIR}/temp/domibus
