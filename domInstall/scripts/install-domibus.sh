@@ -333,7 +333,7 @@ clear
 
 displayBanner
 sourceExternalFunctions
-checkDomInstallPropertiesFiles
+#checkDomInstallPropertiesFiles
 getDomibusInstallProperties
 initInstallation
 downloadJDBC
