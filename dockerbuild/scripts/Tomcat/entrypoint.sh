@@ -5,7 +5,6 @@ echo ; echo "Sourcing domInstall Common Functions"
 
 echo ; echo "RECEIVED Parameters:"
 echo "   WORKING_DIR             : ${WORKING_DIR}"
-echo "   DOMINSTALL_PROPERTYFILE : ${DOMINSTALL_PROPERTYFILE}"
 echo "   PARTY_ID                : ${PARTY_ID}"
 echo "   DB_TYPE                 : ${DB_TYPE}"
 echo "   DB_HOST                 : ${DB_HOST}"
@@ -23,16 +22,6 @@ cef_edelivery_path="/data/domibus"
 TEMP_DIR="/data/domibus/domibus/temp"
 mkdir ${TEMP_DIR}
 
-
-if [ "${DB_TYPE}" == "MySQL" ] ; then
-   echo ; echo "Sourcing installation file: /data/domInstall/tom-mys-domibus.properties"
-   . /data/domInstall/tom-mys-domibus.properties
-fi
-if [ "${DB_TYPE}" == "Oracle" ] ; then
-   echo ; echo "Sourcing installation file: /data/domInstall/tom-ora-domibus.properties"
-   . /data/domInstall/tom-ora-domibus.properties
-fi
-####################################################
 }
 
 function WaitForOracleDatabase {

@@ -6,6 +6,7 @@ echo "   - ${functionsFile}"
 function downloadTomcat {
    displayFunctionBanner ${FUNCNAME[0]}
 
+   TomcatVersion = "8.0.39"
    echo "   - Downloading Apache Tomcat Software Version ${TomcatVersion}"
 
    TomcatMainVersion="`echo ${TomcatVersion} | cut -c1-1`"

@@ -11,6 +11,12 @@ function ABORT_JOB {
    exit
 }
 
+DomibusSnapshotLocation="$1"
+DomibusInstallationDir=/data/domibus
+ApplicationServer=Tomcat
+DatabaseType=MySQL
+
+
 rm -rf  ${WORKING_DIR}/temp ; mkdir -p ${WORKING_DIR}/temp/domibus
 
 echo ; echo "Copying domInstall in: ${WORKING_DIR}/temp"
@@ -58,6 +64,8 @@ DockerBuildArgs="
 --build-arg DB_NAME=domibus      \
 --build-arg DB_USER=edelivery    \
 --build-arg DB_PASS=edelivery    \
+--build-arg DomibusVersion=\"${DOMIBUS_VERSION}\" \
+--build-arg DomibusSnapshotLocation=\"${DomibusSnapshotLocation}\" \
 "
 
 #TODO check if these parameters are needed
@@ -71,6 +79,8 @@ DockerBuildArgs="
 echo
 echo "Building Docker Image: ${dockerImage}:"
 echo
+echo "DOMIBUS_VERSION: " ${DOMIBUS_VERSION}
+
 echo " - Docker Build Context		: ${dockerBuildContext}"
 echo " - Docker File (-f)                     : ${dockerFile}"
 echo " - Docker Build Args (--build-arg)	: ${DockerBuildArgs}"
