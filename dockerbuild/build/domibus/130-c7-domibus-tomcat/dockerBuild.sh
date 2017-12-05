@@ -53,7 +53,7 @@ dockerBuildContext="`cd ${WORKING_DIR}/../../../../ ; pwd`"
 
 dockerWorkingDir="`pwd  | sed \"s#${dockerBuildContext}/##g\"`"
 dockerFile="`ls ${WORKING_DIR}/*.Dockerfile`"
-dockerImage="`basename ${dockerFile} | cut -d. -f1`:${DomibusVersion}"
+dockerImage="`basename ${dockerFile} | cut -d. -f1`:${DOMIBUS_VERSION}"
 DockerBuildArgs="
 --build-arg PARTY_ID=blue \
 --build-arg WORKING_DIR=\"${dockerWorkingDir}\" \
