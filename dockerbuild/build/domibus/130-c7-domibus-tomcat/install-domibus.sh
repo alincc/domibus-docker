@@ -15,10 +15,10 @@ function sourceExternalFunctions {
 
    echo ; echo "--Sourcing External Functions:"
 
-   . ../../../../domInstall/scripts/functions/common.functions
-   . ../../../../domInstall/scripts/functions/downloadJDBC.functions
-   . ../../../../domInstall/scripts/functions/getDomibus.functions
-   . ../../../../domInstall/scripts/functions/Tomcat.functions
+   . /data/domInstall/scripts/functions/common.functions
+   . ./data/domInstall/scripts/functions/downloadJDBC.functions
+   . /data/domInstall/scripts/functions/getDomibus.functions
+   . /data/domInstall/scripts/functions/Tomcat.functions
 }
 
 function getDomibusInstallProperties {
