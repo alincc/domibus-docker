@@ -57,7 +57,6 @@ dockerImage="`basename ${dockerFile} | cut -d. -f1`:${DOMIBUS_VERSION}"
 DockerBuildArgs="
 --build-arg PARTY_ID=blue \
 --build-arg WORKING_DIR=\"${dockerWorkingDir}\" \
---build-arg DOMINSTALL_PROPERTYFILE=${domInstallPropertyFile} \
 --build-arg DB_TYPE=MySQL        \
 --build-arg DB_HOST=domibus_blue \
 --build-arg DB_PORT=3306         \
