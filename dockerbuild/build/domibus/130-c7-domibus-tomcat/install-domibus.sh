@@ -12,18 +12,25 @@ function displayBanner {
 }
 
 function sourceExternalFunctions {
-#displayFunctionBanner ${FUNCNAME[0]}
 
    echo ; echo "Sourcing External Functions:"
 
-   . ${SCRIPTPATH}/scripts/functions/common.functions
-   . ${SCRIPTPATH}/scripts/functions/downloadJDBC.functions
-   . ${SCRIPTPATH}/scripts/functions/downloadSoftware.functions
-   . ${SCRIPTPATH}/scripts/functions/getDomibus.functions
-   . ${SCRIPTPATH}/scripts/functions/configureDomibus.functions
-   . ${SCRIPTPATH}/scripts/functions/Tomcat.functions
-   . ${SCRIPTPATH}/scripts/functions/WildFly.functions
-   . ${SCRIPTPATH}/scripts/functions/WebLogic.functions
+   . ../../../../domInstall/scripts/functions/common.functions
+   . ../../../../domInstall/scripts/functions/downloadJDBC.functions
+   . ../../../../domInstall/scripts/functions/downloadSoftware.functions
+   . ../../../../domInstall/scripts/functions/getDomibus.functions
+   . ../../../../domInstall/scripts/functions/configureDomibus.functions
+   . ../../../../domInstall/scripts/functions/Tomcat.functions
+
+
+   #. ${SCRIPTPATH}/scripts/functions/common.functions
+   #. ${SCRIPTPATH}/scripts/functions/downloadJDBC.functions
+   #. ${SCRIPTPATH}/scripts/functions/downloadSoftware.functions
+   #. ${SCRIPTPATH}/scripts/functions/getDomibus.functions
+   #. ${SCRIPTPATH}/scripts/functions/configureDomibus.functions
+   #. ${SCRIPTPATH}/scripts/functions/Tomcat.functions
+   #. ${SCRIPTPATH}/scripts/functions/WildFly.functions
+   #. ${SCRIPTPATH}/scripts/functions/WebLogic.functions
 }
 
 function getDomibusInstallProperties {
