@@ -36,9 +36,6 @@ function sourceExternalFunctions {
 function getDomibusInstallProperties {
    displayFunctionBanner ${FUNCNAME[0]}
 
-   echo "DownloadJAVA					: ${DownloadJAVA}"
-   echo "DownloadJDBC					: ${DownloadJDBC}"
-   echo
    echo "DomibusInstallationDir				: $DomibusInstallationDir"
    echo
    echo "DomibusDownloadLocation			: ${DomibusDownloadLocation}"
@@ -74,99 +71,16 @@ function getDomibusInstallProperties {
    fi
 
    echo
-   if [ "${ApplicationServer}" == "WebLogic" ] ; then
-      echo "WebLogicDomainName                           : $WebLogicDomainName"
-      echo "WebLogicAdminServerName                      : ${WebLogicAdminServerName}"
-      echo "WebLogicAdminServerListenAddress             : ${WebLogicAdminServerListenAddress}"
-      echo "WebLogicAdminServerPort                      : ${WebLogicAdminServerPort}"
-      echo "WebLogicAdminUserName                        : ${WebLogicAdminUserName}"
-      echo "WebLogicAdminUserPassword                    : ${WebLogicAdminUserPassword}"
-      echo "WebLogicManagedServer1Name                   : ${WebLogicManagedServer1Name}"
-      echo "WebLogicManagedServer1Port                   : ${WebLogicManagedServer1Port}"
-      echo "WebLogicManagedServer2Name                   : ${WebLogicManagedServer2Name}"
-      echo "WebLogicManagedServer2Port                   : ${WebLogicManagedServer2Port}"
-   fi
 
-   if [ "${ApplicationServer}" == "Tomcat" ] ; then
-      echo "TomcatInstallType $DefaultValuesTomcatInstallType      : $TomcatInstallType"
-      echo "TomcatVersion $DefaultValuesTomcatVersion                : ${TomcatVersion}"
-      echo
-      echo "TomcatHTTPPort                               : ${TomcatHTTPPort}"
-      echo "TomcatRedirectPort                           : ${TomcatRedirectPort}"
-      echo "TomcatAJPPort                                : ${TomcatAJPPort}"
-      echo "TomcatShutdownPort                           : ${TomcatShutdownPort}"
-      echo "TomcatTransportConnector                     : ${TomcatTransportConnector}"
-      echo "TomcatConnectorPort                          : ${TomcatConnectorPort}"
-      echo "TomcatRmiServerPort                          : ${TomcatRmiServerPort}"
-   fi
-
-   if [ "${ApplicationServer}" == "WildFly" ] ; then
-      echo "WildFlyInstallType $DefaultValuesWildFlyInstallType     : $WildFlyInstallType"
-      echo "WildFlyServerConfig                          : $WildFlyServerConfig"
-      echo "WildFlyAdminUser                             : $WildFlyAdminUser"
-      echo "WildFlyAdminPwd                              : $WildFlyAdminPwd"
-      echo "WildFlyNetPublicInterface                    : $WildFlyNetPublicInterface:$WildFlyNetPublicPort"
-      echo "WildFlyNetManagementInterface                : $WildFlyNetManagementInterface:$WildFlyNetManagementPort"
-      echo "WildFlyNetUnsecureInterface                  : $WildFlyNetUnsecureInterface:$WilfFlyNetUnsecurePort"
-   fi
-
+   echo "TomcatInstallType $DefaultValuesTomcatInstallType      : $TomcatInstallType"
+   echo "TomcatVersion $DefaultValuesTomcatVersion                : ${TomcatVersion}"
    echo
-   echo "DOMIBUS CONFIGURATION"
-   echo "====================="
-   echo "domibus.security.key.private.alias		: ${domibus_security_key_private_alias}"
-   echo "domibus.msh.messageid.suffix			: ${domibus_msh_messageid_suffix}"
-   echo
-   echo "domibus.security.keystore.location		: ${domibus_security_keystore_location}"
-   echo "domibus.security.keystore.type			: ${domibus_security_keystore_type}"
-   echo "domibus.security.keystore.password		: ${domibus_security_keystore_password}"
-   echo "domibus.security.key.private.alia		: ${domibus_security_key_private_alias}"
-   echo "domibus.security_key.private.password		: ${domibus_security_key_private_password}"
-   echo
-   echo "domibus.security.truststore.location		: ${domibus_security_truststore_location}"
-   echo "domibus.security.truststore.type		: ${domibus_security_truststore_type}"
-   echo "domibus.security.truststore.password		: ${domibus_security_truststore_password}"
-
-   echo "activeMQ.broker.host				: ${activeMQ_broker_host}"
-   echo "activeMQ.brokerName				: ${activeMQ_brokerName}"
-   echo "activeMQ.embedded.configurationFile		: ${activeMQ_embedded_configurationFile}"
-   echo "activeMQ.JMXURL					: ${activeMQ_JMXURL}"
-   echo "activeMQ.connectorPort				: ${activeMQ_connectorPort}"
-   echo "activeMQ.rmiServerPort				: ${activeMQ_rmiServerPort}"
-   echo "activeMQ.transportConnector.uri			: ${activeMQ_transportConnector_uri}"
-   echo "activeMQ.username				: ${activeMQ_username}"
-   echo "activeMQ.password				: ${activeMQ_password}"
-
-   echo "TLSEnabled                                   : $TLSEnabled"
-   echo "disableCNCheck                               : $disableCNCheck"
-   echo "singleAuthentication                         : $singleAuthentication"
-   echo
-   echo "KeystoreName                                 : ${KeystoreName}"
-   echo "domibus.security.keystore.password                             : ${domibus_security_keystore_password}"
-   echo "KeystorePrivateKeyAlias                      : ${KeystorePrivateKeyAlias}"
-   echo "KeystorePrivateKeyPassword                   : ${KeystorePrivateKeyPassword}"
-   echo "TruststoreName                               : ${TruststoreName}"
-   echo "TruststorePassword                           : ${TruststorePassword}"
-   echo
-   echo "JMSQueuesPassword                            : $JMSQueuesPassword"
-   echo "WebConsoleAdminPassword                      : $WebConsoleAdminPassword"
-   echo "WebConsoleUserPassword                       : $WebConsoleUserPassword"
-   echo "WSPluginAdminPassword                        : $WSPluginAdminPassword"
-   echo "WSPluginUserPassword                         : $WSPluginUserPassword"
-   echo "JMSPluginAdminPassword                       : $JMSPluginAdminPassword"
-   echo "JMSPluginUserPassword                        : $JMSPluginUserPassword"
-
 }
 
 function initInstallation {
    displayFunctionBanner ${FUNCNAME[0]}
 
-   export REPO_DIR="$SCRIPTPATH"
-
-   echo $'\n\n\n' ; echo "Installation Source Directory is : $REPO_DIR"
-
    # Domibus Directory
-   #export DOMIBUS_DIR="$REPO_DIR/domibus"
-   #baciuco DomibusInstallationDir comes from the installation property file; to be removed
    export DOMIBUS_DIR=${DomibusInstallationDir}/domibus
 
    echo ; echo "Setting \${cef_edelivery_path} to ${DomibusInstallationDir}"
