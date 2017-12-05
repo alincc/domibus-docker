@@ -132,40 +132,8 @@ getDomibusInstallProperties
 initInstallation
 downloadJDBC
 getDomibus "${DomibusVersion}" "${ApplicationServer}" "${DomibusInstallationType}" "${DOWNLOAD_DIR}/Domibus/${DomibusVersion}"
-
-
 echo $'\n\nStarting Domibus Installation'
-
-case "$ApplicationServer" in
-   "WebLogic") echo "Installing Domibus on WebLogic..."
-      case "${DomibusInstallationType}" in
-         "Full")  echo "WebLogic Pre-Configure Full Deployment is not supported."
-            ;;
-         "Single")  echo  "Domibus Oracle WebLogic Single Server Deployment"
-            installDomibusWebLogicSingle
-            ;;
-         "Cluster")  echo  "Domibus Oracle WebLogic Clustered Server Deployment"
-            installDomibusWebLogicCluster
-            ;;
-      esac
-      ;;
-   "Tomcat") echo ; echo "Installing Tomcat"
-       installDomibusTomcatSingle
-      ;;
-   "WildFly") echo ; echo "Installing Wildfly"
-      case "${DomibusInstallationType}" in
-         "Full")  echo "Pre-configured Full Deployment"
-            installDomibusWildFlyFull 
-            ;;
-         "Single")  echo  "Single Server Deployment"
-            installDomibusWildFlySingle
-            ;;
-         "Cluster")  echo  "Clustered Server Deployment"
-
-            ;;
-      esac
-      ;;
-esac
+installDomibusTomcatSingle
 
 exit
 

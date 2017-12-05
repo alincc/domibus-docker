@@ -36,7 +36,7 @@ COPY ./install-domibus.sh /data/domInstall
 RUN su - domibus -c "/data/domInstall/install-domibus.sh"
 
 # Copying the Domibus Startup & Run Time Configuration
-COPY dockerbuild/scripts/Tomcat/entrypoint.sh /data/domibus/domibus
+COPY dockerbuild/build/domibus/130-c7-domibus-tomcat/entrypoint.sh /data/domibus/domibus
 RUN chown domibus:domibus /data/domibus/domibus/entrypoint.sh
 RUN chmod +x /data/domibus/domibus/entrypoint.sh
 

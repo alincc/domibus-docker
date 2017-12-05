@@ -75,15 +75,6 @@ function waitForDatabase {
    fi
 }
 
-function configureAppServerURL {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   echo "ApplicationServer=${ApplicationServer}"
-   if [ "${1}" == "Tomcat" ] ; then appServerURL="domibus" ; fi
-   if [ "${1}" == "WildFly" ] ; then appServerURL="domibus-wildfly" ; fi
-   if [ "${1}" == "Weblogic" ] ; then appServerURL="domibus-weblogic" ; fi
-}
-
 function configureJava {
    displayFunctionBanner ${FUNCNAME[0]}
 
@@ -330,8 +321,8 @@ function uploadPmode {
 ##########################################################################
 
 quickFix01
-configureAppServerURL Tomcat
-configureJava
+appServerURL="domibus"
+#configureJava
 #buildDomibusStartupParams
 waitForDatabase
 configureDomibusProperties
