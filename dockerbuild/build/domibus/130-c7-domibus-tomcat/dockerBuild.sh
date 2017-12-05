@@ -66,8 +66,8 @@ DockerBuildArgs="
 --build-arg DB_NAME=domibus      \
 --build-arg DB_USER=edelivery    \
 --build-arg DB_PASS=edelivery    \
---build-arg DomibusVersion=\"${DOMIBUS_VERSION}\" \
---build-arg DomibusSnapshotLocation=\"${DomibusSnapshotLocation}\" \
+--build-arg DomibusVersion=${DOMIBUS_VERSION} \
+--build-arg DomibusSnapshotLocation=${DomibusSnapshotLocation} \
 "
 
 #TODO check if these parameters are needed
