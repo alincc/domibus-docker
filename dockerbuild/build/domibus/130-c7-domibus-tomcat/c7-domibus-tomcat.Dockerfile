@@ -30,8 +30,10 @@ COPY ${WORKING_DIR}/temp/domInstall/downloads/jdbc/ /data/domibus/domibus/lib
 # Changing File ownership to 'domibus' user
 RUN chown -R domibus:domibus /data
 
+
+COPY ./install-domibus.sh /data/domInstall
 # Running Domibus Installation Script (As 'domibus user')
-RUN su - domibus -c "install-domibus.sh"
+RUN su - domibus -c "/data/domInstall/install-domibus.sh"
 
 # Copying the Domibus Startup & Run Time Configuration
 COPY dockerbuild/scripts/Tomcat/entrypoint.sh /data/domibus/domibus
