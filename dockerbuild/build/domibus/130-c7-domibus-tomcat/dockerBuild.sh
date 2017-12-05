@@ -12,12 +12,10 @@ function ABORT_JOB {
 }
 
 DomibusSnapshotLocation=$1
-DomibusInstallationDir=/data/domibus
 ApplicationServer=Tomcat
 DatabaseType=MySQL
 
 echo "--------------DomibusSnapshotLocation: ${DomibusSnapshotLocation}"
-echo "--------------DomibusInstallationDir: ${DomibusInstallationDir}"
 echo "--------------ApplicationServer: ${ApplicationServer}"
 echo "--------------DatabaseType: ${DatabaseType}"
 

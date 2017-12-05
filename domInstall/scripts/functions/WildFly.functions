@@ -587,6 +587,14 @@ function installDomibusWildFlyFull {
 
 }
 
+function extractStandAloneFromFull {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+echo ; echo "Extracting standalone-full.xml from $DOWNLOAD_DIR/domibus-$DOMIBUS_VERSION-wildfly-full.zip to \$TEMP_DIR/standalone-full.xml_FROM_FULL"
+unzip -p $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-wildfly-full.zip domibus/standalone/configuration/standalone-full.xml > $TEMP_DIR/standalone-full.xml_FROM_FULL
+}
+
+
 function installDomibusWildFlySingle {
    displayFunctionBanner ${FUNCNAME[0]}
 

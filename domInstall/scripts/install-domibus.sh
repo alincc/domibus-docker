@@ -4,6 +4,9 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 # Set DEBUG TO 1 to activate debugging
 DEBUG=0
 
+DomibusInstallationDir=/data/domibus
+echo "--------------DomibusInstallationDir: ${DomibusInstallationDir}"
+
 function displayBanner {
    cat ${SCRIPTPATH}/scripts/textBanner.txt
 }
@@ -207,77 +210,12 @@ function initInstallation {
 }
 
 
-function checkMD5Signatures {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   echo $'\nDisplaying & Controlling MD5 signature'
-   for file in $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/* ; do md5sum $file ; done
-}
-
-function createDomibusConfDir {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   echo  ; echo "Creating Directory: ${cef_edelivery_path}/domibus/conf/domibus"
-   [ -d ${cef_edelivery_path}/domibus/conf/domibus ] || mkdir -p ${cef_edelivery_path}/domibus/conf/domibus
-}
-
-function installDomibusConfiguration {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   echo ; echo "unzip -q \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-wildfly-configuration.zip -d ${cef_edelivery_path}//domibus/conf/domibus"
-   unzip -q $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-wildfly-configuration.zip -d ${cef_edelivery_path}/domibus/conf/domibus
-}
-
-function extractStandAloneFromFull {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-echo ; echo "Extracting standalone-full.xml from $DOWNLOAD_DIR/domibus-$DOMIBUS_VERSION-wildfly-full.zip to \$TEMP_DIR/standalone-full.xml_FROM_FULL"
-unzip -p $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-wildfly-full.zip domibus/standalone/configuration/standalone-full.xml > $TEMP_DIR/standalone-full.xml_FROM_FULL
-}
-
-function deployDomibusWarFile {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   echo ; echo "Deploying domibus-${DOMIBUS_PREFIX}-wildfly.war: ${cef_edelivery_path}/domibus}/bin/jboss-cli.sh <<EOF"
-   ${cef_edelivery_path}/domibus/bin/jboss-cli.sh <<EOF
-
-embed-server --server-config=${WildFlyServerConfig}.xml
-
-deploy --force ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-wildfly.war
-
-exit
-EOF
-}
-
 function startDomibus {
    displayFunctionBanner ${FUNCNAME[0]}
 
    echo ; echo "Starting Domibus-wildfly: nohup ${cef_edelivery_path}/domibus/bin/standalone.sh --server-config=${WildFlyServerConfig}.xml > ${cef_edelivery_path}/domibus/domibus-wildfly.log 2>&1 &"
    nohup ${cef_edelivery_path}/domibus/bin/standalone.sh --server-config=${WildFlyServerConfig}.xml > ${cef_edelivery_path}/domibus/domibus-wildfly.log 2>&1 &
 }
-
-function setJVMParamsTomcat {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   echo
-   echo "Setting JVM Parameters in \${cef_edelivery_path}/domibus/bin/catalina.sh"
-   #MyLine='"\nexport CATALINA_HOME=\""$DOMIBUS_DIR\/domibus\""\nexport JAVA_OPTS=\""\$JAVA_OPTS -Xms128m -Xmx1024m -XX:MaxPermSize=256m\""\nexport JAVA_OPTS=\""\$JAVA_OPTS -Ddomibus.config.location=\$CATALINA_HOME\/conf\/domibus\""\n'"
-   MyLine='\nexport JAVA_OPTS="$JAVA_OPTS -Xms128m -Xmx1024m -XX:MaxPermSize=256m"\nexport JAVA_OPTS="$JAVA_OPTS -Ddomibus.config.location=$CATALINA_HOME\/conf\/domibus"\n'
-   #MyLine="\nexport CATALINA_HOME=$DOMIBUS_DIR\/domibus\n"
-   #echo $MyLine
-   #MyLine="${MyLine}export JAVA_OPTS=\"""\$JAVA_OPTS –Xms128m -Xmx1024m -XX:MaxPermSize=256m\"""\n\""
-   #echo $MyLine
-   #MyLine="${MyLine}export JAVA_OPTS=\"""\$JAVA_OPTS -Ddomibus.config.location=\$CATALINA_HOME\/conf\/domibus\"""\n\""
-   #echo $MyLine
-   sed -i "249s/.*/${MyLine}/" ${cef_edelivery_path}/domibus/bin/catalina.sh
-   #sed -i "2s/.*/totoleHero/" $DOMIBUS_DIR/domibus/bin/catalina.sh
-   #cat $DOMIBUS_DIR/domibus/bin/catalina.sh >> $TEMP_DIR/catalina.sh 
-   #mv $TEMP_DIR/catalina.sh  $DOMIBUS_DIR/domibus/bin/catalina.sh
-
-   echo ; echo "Setting \${cef_edelivery_path}/domibus/bin/*.sh as executacle: chmod +x \${cef_edelivery_path}/domibus/bin/*.sh"
-   chmod +x ${cef_edelivery_path}/domibus/bin/*.sh
-}
-
 
 #####################################################################################################################
 ##### MAIN PROGRAMM START HERE

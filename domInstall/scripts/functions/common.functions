@@ -92,3 +92,17 @@ function generateBCRYPTPassword {
    fi
 }
 
+function createDomibusConfDir {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo  ; echo "Creating Directory: ${cef_edelivery_path}/domibus/conf/domibus"
+   [ -d ${cef_edelivery_path}/domibus/conf/domibus ] || mkdir -p ${cef_edelivery_path}/domibus/conf/domibus
+}
+
+
+function checkMD5Signatures {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo $'\nDisplaying & Controlling MD5 signature'
+   for file in $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/* ; do md5sum $file ; done
+}
