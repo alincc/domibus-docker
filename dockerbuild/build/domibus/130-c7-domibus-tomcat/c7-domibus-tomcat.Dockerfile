@@ -34,7 +34,7 @@ RUN chown -R domibus:domibus /data
 RUN chown domibus:domibus /data/domInstall/install-domibus.sh
 RUN chmod +x /data/domInstall/install-domibus.sh
 # Running Domibus Installation Script (As 'domibus user')
-RUN su - domibus -c "/data/domInstall/install-domibus.sh"
+RUN su - domibus -c "/data/domInstall/install-domibus.sh $DomibusVersion"
 
 # Copying the Domibus Startup & Run Time Configuration
 COPY dockerbuild/build/domibus/130-c7-domibus-tomcat/entrypoint.sh /data/domibus/domibus

@@ -4,7 +4,9 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 # Set DEBUG TO 1 to activate debugging
 DEBUG=0
 
+DomibusVersion=$1
 DomibusInstallationDir=/data/domibus
+ApplicationServer=Tomcat
 echo "--------------DomibusInstallationDir: ${DomibusInstallationDir}"
 
 function displayBanner {
