@@ -11,10 +11,15 @@ function ABORT_JOB {
    exit
 }
 
-DomibusSnapshotLocation="$1"
+DomibusSnapshotLocation=$1
 DomibusInstallationDir=/data/domibus
 ApplicationServer=Tomcat
 DatabaseType=MySQL
+
+echo "--------------DomibusSnapshotLocation: ${DomibusSnapshotLocation}"
+echo "--------------DomibusInstallationDir: ${DomibusInstallationDir}"
+echo "--------------ApplicationServer: ${ApplicationServer}"
+echo "--------------DatabaseType: ${DatabaseType}"
 
 
 rm -rf  ${WORKING_DIR}/temp ; mkdir -p ${WORKING_DIR}/temp/domibus
@@ -78,7 +83,7 @@ DockerBuildArgs="
 echo
 echo "Building Docker Image: ${dockerImage}:"
 echo
-echo "DOMIBUS_VERSION: " ${DOMIBUS_VERSION}
+echo "DOMIBUS_VERSION: ${DOMIBUS_VERSION}"
 
 echo " - Docker Build Context		: ${dockerBuildContext}"
 echo " - Docker File (-f)                     : ${dockerFile}"

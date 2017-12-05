@@ -1,9 +1,6 @@
 #!/bin/bash
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
-dominstallproperties="$1"
-domibusproperties="$2"
-
 # Set DEBUG TO 1 to activate debugging
 DEBUG=0
 
@@ -36,51 +33,8 @@ function defineColors {
    echo
 }
 
-function checkDomInstallPropertiesFiles {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   if [ "${dominstallproperties}" == "" ] ; then
-      ABORT_JOB "The MANDATORY 'domInstall.properties' properties file is not specified..."
-   else
-      if [ ! -f ${dominstallproperties} ] ; then
-         ABORT_JOB "The mentioned \"domInstall.properties\" (${domibusproperties}) properties file DOES NOT EXIST..."
-      else
-         echo
-         echo "   DOMIBUS INSTALLATION WILL BE PERFORMED WITH THE FOLLOWING FILE:"
-         echo
-         echo "   - ${dominstallproperties}"
-         echo
-      fi
-   fi
-}
-
-function checkDomibusPropertiesFiles {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   if [ "${domibusproperties}" == "" ] ; then
-      echo
-      echo "The mentioned \"dominstall.properties\" (${dominstallproperties}) properties file is NOT SPECIFIED"
-      echo
-      echo "   PERFORMING A DEFAULT INSTALLATION"
-      echo
-   else
-      if [ ! -f "${domibusproperties}" ] ; then
-         ABORT_JOB "The mentioned \"domibus.properties\" (${domibusproperties}) properties file DOES NOT EXIST..."
-      else
-         echo
-         echo "   DOMIBUS CONFIGURATION WILL BE PERFORMED WITH THE FOLLOWING FILE:"
-         echo
-         echo "   - ${domibusproperties}"
-         echo
-      fi
-   fi
-}
-
 function getDomibusInstallProperties {
    displayFunctionBanner ${FUNCNAME[0]}
-
-   source ${dominstallproperties}
-   #source ${domibusproperties}
 
    echo "DownloadJAVA					: ${DownloadJAVA}"
    echo "DownloadJDBC					: ${DownloadJDBC}"
@@ -333,7 +287,6 @@ clear
 
 displayBanner
 sourceExternalFunctions
-#checkDomInstallPropertiesFiles
 getDomibusInstallProperties
 initInstallation
 downloadJDBC
