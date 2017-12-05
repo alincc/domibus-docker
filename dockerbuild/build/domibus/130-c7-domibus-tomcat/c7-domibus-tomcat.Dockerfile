@@ -32,6 +32,7 @@ COPY dockerbuild/build/domibus/130-c7-domibus-tomcat/install-domibus.sh /data/do
 RUN chown -R domibus:domibus /data
 
 RUN chown domibus:domibus /data/domInstall/install-domibus.sh
+RUN chmod +x /data/domInstall/install-domibus.sh
 # Running Domibus Installation Script (As 'domibus user')
 RUN su - domibus -c "/data/domInstall/install-domibus.sh"
 
