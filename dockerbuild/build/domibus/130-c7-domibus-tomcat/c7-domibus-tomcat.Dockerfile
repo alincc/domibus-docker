@@ -26,12 +26,11 @@ COPY ${WORKING_DIR}/temp/domInstall /data/domInstall
 #  - The Domibus property file: domibus.properties (Optional)
 
 COPY ${WORKING_DIR}/temp/domInstall/downloads/jdbc/ /data/domibus/domibus/lib
+COPY dockerbuild/build/domibus/130-c7-domibus-tomcat/install-domibus.sh /data/domInstall
 
 # Changing File ownership to 'domibus' user
 RUN chown -R domibus:domibus /data
 
-
-COPY dockerbuild/build/domibus/130-c7-domibus-tomcat/install-domibus.sh /data/domInstall
 # Running Domibus Installation Script (As 'domibus user')
 RUN su - domibus -c "/data/domInstall/install-domibus.sh"
 
