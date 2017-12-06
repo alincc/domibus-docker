@@ -31,5 +31,8 @@ RUN chmod +x $CATALINA_HOME/entrypoint.sh
 # Exposing Domibus
 EXPOSE 8080
 
+RUN echo 'ls -la $CATALINA_HOME'
+RUN ls -la $CATALINA_HOME
+
 ENTRYPOINT $CATALINA_HOME/entrypoint.sh
 
