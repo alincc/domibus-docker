@@ -4,15 +4,16 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 # Set DEBUG TO 1 to activate debugging
 DEBUG=0
 
+#CATALINA_HOME=$1 #/data/tomcat
+#export CATALINA_HOME=$CATALINA_HOME
 
-CATALINA_HOME=$1 #/data/tomcat
-export CATALINA_HOME=$CATALINA_HOME
-
-DOM_INSTALL=$2 #/data/domInstall
+DOM_INSTALL=$1 #/data/domInstall
+JDBC_DRIVER_DIR=$2
 
 
 echo "--------------CATALINA_HOME: ${CATALINA_HOME}"
 echo "--------------DOM_INSTALL: ${DOM_INSTALL}"
+echo "--------------JDBC_DRIVER_DIR: ${JDBC_DRIVER_DIR}"
 
 function sourceExternalFunctions {
 
@@ -47,6 +48,8 @@ function installTomcat {
    mkdir -p ${CATALINA_HOME}
    echo "Installing Tomcat Version ${TomcatVersion} in ${CATALINA_HOME}"
    tar xfz $TomcatArchiveLocation/apache-tomcat-${TomcatVersion}.tar.gz -C ${CATALINA_HOME} --strip 1
+
+   cp ${JDBC_DRIVER_DIR}/* $${CATALINA_HOME}/lib
 }
 
 sourceExternalFunctions
