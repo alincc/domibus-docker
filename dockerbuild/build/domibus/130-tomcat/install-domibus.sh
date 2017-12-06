@@ -9,6 +9,8 @@ CATALINA_HOME=$1 #/data/tomcat
 export CATALINA_HOME=$CATALINA_HOME
 
 DOM_INSTALL=$2 #/data/domInstall
+
+
 echo "--------------CATALINA_HOME: ${CATALINA_HOME}"
 echo "--------------DOM_INSTALL: ${DOM_INSTALL}"
 
@@ -26,16 +28,15 @@ function sourceExternalFunctions {
 function installTomcat {
    displayFunctionBanner ${FUNCNAME[0]}
 
-   TomcatVersion = "8.0.39"
-   TomcatArchiveLocation = $DOM_INSTALL/tomcat
-
    echo "Creating $TomcatArchiveLocation directory"
    mkdir -p ${TomcatArchiveLocation}
 
    echo "   - Downloading Apache Tomcat Software Version ${TomcatVersion} in ${TomcatArchiveLocation}"
 
-   TomcatMainVersion="`echo ${TomcatVersion} | cut -c1-1`"
-   TomcatDownloadUrl=" http://archive.apache.org/dist/tomcat/tomcat-${TomcatMainVersion}/v${TomcatVersion}/bin/apache-tomcat-${TomcatVersion}.tar.gz"
+   local TomcatVersion="8.0.39"
+   local TomcatArchiveLocation="$DOM_INSTALL/tomcat"
+   local TomcatMainVersion=`echo ${TomcatVersion} | cut -c1-1`
+   local TomcatDownloadUrl="http://archive.apache.org/dist/tomcat/tomcat-${TomcatMainVersion}/v${TomcatVersion}/bin/apache-tomcat-${TomcatVersion}.tar.gz"
 
    echo "   - Downloading: ${TomcatDownloadUrl} in $TomcatArchiveLocation"
    echo "wget -P $TomcatArchiveLocation ${TomcatDownloadUrl} --no-check-certificate"
