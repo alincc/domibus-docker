@@ -25,7 +25,7 @@ RUN chown domibus:domibus $DOM_INSTALL/install-domibus.sh
 RUN chmod +x $DOM_INSTALL/install-domibus.sh
 # Running Domibus Installation Script (As 'domibus user')
 #COPY ${JDBC_DRIVER_DIR}/ $CATALINA_HOME/lib
-RUN su - domibus -c "$DOM_INSTALL/install-domibus.sh ${DOM_INSTALL} ${JDBC_DRIVER_DIR}"
+RUN su - domibus -c "$DOM_INSTALL/install-domibus.sh ${CATALINA_HOME} ${DOM_INSTALL} ${JDBC_DRIVER_DIR}"
 
 # Copying the Domibus Startup & Run Time Configuration
 COPY ${WORKING_DIR}/entrypoint.sh $CATALINA_HOME

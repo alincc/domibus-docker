@@ -4,11 +4,11 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 # Set DEBUG TO 1 to activate debugging
 DEBUG=0
 
-#CATALINA_HOME=$1 #/data/tomcat
-#export CATALINA_HOME=$CATALINA_HOME
+CATALINA_HOME=$1 #/data/tomcat
+export CATALINA_HOME=$CATALINA_HOME
 
-DOM_INSTALL=$1 #/data/domInstall
-JDBC_DRIVER_DIR=$2
+DOM_INSTALL=$2 #/data/domInstall
+JDBC_DRIVER_DIR=$3
 
 
 echo "--------------CATALINA_HOME: ${CATALINA_HOME}"
