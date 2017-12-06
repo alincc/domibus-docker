@@ -49,6 +49,8 @@ function installTomcat {
    echo "Installing Tomcat Version ${TomcatVersion} in ${CATALINA_HOME}"
    tar xfz $TomcatArchiveLocation/apache-tomcat-${TomcatVersion}.tar.gz -C ${CATALINA_HOME} --strip 1
 
+   echo "Listing Creating $JDBC_DRIVER_DIR directory"
+   ls -la ${JDBC_DRIVER_DIR}
    cp ${JDBC_DRIVER_DIR}/ ${CATALINA_HOME}/lib
 }
 
