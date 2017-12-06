@@ -1,7 +1,8 @@
 #!/bin/bash
 
 echo ; echo "Sourcing domInstall Common Functions"
-
+CATALINA_HOME=$1
+export CATALINA_HOME=$CATALINA_HOME
 
 function startDomibus {
    displayFunctionBanner ${FUNCNAME[0]}
