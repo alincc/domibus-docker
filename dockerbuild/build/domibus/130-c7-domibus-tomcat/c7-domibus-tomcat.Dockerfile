@@ -14,6 +14,7 @@ ARG DB_USER
 ARG DB_PASS
 
 # Copying the Domibus installation Script
+RUN echo '-----------------JAVA_HOME: ${JAVA_HOME}'
 RUN echo '-----------------WORKING_DIR: ${WORKING_DIR}'
 RUN echo '-----------------DomibusVersion: ${DomibusVersion}'
 RUN echo '-----------------DomibusSnapshotLocation: ${DomibusSnapshotLocation}'
