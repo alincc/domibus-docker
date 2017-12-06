@@ -48,7 +48,7 @@ function installTomcat {
    tar xfz $TomcatArchiveLocation/apache-tomcat-${TomcatVersion}.tar.gz -C ${CATALINA_HOME} --strip 1
 }
 
-
+sourceExternalFunctions
 installTomcat
 #downloadJDBC
 
