@@ -1,22 +1,11 @@
-
-FROM centos7
+FROM edelivery-tomcat-8.0.39
 
 ARG WORKING_DIR
-
-ARG DomibusVersion
 ARG DomibusSnapshotLocation
-ARG PARTY_ID
-ARG DB_TYPE
-ARG DB_HOST
-ARG DB_PORT
-ARG DB_NAME
-ARG DB_USER
-ARG DB_PASS
 
 # Copying the Domibus installation Script
 RUN echo '-----------------JAVA_HOME: ${JAVA_HOME}'
 RUN echo '-----------------WORKING_DIR: ${WORKING_DIR}'
-RUN echo '-----------------DomibusVersion: ${DomibusVersion}'
 RUN echo '-----------------DomibusSnapshotLocation: ${DomibusSnapshotLocation}'
 
 RUN mkdir -p /data/domInstall

@@ -40,12 +40,6 @@ cp ${WORKING_DIR}/../../../../../domibus/Domibus-MSH-soapui-tests/src/main/soapu
 # Copy Domibus Policies
 cp -r ${WORKING_DIR}/../../../../../domibus/Domibus-MSH/src/main/conf/domibus/policies ${WORKING_DIR}/temp/domInstall
 
-#Oracle
-mkdir -p ${WORKING_DIR}/temp/domInstall/downloads/jdbc
-   cp ${ORACLE_REPO}/jdbc/* ${WORKING_DIR}/temp/domInstall/downloads/jdbc
-   if [ $? -ne 0 ] ; then
-      ABORT_JOB "ERROR Copying Oracle jdbc drivers from ${ORACLE_REPO}/jdbc to  ${WORKING_DIR}/temp/domInstall/downloads/jdbc"
-   fi
 
 #baciuco why changing the dockerBuildContext
 dockerBuildContext="`cd ${WORKING_DIR}/../../../../ ; pwd`"
@@ -54,25 +48,9 @@ dockerWorkingDir="`pwd  | sed \"s#${dockerBuildContext}/##g\"`"
 dockerFile="`ls ${WORKING_DIR}/*.Dockerfile`"
 dockerImage="`basename ${dockerFile} | cut -d. -f1`:${DOMIBUS_VERSION}"
 DockerBuildArgs="
---build-arg PARTY_ID=blue \
 --build-arg WORKING_DIR=\"${dockerWorkingDir}\" \
---build-arg DB_TYPE=MySQL        \
---build-arg DB_HOST=domibus_blue \
---build-arg DB_PORT=3306         \
---build-arg DB_NAME=domibus      \
---build-arg DB_USER=edelivery    \
---build-arg DB_PASS=edelivery    \
---build-arg DomibusVersion=${DOMIBUS_VERSION} \
 --build-arg DomibusSnapshotLocation=${DomibusSnapshotLocation} \
 "
-
-#TODO check if these parameters are needed
-#--build-arg DB_TYPE="oracle"                                            \
-#   --build-arg DB_HOST="localhost"                                         \
-#   --build-arg DB_PORT="1521"                                              \
-#   --build-arg DB_NAME="XE"                                                \
-#   --build-arg DB_USER="edelivery"                                         \
-#   --build-arg DB_PASS="edelivery"
 
 echo
 echo "Building Docker Image: ${dockerImage}:"

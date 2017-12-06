@@ -48,15 +48,18 @@ function installTomcat {
    mkdir -p ${CATALINA_HOME}
    echo "Installing Tomcat Version ${TomcatVersion} in ${CATALINA_HOME}"
    tar xfz $TomcatArchiveLocation/apache-tomcat-${TomcatVersion}.tar.gz -C ${CATALINA_HOME} --strip 1
+}
 
+function installJdbcDrivers {
    echo "Listing $JDBC_DRIVER_DIR directory"
    ls -la ${JDBC_DRIVER_DIR}
    cp ${JDBC_DRIVER_DIR}/* ${CATALINA_HOME}/lib
 }
-
 sourceExternalFunctions
 installTomcat
-#downloadJDBC
+installJdbcDrivers
+
+rm -r ${DOM_INSTALL}
 
 exit
 
