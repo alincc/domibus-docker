@@ -34,5 +34,5 @@ EXPOSE 8080
 RUN echo 'ls -la $CATALINA_HOME'
 RUN ls -la $CATALINA_HOME
 
-ENTRYPOINT $CATALINA_HOME/entrypoint.sh
+ENTRYPOINT /data/tomcat/entrypoint.sh
 
