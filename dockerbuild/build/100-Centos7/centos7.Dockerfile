@@ -2,6 +2,9 @@ FROM centos
 
 ARG JavaVersion
 
+ENV JAVA_HOME /usr/local/java/jre1.8.0_144
+ENV PATH $JAVA_HOME/bin:$PATH
+
 # Creating Extra Groups
 RUN groupadd cefsup
 
