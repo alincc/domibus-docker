@@ -21,23 +21,6 @@ function sourceExternalFunctions {
    . $DOM_INSTALL/scripts/functions/Tomcat.functions
 }
 
-function downloadTomcat {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   TomcatVersion = "8.0.39"
-   TomcatArchiveLocation = $DOM_INSTALL/tomcat
-
-   echo "   - Downloading Apache Tomcat Software Version ${TomcatVersion}"
-
-   TomcatMainVersion="`echo ${TomcatVersion} | cut -c1-1`"
-   TomcatDownloadUrl=" http://archive.apache.org/dist/tomcat/tomcat-${TomcatMainVersion}/v${TomcatVersion}/bin/apache-tomcat-${TomcatVersion}.tar.gz"
-
-
-   echo "   - Downloading: ${TomcatDownloadUrl} in $TomcatArchiveLocation"
-   echo "wget -P $TomcatArchiveLocation ${TomcatDownloadUrl} --no-check-certificate"
-   wget -P $TomcatArchiveLocation ${TomcatDownloadUrl} --no-check-certificate
-}
-
 function installTomcat {
    displayFunctionBanner ${FUNCNAME[0]}
 
