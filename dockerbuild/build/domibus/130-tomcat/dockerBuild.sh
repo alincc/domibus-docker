@@ -19,7 +19,8 @@ DockerBuildArgs="
 
 dockerFile=edelivery-tomcat-8.0.39.Dockerfile
 dockerImage=edelivery-tomcat-8.0.39
-dockerBuildContext=.
+#dockerBuildContext=.
+dockerBuildContext="`cd ${WORKING_DIR}/../../../../ ; pwd`"
 
 echo
 echo "Building Docker Image: ${dockerImage}:"
