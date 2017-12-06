@@ -51,7 +51,7 @@ function installTomcat {
 
    echo "Listing $JDBC_DRIVER_DIR directory"
    ls -la ${JDBC_DRIVER_DIR}
-   cp ${JDBC_DRIVER_DIR}/ ${CATALINA_HOME}/lib
+   cp ${JDBC_DRIVER_DIR}/* ${CATALINA_HOME}/lib
 }
 
 sourceExternalFunctions
