@@ -5,6 +5,8 @@ ARG JDBC_DRIVER_DIR
 ARG CATALINA_HOME=/data/tomcat
 ARG DOM_INSTALL=/data/domInstall
 
+RUN export CATALINA_HOME=$CATALINA_HOME
+
 RUN echo '-----------------WORKING_DIR: ${WORKING_DIR}'
 RUN echo '-----------------JDBC_DRIVER_DIR: ${JDBC_DRIVER_DIR}'
 RUN echo '-----------------CATALINA_HOME: ${CATALINA_HOME}'
