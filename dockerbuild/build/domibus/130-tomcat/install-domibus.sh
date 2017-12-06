@@ -16,9 +16,9 @@ function sourceExternalFunctions {
 
    echo ; echo "--Sourcing External Functions:"
 
-   . /data/domInstall/scripts/functions/common.functions
-   . /data/domInstall/scripts/functions/downloadJDBC.functions
-   . /data/domInstall/scripts/functions/Tomcat.functions
+   . $DOM_INSTALL/scripts/functions/common.functions
+   . $DOM_INSTALL/scripts/functions/downloadJDBC.functions
+   . $DOM_INSTALL/scripts/functions/Tomcat.functions
 }
 
 function downloadTomcat {
