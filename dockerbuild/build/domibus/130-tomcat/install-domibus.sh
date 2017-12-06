@@ -28,15 +28,15 @@ function sourceExternalFunctions {
 function installTomcat {
    displayFunctionBanner ${FUNCNAME[0]}
 
-   echo "Creating $TomcatArchiveLocation directory"
-   mkdir -p ${TomcatArchiveLocation}
-
-   echo "   - Downloading Apache Tomcat Software Version ${TomcatVersion} in ${TomcatArchiveLocation}"
-
    local TomcatVersion="8.0.39"
    local TomcatArchiveLocation="$DOM_INSTALL/tomcat"
    local TomcatMainVersion=`echo ${TomcatVersion} | cut -c1-1`
    local TomcatDownloadUrl="http://archive.apache.org/dist/tomcat/tomcat-${TomcatMainVersion}/v${TomcatVersion}/bin/apache-tomcat-${TomcatVersion}.tar.gz"
+
+   echo "Creating $TomcatArchiveLocation directory"
+   mkdir -p ${TomcatArchiveLocation}
+
+   echo "   - Downloading Apache Tomcat Software Version ${TomcatVersion} in ${TomcatArchiveLocation}"
 
    echo "   - Downloading: ${TomcatDownloadUrl} in $TomcatArchiveLocation"
    echo "wget -P $TomcatArchiveLocation ${TomcatDownloadUrl} --no-check-certificate"
