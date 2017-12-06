@@ -17,6 +17,10 @@ DockerBuildArgs="
 --build-arg JDBC_DRIVER_DIR=${WORKING_DIR}/temp/domInstall/downloads/jdbc \
 "
 
+dockerFile=edelivery-tomcat-8.0.39.Dockerfile
+dockerImage=edelivery-tomcat-8.0.39
+dockerBuildContext=.
+
 echo
 echo "Building Docker Image: ${dockerImage}:"
 echo
