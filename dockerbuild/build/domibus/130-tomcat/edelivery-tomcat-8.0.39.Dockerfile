@@ -1,11 +1,11 @@
 FROM centos7
 
+ENV CATALINA_HOME=/data/tomcat
 ARG WORKING_DIR=.
 ARG JDBC_DRIVER_DIR
-ARG CATALINA_HOME=/data/tomcat
 ARG DOM_INSTALL=/data/domInstall
 
-RUN export CATALINA_HOME=$CATALINA_HOME
+#RUN export CATALINA_HOME=$CATALINA_HOME
 
 RUN echo '-----------------JAVA_HOME: ${JAVA_HOME}'
 RUN echo '-----------------WORKING_DIR: ${WORKING_DIR}'
@@ -38,5 +38,5 @@ RUN echo 'ls -la $CATALINA_HOME'
 RUN ls -la $CATALINA_HOME
 
 #ENTRYPOINT /data/tomcat/entrypoint.sh $CATALINA_HOME
-ENTRYPOINT ["/data/tomcat/entrypoint.sh", "/data/tomcat"]
+ENTRYPOINT ["$CATALINA_HOME/entrypoint.sh"]
 
