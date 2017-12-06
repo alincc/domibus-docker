@@ -31,10 +31,6 @@ echo "Sourcing file(s):"
 . ../../../../domInstall/scripts/functions/getDomibus.functions
 . ../../../../domInstall/scripts/functions/common.functions
 
-domInstallPropertyFile="`basename ${WORKING_DIR}/*.properties`"
-echo ; echo "Sourcing DomInstall Property file: ${WORKING_DIR}/${domInstallPropertyFile}"
-. ${WORKING_DIR}/${domInstallPropertyFile}
-
 # Copying Domibus artefacts into the Docker-Build Context
 copyDomibus "${DomibusSnapshotLocation}"  "`echo ${ApplicationServer} | tr '[:upper:]' '[:lower:]'`" "`echo ${DomibusInstallationType} | tr '[:upper:]' '[:lower:]'`" "${WORKING_DIR}/temp/domInstall/downloads/Domibus/${DomibusVersion}"
 
