@@ -18,6 +18,6 @@ function startDomibus {
 ##########################################################################
 
 startDomibus
-tail -f $CATALINA_HOME/logs/catalina.out
+#tail -f $CATALINA_HOME/logs/catalina.out
 
 
