@@ -20,7 +20,6 @@ dockerBuildContext=.
 
 DockerBuildArgs="
 --build-arg JDBC_DRIVER_DIR=${WORKING_DIR}/temp/domInstall/downloads/jdbc \
---build-arg WORKING_DIR=\"${dockerWorkingDir}\" \
 "
 
 echo
