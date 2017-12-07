@@ -27,37 +27,31 @@ echo "--------------DB_NAME: ${DB_NAME}"
 echo "--------------DB_USER: ${DB_USER}"
 echo "--------------DB_PASS: ${DB_PASS}"
 
+export CATALINA_HOME=-DmycustomVariable=myCustomValue:$CATALINA_HOME
 
 exit
 
-
-ApplicationServer=Tomcat
-echo "--------------DomibusInstallationDir: ${DomibusInstallationDir}"
-
 function displayBanner {
-   cat ${SCRIPTPATH}/scripts/textBanner.txt
+   cat ${DOCKER_DOMINSTALL}/scripts/textBanner.txt
 }
 
 function sourceExternalFunctions {
 
    echo ; echo "--Sourcing External Functions:"
 
-   . /data/domInstall/scripts/functions/common.functions
-   . /data/domInstall/scripts/functions/downloadJDBC.functions
-   . /data/domInstall/scripts/functions/getDomibus.functions
-   . /data/domInstall/scripts/functions/Tomcat.functions
+   . ${DOCKER_DOMINSTALL}/scripts/functions/common.functions
+   . ${DOCKER_DOMINSTALL}/scripts/functions/downloadJDBC.functions
+   . ${DOCKER_DOMINSTALL}/scripts/functions/getDomibus.functions
+   . ${DOCKER_DOMINSTALL}/scripts/functions/Tomcat.functions
 }
 
 
 function initInstallation {
-   displayFunctionBanner ${FUNCNAME[0]}
+  displayFunctionBanner ${FUNCNAME[0]}
 
-  export DOWNLOAD_DIR="${SCRIPTPATH}/downloads"
-  echo "Creating Temporary Download Directories: \${DOWNLOAD_DIR}"
-  echo " - mkdir -p ${DOWNLOAD_DIR}"
-  mkdir -p ${DOWNLOAD_DIR}
-  echo " - mkdir -p ${DOWNLOAD_DIR}/Domibus/${DomibusVersion}"
-  mkdir -p ${DOWNLOAD_DIR}/Domibus/${DomibusVersion}
+  mkdir -p ${DOMIBUS_CONFIG_LOCATION}
+  unzip $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-tomcat-configuration.zip -d ${cef_edelivery_path}/domibus/conf/domibus
+
 
 }
 
@@ -67,10 +61,7 @@ function initInstallation {
 
 displayBanner
 sourceExternalFunctions
-showDomibusInstallProperties
 initInstallation
-getDomibus "${DomibusVersion}" "${ApplicationServer}" "${DomibusInstallationType}" "${DOWNLOAD_DIR}/Domibus/${DomibusVersion}"
-echo $'\n\nStarting Domibus Installation'
 installDomibusTomcatSingle
 
 exit
