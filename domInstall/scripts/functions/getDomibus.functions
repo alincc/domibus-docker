@@ -66,7 +66,7 @@ function copyDomibus {
 
    echo
    for artefact in ${domibusArtefactsList} ; do
-      if [ -f ${DomibusSnapshotLocation}/${artefact} ] ; then
+      if [ -f ${1}/${artefact} ] ; then
          cmd="     cp -r ${1}/${artefact} ${4}"
          echo "${cmd}"
          eval ${cmd}
