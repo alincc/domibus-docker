@@ -59,7 +59,7 @@ echo " - Docker Build Args (--build-arg)	: ${DockerBuildArgs}"
 echo " - Docker Target Image (-t)             : ${domibusVersionLowerCase}"
 echo
 
-dockerBuildCmd="docker build --force-rm=true --no-cache=true -f ${dockerFile} -t ${dockerImage} ${DockerBuildArgs} ${dockerBuildContext}"
+dockerBuildCmd="docker build --force-rm=true --no-cache=true -f ${dockerFile} -t ${domibusVersionLowerCase} ${DockerBuildArgs} ${dockerBuildContext}"
 
 echo
 echo "   - Command                              : ${dockerBuildCmd}"
