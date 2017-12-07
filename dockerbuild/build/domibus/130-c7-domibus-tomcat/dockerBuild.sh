@@ -40,7 +40,7 @@ cp -r ${WORKING_DIR}/../../../../../domibus/Domibus-MSH/src/main/conf/domibus/po
 
 domibusVersionLowerCase="`echo ${DOMIBUS_VERSION} | tr '[:upper:]' '[:lower:]'`"
 dockerFile=c7-domibus-tomcat.Dockerfile
-dockerImage=domibus-${DOMIBUS_VERSION}-tomcat
+dockerImage=domibus-${domibusVersionLowerCase}-tomcat
 dockerBuildContext=.
 
 DockerBuildArgs="
@@ -56,10 +56,10 @@ echo "DOMIBUS_VERSION: ${DOMIBUS_VERSION}"
 echo " - Docker Build Context		: ${dockerBuildContext}"
 echo " - Docker File (-f)                     : ${dockerFile}"
 echo " - Docker Build Args (--build-arg)	: ${DockerBuildArgs}"
-echo " - Docker Target Image (-t)             : ${domibusVersionLowerCase}"
+echo " - Docker Target Image (-t)             : ${dockerImage}"
 echo
 
-dockerBuildCmd="docker build --force-rm=true --no-cache=true -f ${dockerFile} -t ${domibusVersionLowerCase} ${DockerBuildArgs} ${dockerBuildContext}"
+dockerBuildCmd="docker build --force-rm=true --no-cache=true -f ${dockerFile} -t ${dockerImage} ${DockerBuildArgs} ${dockerBuildContext}"
 
 echo
 echo "   - Command                              : ${dockerBuildCmd}"
