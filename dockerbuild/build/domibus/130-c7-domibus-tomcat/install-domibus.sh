@@ -112,7 +112,6 @@ displayBanner
 sourceExternalFunctions
 showDomibusInstallProperties
 initInstallation
-downloadJDBC
 getDomibus "${DomibusVersion}" "${ApplicationServer}" "${DomibusInstallationType}" "${DOWNLOAD_DIR}/Domibus/${DomibusVersion}"
 echo $'\n\nStarting Domibus Installation'
 installDomibusTomcatSingle

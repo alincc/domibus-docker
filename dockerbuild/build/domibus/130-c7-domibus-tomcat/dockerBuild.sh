@@ -20,7 +20,8 @@ echo "--------------ApplicationServer: " ${ApplicationServer}
 echo "--------------DatabaseType: " ${DatabaseType}
 
 
-rm -rf  ${WORKING_DIR}/temp ; mkdir -p ${WORKING_DIR}/temp/domibus
+rm -rf  ${WORKING_DIR}/temp;
+#mkdir -p ${WORKING_DIR}/temp/domibus
 
 echo ; echo "Copying domInstall in: ${WORKING_DIR}/temp"
 cp -r ../../../../domInstall ${WORKING_DIR}/temp
@@ -32,7 +33,7 @@ echo "Sourcing file(s):"
 . ../../../../domInstall/scripts/functions/common.functions
 
 # Copying Domibus artefacts into the Docker-Build Context
-copyDomibus "${DomibusSnapshotLocation}"  "`echo ${ApplicationServer} | tr '[:upper:]' '[:lower:]'`" "`echo ${DomibusInstallationType} | tr '[:upper:]' '[:lower:]'`" "${WORKING_DIR}/temp/domInstall/downloads/Domibus/${DomibusVersion}"
+copyDomibus "${DomibusSnapshotLocation}"  "`echo ${ApplicationServer} | tr '[:upper:]' '[:lower:]'`" "`echo ${DomibusInstallationType} | tr '[:upper:]' '[:lower:]'`" "${WORKING_DIR}/temp/domInstall/downloads/Domibus"
 
 
 cp ${WORKING_DIR}/../../../../../domibus/Domibus-MSH-soapui-tests/src/main/soapui/domibus-gw-sample-pmode-*.xml ${WORKING_DIR}/temp/domInstall

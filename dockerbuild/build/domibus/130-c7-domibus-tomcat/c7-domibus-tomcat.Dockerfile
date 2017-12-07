@@ -10,32 +10,18 @@ RUN echo '-----------------DomibusSnapshotLocation: ${DomibusSnapshotLocation}'
 
 RUN mkdir -p /data/domInstall
 COPY ${WORKING_DIR}/temp/domInstall /data/domInstall
+COPY ${WORKING_DIR}/install-domibus.sh /data/domInstall
 
-# Copying the Properties Files needed for Domibus Installation Script
-#  - The domInstall.properties file (MANDATORY)
-#  - The Domibus property file: domibus.properties (Optional)
-
-COPY ${WORKING_DIR}/temp/domInstall/downloads/jdbc/ /data/domibus/domibus/lib
-COPY dockerbuild/build/domibus/130-c7-domibus-tomcat/install-domibus.sh /data/domInstall
-
-# Changing File ownership to 'domibus' user
-RUN chown -R domibus:domibus /data
 
 RUN chown domibus:domibus /data/domInstall/install-domibus.sh
 RUN chmod +x /data/domInstall/install-domibus.sh
 # Running Domibus Installation Script (As 'domibus user')
-RUN su - domibus -c "/data/domInstall/install-domibus.sh $DomibusVersion"
+RUN su - domibus -c "/data/domInstall/install-domibus.sh"
 
 # Copying the Domibus Startup & Run Time Configuration
-COPY dockerbuild/build/domibus/130-c7-domibus-tomcat/entrypoint.sh /data/domibus/domibus
+COPY ${WORKING_DIR}/entrypoint.sh /data/domibus/domibus
 RUN chown domibus:domibus /data/domibus/domibus/entrypoint.sh
 RUN chmod +x /data/domibus/domibus/entrypoint.sh
-
-# Exposing Domibus
-EXPOSE 8080
-
-# Exposing Administration Console
-EXPOSE 9090
 
 ENTRYPOINT /data/domibus/domibus/entrypoint.sh
 
