@@ -8,28 +8,9 @@ ARG DOCKER_DOMIBUS_DISTRIBUTION=/data/temp/domibus
 
 ARG DOMIBUS_CONFIG_LOCATION=$CATALINA_HOME/conf/domibus
 ENV CATALINA_OPTS="-Ddomibus.config.location=$DOMIBUS_CONFIG_LOCATION"
-
-ENV DB_TYPE=""
-ENV DB_HOST=""
-ENV DB_PORT=""
-ENV DB_NAME=""
-ENV DB_USER=""
-ENV DB_PASS=""
+ENV DB_TYPE="" DB_HOST="" DB_PORT="" DB_NAME="" DB_USER="" DB_PASS=""
 
 
-# Copying the Domibus installation Script
-RUN echo '-----------------DOMIBUS_CONFIG_LOCATION: ${DOMIBUS_CONFIG_LOCATION}'
-RUN echo '-----------------CATALINA_OPTS: ${CATALINA_OPTS}'
-RUN echo '-----------------CATALINA_HOME: ${CATALINA_HOME}'
-RUN echo '-----------------DOMINSTALL: ${DOMINSTALL}'
-RUN echo '-----------------LOCAL_DOMIBUS_DISTRIBUTION: ${LOCAL_DOMIBUS_DISTRIBUTION}'
-RUN echo '-----------------WORKING_DIR: ${WORKING_DIR}'
-RUN echo '-----------------DB_TYPE: ${DB_TYPE}'
-RUN echo '-----------------DB_HOST: ${DB_HOST}'
-RUN echo '-----------------DB_PORT: ${DB_PORT}'
-RUN echo '-----------------DB_NAME: ${DB_NAME}'
-RUN echo '-----------------DB_USER: ${DB_USER}'
-RUN echo '-----------------DB_PASS: ${DB_PASS}'
 
 #RUN mkdir -p $DOMIBUS_CONFIG_LOCATION
 
