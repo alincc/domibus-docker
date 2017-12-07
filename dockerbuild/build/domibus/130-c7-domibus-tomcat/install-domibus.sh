@@ -13,7 +13,7 @@ DB_HOST=$6
 DB_PORT=$7
 DB_NAME=$8
 DB_USER=$9
-DB_PASS=$10
+DB_PASS=${10}
 
 
 echo "--------------CATALINA_HOME: " ${CATALINA_HOME}
