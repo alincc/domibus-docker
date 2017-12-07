@@ -14,17 +14,6 @@ echo "   DB_NAME                 : ${DB_NAME}"
 echo "   DB_USER                 : ${DB_USER}"
 echo "   DB_PASS                 : ${DB_PASS}"
 
-function quickFix01 {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-# quickFix ######################################
-cef_edelivery_path="/data/domibus"
-
-TEMP_DIR="/data/domibus/domibus/temp"
-mkdir ${TEMP_DIR}
-
-}
-
 
 function niceSleep {
    displayFunctionBanner ${FUNCNAME[0]}
@@ -165,113 +154,12 @@ function configureDomibusProperties {
    esac 
 }
 
-function startDomibus {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-echo ; echo "Starting Domibus - Tomcat: /data/domibus/domibus/bin/catalina.sh start"
-nohup /data/domibus/domibus/bin/catalina.sh start > /data/domibus/domibus/domibus.log 2>&1 &
-}
-
-function Wait4Domibus {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   while ! curl -X POST --silent --output /dev/null \
-         http://localhost:8080/domibus-wildfly/rest/security/authentication \
-         -i -H "Content-Type: application/json" \
-         -d '{"username":"","password":""}' ; do
-     sleep 1 && echo -n .
-   done
-
-   echo ; echo "Waiting 30 second for all services to be started"
-   niceSleep 30
-
-   echo ; echo "Waiting for message:"
-   echo
-   echo "\"org.apache.catalina.startup.Catalina.start Server startup in\""
-   echo "in /data/domibus/domibus/logs/catalina.out..."
-   while ! grep "org.apache.catalina.startup.Catalina.start Server startup in" /data/domibus/domibus/logs/catalina.out ; do
-      echo -n . ; sleep 2
-   done
-}
-
-function configurePmode4Tests {
-    displayFunctionBanner ${FUNCNAME[0]}
-
-    applicationServer=$1
-
-    appServerURL_blue = ${appServerURL}
-    appServerURL_red = ${appServerURL}
-
-    echo ; echo "Configuring:  Domibus pModes"
-
-    targetFileBlue="/data/domInstall/domibus-gw-sample-pmode-blue.xml"
-    targetFileRed="/data/domInstall/domibus-gw-sample-pmode-red.xml"
-
-    initialString="endpoint=\"http://localhost:8080/domibus/services/msh\""
-    replacedString="endpoint=\"http://domibus_blue:8080/${appServerURL}/services/msh\""
-    echo "   Replacing : ${initialString}"
-    echo "   By        : ${replacedString}"
-    echo "   In files   : ${targetFileBlue} and ${targetFileRed}"
-    sed -i -e "s#${initialString}#${replacedString}#" ${targetFileBlue}
-    sed -i -e "s#${initialString}#${replacedString}#" ${targetFileRed}
-
-    initialString="endpoint=\"http://localhost:8180/domibus/services/msh\""
-    replacedString="endpoint=\"http://domibus_red:8080/${appServerURL}/services/msh\""
-    echo "   Replacing : ${initialString}"
-    echo "   By        : ${replacedString}"
-    echo "   In files   : ${targetFileBlue} and ${targetFileRed}"
-    sed -i -e "s#${initialString}#${replacedString}#" ${targetFileBlue}
-    sed -i -e "s#${initialString}#${replacedString}#" ${targetFileRed}
-
-}
-
-function uploadPmode {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-
-   if [ "${pmodeFile2Upload}" == "" ] ; then
-    pmodeFile2Upload="/data/domInstall/domibus-gw-sample-pmode-blue.xml"
-   fi
-   echo ; echo "Uploadling Pmode ${pmodeFile2Upload}"
-
-   echo "Uploading ${pmodeFile2Upload}"
-   echo "   Loging to Domibus to obtain cookies"
-   curl http://localhost:8080/${appServerURL}/rest/security/authentication \
-   -i \
-   -H "Content-Type: application/json" \
-   -X POST -d '{"username":"admin","password":"123456"}' \
-   -c ${TEMP_DIR}/cookie.txt
-
-
-   JSESSIONID=`grep JSESSIONID ${TEMP_DIR}/cookie.txt |  cut -d$'\t' -f 7`
-   XSRFTOKEN=`grep XSRF-TOKEN ${TEMP_DIR}/cookie.txt |  cut -d$'\t' -f 7`
-
-   echo ; echo
-   echo "   JSESSIONID=${JSESSIONID}"
-   echo "   XSRFTOKEN=${XSRFTOKEN}"
-   echo  "  X-XSRF-TOKEN: ${XSRFTOKEN}"
-
-   echo ; echo "   Uploading Pmode"
-
-   curl http://localhost:8080/${appServerURL}/rest/pmode \
-   -b ${TEMP_DIR}/cookie.txt \
-   -v \
-   -H "X-XSRF-TOKEN: ${XSRFTOKEN}" \
-   -F  file=@${pmodeFile2Upload}
-}
 
 ##########################################################################
 # MAIN PROGRAMM STARTS HERE
 ##########################################################################
 
-quickFix01
-appServerURL="domibus"
 waitForDatabase
 configureDomibusProperties
 startDomibus
 Wait4Domibus
-configurePmode4Tests Tomcat Weblogic
-uploadPmode
-tail -f /data/domibus/domibus/logs/catalina.out
-
-

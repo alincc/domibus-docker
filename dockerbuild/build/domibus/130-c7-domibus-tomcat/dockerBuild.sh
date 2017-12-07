@@ -11,46 +11,40 @@ function ABORT_JOB {
    exit
 }
 
-DomibusSnapshotLocation=$1
-ApplicationServer=Tomcat
-DatabaseType=MySQL
+DOMIBUS_DISTRIBUTION=$1
+LOCAL_ARTEFACTS=${WORKING_DIR}/temp
+DOM_INSTALL=${LOCAL_ARTEFACTS}/domInstall
+LOCAL_DOMIBUS_DISTRIBUTION=${LOCAL_ARTEFACTS}/domibus
 
-echo "--------------DomibusSnapshotLocation: " ${DomibusSnapshotLocation}
-echo "--------------ApplicationServer: " ${ApplicationServer}
-echo "--------------DatabaseType: " ${DatabaseType}
+echo "--------------DOMIBUS_DISTRIBUTION: " ${DOMIBUS_DISTRIBUTION}
+echo "--------------LOCAL_ARTEFACTS: " ${LOCAL_ARTEFACTS}
+echo "--------------DOM_INSTALL: " ${DOM_INSTALL}
+echo "--------------LOCAL_DOMIBUS_DISTRIBUTION: " ${LOCAL_DOMIBUS_DISTRIBUTION}
 
+rm -rf  ${LOCAL_ARTEFACTS};
+#mkdir -p ${DOM_INSTALL}
+#mkdir -p ${LOCAL_DOMIBUS_DISTRIBUTION}
 
-rm -rf  ${WORKING_DIR}/temp;
-#mkdir -p ${WORKING_DIR}/temp/domibus
+echo ; echo "Copying domInstall in: ${LOCAL_ARTEFACTS}"
+cp -r ../../../../domInstall/* ${DOM_INSTALL}
 
-echo ; echo "Copying domInstall in: ${WORKING_DIR}/temp"
-cp -r ../../../../domInstall ${WORKING_DIR}/temp
-
-# Getting Domibus artefacts into the Docker-Build Context
-echo ; echo "Copying Domibus Artefacts to Docker-Build Context directory (`pwd`)"
 echo "Sourcing file(s):"
-. ../../../../domInstall/scripts/functions/getDomibus.functions
-. ../../../../domInstall/scripts/functions/common.functions
+. ${DOM_INSTALL}/scripts/functions/getDomibus.functions
+. ${DOM_INSTALL}/scripts/functions/common.functions
 
 # Copying Domibus artefacts into the Docker-Build Context
-copyDomibus "${DomibusSnapshotLocation}"  "`echo ${ApplicationServer} | tr '[:upper:]' '[:lower:]'`" "`echo ${DomibusInstallationType} | tr '[:upper:]' '[:lower:]'`" "${WORKING_DIR}/temp/domInstall/downloads/Domibus"
-
-
-cp ${WORKING_DIR}/../../../../../domibus/Domibus-MSH-soapui-tests/src/main/soapui/domibus-gw-sample-pmode-*.xml ${WORKING_DIR}/temp/domInstall
+copyDomibus "${DOMIBUS_DISTRIBUTION}"  'tomcat' 'single' "${LOCAL_DOMIBUS_DISTRIBUTION}"
 
 # Copy Domibus Policies
-cp -r ${WORKING_DIR}/../../../../../domibus/Domibus-MSH/src/main/conf/domibus/policies ${WORKING_DIR}/temp/domInstall
+cp -r ${WORKING_DIR}/../../../../../domibus/Domibus-MSH/src/main/conf/domibus/policies ${DOM_INSTALL}
 
+dockerFile=c7-domibus-tomcat.Dockerfile
+dockerImage=domibus-${DOMIBUS_VERSION}-tomcat
+dockerBuildContext=.
 
-#baciuco why changing the dockerBuildContext
-dockerBuildContext="`cd ${WORKING_DIR}/../../../../ ; pwd`"
-
-dockerWorkingDir="`pwd  | sed \"s#${dockerBuildContext}/##g\"`"
-dockerFile="`ls ${WORKING_DIR}/*.Dockerfile`"
-dockerImage="`basename ${dockerFile} | cut -d. -f1`:${DOMIBUS_VERSION}"
 DockerBuildArgs="
---build-arg WORKING_DIR=\"${dockerWorkingDir}\" \
---build-arg DomibusSnapshotLocation=${DomibusSnapshotLocation} \
+--build-arg DOM_INSTALL=${DOM_INSTALL} \
+--build-arg DOMIBUS_DISTRIBUTION=${LOCAL_DOMIBUS_DISTRIBUTION} \
 "
 
 echo

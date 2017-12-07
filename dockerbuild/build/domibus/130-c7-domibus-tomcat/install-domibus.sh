@@ -4,8 +4,24 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 # Set DEBUG TO 1 to activate debugging
 DEBUG=0
 
-DomibusVersion=$1
-DomibusInstallationDir=/data/domibus
+
+echo "--------------DOM_INSTALL: ${DOM_INSTALL}"
+echo "--------------DOCKER_DOM_INSTALL: ${DOCKER_DOM_INSTALL}"
+echo "--------------DOMIBUS_DISTRIBUTION: ${DOMIBUS_DISTRIBUTION}"
+echo "--------------DOCKER_DOMIBUS_DISTRIBUTION: ${DOCKER_DOMIBUS_DISTRIBUTION}"
+echo "--------------DB_TYPE: ${DB_TYPE}"
+echo "--------------DB_HOST: ${DB_HOST}"
+echo "--------------DB_PORT: ${DB_PORT}"
+echo "--------------DB_NAME: ${DB_NAME}"
+echo "--------------DB_USER: ${DB_USER}"
+echo "--------------DB_PASS: ${DB_PASS}"
+echo "--------------DOMIBUS_CONFIG_LOCATION: ${DOMIBUS_CONFIG_LOCATION}"
+echo "--------------CATALINA_OPTS: ${CATALINA_OPTS}"
+echo "--------------CATALINA_HOME: ${CATALINA_HOME}"
+
+exit
+
+
 ApplicationServer=Tomcat
 echo "--------------DomibusInstallationDir: ${DomibusInstallationDir}"
 
@@ -23,75 +39,9 @@ function sourceExternalFunctions {
    . /data/domInstall/scripts/functions/Tomcat.functions
 }
 
-function showDomibusInstallProperties {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   echo "DomibusInstallationDir				: $DomibusInstallationDir"
-   echo
-   echo "DomibusDownloadLocation			: ${DomibusDownloadLocation}"
-   echo "DomibusDirectoryLocation			: ${DomibusDirectoryLocation}"
-
-   echo "DomibusVersion $DefaultValuesDomibusVersion           : $DomibusVersion"
-   echo "ApplicationServer $DefaultValuesApplicationServer  : $ApplicationServer"
-   echo "DatabaseType $DefaultValuesDatabaseType                  : $DatabaseType"
-   echo
-   if [ "${DatabaseType}" == "MySQL" ] ; then
-      echo "MySQLDatabaseHost                            : ${MySQLDatabaseHost}"
-      echo "MySQLDatabasePort                            : ${MySQLDatabasePort}"
-      echo "MySQLDatabaseName                            : ${MySQLDatabaseName}"
-      echo "MySQLDatabaseUserId                          : ${MySQLDatabaseUserId}"
-      echo "MySQLDatabaseUserPassword                    : ${MySQLDatabaseUserPassword}"
-   fi
-   if [ "${DatabaseType}" == "Oracle" ] ; then
-      echo "OracleDatabaseHost                           : ${OracleDatabaseHost}"
-      echo "OracleDatabasePort                           : ${OracleDatabasePort}"
-      echo "OracleDatabaseSID                            : ${OracleDatabaseSID}"
-      echo "OracleDatabaseUserId                         : ${OracleDatabaseUserId}"
-      echo "OracleDatabaseUserPassword                   : ${OracleDatabaseUserPassword}"
-   fi
-
-   echo
-   echo "DatabaseInit                                 : ${DatabaseInit}"
-   if [ "${DatabaseType}" == "MySQL" ] ; then
-      echo "MySQLDatabaseAdminUser                       : ${MySQLDatabaseAdminUser}"
-      echo "MySQLDatabaseAdminPwd                        : *********** (\${MySQLDatabaseAdminPwd})"
-   fi
-   if [ "${DatabaseType}" == "Oracle" ] ; then
-      echo "OracleDatabaseSYSPassword                    : ${OracleDatabaseSYSPassword}"
-   fi
-
-   echo
-
-   echo "TomcatInstallType $DefaultValuesTomcatInstallType      : $TomcatInstallType"
-   echo "TomcatVersion $DefaultValuesTomcatVersion                : ${TomcatVersion}"
-   echo
-}
 
 function initInstallation {
    displayFunctionBanner ${FUNCNAME[0]}
-
-   # Domibus Directory
-   export DOMIBUS_DIR=${DomibusInstallationDir}/domibus
-
-   echo ; echo "Setting \${cef_edelivery_path} to ${DomibusInstallationDir}"
-   export cef_edelivery_path=${DomibusInstallationDir}
-   
-   # Checking if the installation dir exists or is not empty
-   if [ ! -d ${DomibusInstallationDir} ]; then
-      echo ; echo "Creating \${DomibusInstallationDir}: mkdir ${DomibusInstallationDir}"
-      mkdir -p ${DomibusInstallationDir}
-   else
-      echo
-      echo "The directory ${DomibusInstallationDir} EXISTS... "
-      ls -la
-   fi
-
-    # Temporary Directory; used for storing the cookie.txt
-  export TEMP_DIR=${DomibusInstallationDir}/temp
-  echo "Creating Temporary Directory: \${TEMP_DIR}"
-  echo " - mkdir ${TEMP_DIR}"
-  mkdir $TEMP_DIR
-
 
   export DOWNLOAD_DIR="${SCRIPTPATH}/downloads"
   echo "Creating Temporary Download Directories: \${DOWNLOAD_DIR}"
@@ -105,8 +55,6 @@ function initInstallation {
 #####################################################################################################################
 ##### MAIN PROGRAMM START HERE
 ####################################################################################################################
-
-clear
 
 displayBanner
 sourceExternalFunctions
