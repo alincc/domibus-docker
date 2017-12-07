@@ -20,6 +20,7 @@ ENV DB_PASS=""
 # Copying the Domibus installation Script
 RUN echo '-----------------DOMIBUS_CONFIG_LOCATION: ${DOMIBUS_CONFIG_LOCATION}'
 RUN echo '-----------------CATALINA_OPTS: ${CATALINA_OPTS}'
+RUN echo '-----------------CATALINA_HOME: ${CATALINA_HOME}'
 RUN echo '-----------------DOMINSTALL: ${DOMINSTALL}'
 RUN echo '-----------------LOCAL_DOMIBUS_DISTRIBUTION: ${LOCAL_DOMIBUS_DISTRIBUTION}'
 RUN echo '-----------------WORKING_DIR: ${WORKING_DIR}'
