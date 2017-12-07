@@ -44,7 +44,7 @@ dockerImage=domibus-${DOMIBUS_VERSION}-tomcat
 dockerBuildContext=.
 
 DockerBuildArgs="
---build-arg DOM_INSTALL=${DOM_INSTALL} \
+--build-arg DOMINSTALL=${DOM_INSTALL} \
 --build-arg DOMIBUS_DISTRIBUTION=${LOCAL_DOMIBUS_DISTRIBUTION} \
 "
 
