@@ -56,19 +56,8 @@ function setJVMParamsTomcat {
 
    echo
    echo "Setting JVM Parameters in \${cef_edelivery_path}/domibus/bin/catalina.sh"
-   #MyLine='"\nexport CATALINA_HOME=\""$DOMIBUS_DIR\/domibus\""\nexport JAVA_OPTS=\""\$JAVA_OPTS -Xms128m -Xmx1024m -XX:MaxPermSize=256m\""\nexport JAVA_OPTS=\""\$JAVA_OPTS -Ddomibus.config.location=\$CATALINA_HOME\/conf\/domibus\""\n'"
    MyLine='\nexport JAVA_OPTS="$JAVA_OPTS -Xms128m -Xmx1024m -XX:MaxPermSize=256m"\nexport JAVA_OPTS="$JAVA_OPTS -Ddomibus.config.location=$CATALINA_HOME\/conf\/domibus"\n'
-   #MyLine="\nexport CATALINA_HOME=$DOMIBUS_DIR\/domibus\n"
-   #echo $MyLine
-   #MyLine="${MyLine}export JAVA_OPTS=\"""\$JAVA_OPTS –Xms128m -Xmx1024m -XX:MaxPermSize=256m\"""\n\""
-   #echo $MyLine
-   #MyLine="${MyLine}export JAVA_OPTS=\"""\$JAVA_OPTS -Ddomibus.config.location=\$CATALINA_HOME\/conf\/domibus\"""\n\""
-   #echo $MyLine
    sed -i "249s/.*/${MyLine}/" ${cef_edelivery_path}/domibus/bin/catalina.sh
-   #sed -i "2s/.*/totoleHero/" $DOMIBUS_DIR/domibus/bin/catalina.sh
-   #cat $DOMIBUS_DIR/domibus/bin/catalina.sh >> $TEMP_DIR/catalina.sh
-   #mv $TEMP_DIR/catalina.sh  $DOMIBUS_DIR/domibus/bin/catalina.sh
-
    echo ; echo "Setting \${cef_edelivery_path}/domibus/bin/*.sh as executacle: chmod +x \${cef_edelivery_path}/domibus/bin/*.sh"
    chmod +x ${cef_edelivery_path}/domibus/bin/*.sh
 }
@@ -89,7 +78,6 @@ function installDomibusTomcatSingle {
    deployDomibusTomcatWar
    installKeystoreTruststore
    installPolicies
-   setJVMParamsTomcat
    installPlugins tomcat
 
 }

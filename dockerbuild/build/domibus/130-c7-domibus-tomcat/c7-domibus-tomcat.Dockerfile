@@ -3,6 +3,9 @@ FROM edelivery-tomcat-8.0.39
 ARG WORKING_DIR
 ARG DomibusSnapshotLocation
 
+
+ENV CATALINA_OPTS="-Ddomibus.config.location=$CATALINA_HOME/conf/domibus"
+
 # Copying the Domibus installation Script
 RUN echo '-----------------JAVA_HOME: ${JAVA_HOME}'
 RUN echo '-----------------WORKING_DIR: ${WORKING_DIR}'
