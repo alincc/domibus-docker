@@ -4,6 +4,7 @@ ARG JavaVersion
 
 ENV JAVA_HOME /usr/local/java/jre1.8.0_144
 ENV PATH $JAVA_HOME/bin:$PATH
+ENV DOCKERIZE_VERSION v0.5.0
 
 # Creating Extra Groups
 RUN groupadd cefsup
@@ -59,10 +60,9 @@ RUN yum install telnet -y
 RUN yum install which -y
 
 # The Dockerize Utility
-#ENV DOCKERIZE_VERSION v0.5.0
-#RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-#    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-#    && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+
 
 # JAVA Installation
 RUN mkdir /usr/local/java
