@@ -22,8 +22,8 @@ echo "--------------DOM_INSTALL: " ${DOM_INSTALL}
 echo "--------------LOCAL_DOMIBUS_DISTRIBUTION: " ${LOCAL_DOMIBUS_DISTRIBUTION}
 
 rm -rf  ${LOCAL_ARTEFACTS};
-#mkdir -p ${DOM_INSTALL}
-#mkdir -p ${LOCAL_DOMIBUS_DISTRIBUTION}
+mkdir -p ${DOM_INSTALL}
+mkdir -p ${LOCAL_DOMIBUS_DISTRIBUTION}
 
 echo ; echo "Copying domInstall in: ${LOCAL_ARTEFACTS}"
 cp -r ../../../../domInstall/* ${DOM_INSTALL}
