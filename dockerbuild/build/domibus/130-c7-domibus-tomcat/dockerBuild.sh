@@ -38,6 +38,7 @@ copyDomibus "${DOMIBUS_DISTRIBUTION}"  'tomcat' 'single' "${LOCAL_DOMIBUS_DISTRI
 # Copy Domibus Policies
 cp -r ${WORKING_DIR}/../../../../../domibus/Domibus-MSH/src/main/conf/domibus/policies ${DOM_INSTALL}
 
+domibusVersionLowerCase="`echo ${DOMIBUS_VERSION} | tr '[:upper:]' '[:lower:]'`"
 dockerFile=c7-domibus-tomcat.Dockerfile
 dockerImage=domibus-${DOMIBUS_VERSION}-tomcat
 dockerBuildContext=.
@@ -55,7 +56,7 @@ echo "DOMIBUS_VERSION: ${DOMIBUS_VERSION}"
 echo " - Docker Build Context		: ${dockerBuildContext}"
 echo " - Docker File (-f)                     : ${dockerFile}"
 echo " - Docker Build Args (--build-arg)	: ${DockerBuildArgs}"
-echo " - Docker Target Image (-t)             : ${dockerImage}"
+echo " - Docker Target Image (-t)             : ${domibusVersionLowerCase}"
 echo
 
 dockerBuildCmd="docker build --force-rm=true --no-cache=true -f ${dockerFile} -t ${dockerImage} ${DockerBuildArgs} ${dockerBuildContext}"
