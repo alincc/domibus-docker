@@ -2,7 +2,7 @@
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
 # Set DEBUG TO 1 to activate debugging
-DEBUG=1
+DEBUG=0
 
 #CATALINA_HOME=$1
 #DOMIBUS_CONFIG_LOCATION=$2
@@ -30,7 +30,7 @@ echo "--------------DB_USER: ${DB_USER}"
 echo "--------------DB_PASS: ${DB_PASS}"
 echo "--------------DOMIBUS_VERSION: ${DOMIBUS_VERSION}"
 
-exit
+
 function displayBanner {
    cat ${DOCKER_DOMINSTALL}/scripts/textBanner.txt
 }
