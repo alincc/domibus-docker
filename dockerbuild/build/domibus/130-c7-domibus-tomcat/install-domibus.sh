@@ -2,7 +2,7 @@
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
 # Set DEBUG TO 1 to activate debugging
-DEBUG=0
+DEBUG=1
 
 CATALINA_HOME=$1
 DOMIBUS_CONFIG_LOCATION=$2
@@ -14,7 +14,8 @@ DB_PORT=$7
 DB_NAME=$8
 DB_USER=$9
 DB_PASS="${10}"
-DOMIBUS_VERSION="${11}"
+#DOMIBUS_VERSION="${11}"
+#DOMIBUS_VERSION1="$"11"
 
 
 echo "--------------CATALINA_HOME: " ${CATALINA_HOME}
