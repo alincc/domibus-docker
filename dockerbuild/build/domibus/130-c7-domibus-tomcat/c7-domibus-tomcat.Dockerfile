@@ -34,4 +34,4 @@ RUN su - domibus -c export CATALINA_HOME=${CATALINA_HOME} && \
     export DB_USER=${DB_USER} && \
     export DB_PASS=${DB_PASS} && \
     export DOMIBUS_VERSION=${DOMIBUS_VERSION} && \
-    $DOCKER_DOMINSTALL/install-domibus.sh"
+    $DOCKER_DOMINSTALL/install-domibus.sh
