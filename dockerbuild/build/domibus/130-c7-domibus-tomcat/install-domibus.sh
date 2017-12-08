@@ -29,7 +29,7 @@ echo "--------------DB_USER: ${DB_USER}"
 echo "--------------DB_PASS: ${DB_PASS}"
 echo "--------------DOMIBUS_VERSION: ${DOMIBUS_VERSION}"
 
-
+exit
 function displayBanner {
    cat ${DOCKER_DOMINSTALL}/scripts/textBanner.txt
 }
