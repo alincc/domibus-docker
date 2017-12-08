@@ -22,4 +22,16 @@ COPY ${DOMIBUS_DISTRIBUTION} $DOCKER_DOMIBUS_DISTRIBUTION
 RUN chown domibus:domibus $DOCKER_DOMINSTALL/install-domibus.sh
 RUN chmod +x $DOCKER_DOMINSTALL/install-domibus.sh
 # Running Domibus Installation Script (As 'domibus user')
-RUN su - domibus -c "export CATALINA_HOME=${CATALINA_HOME} && export DOMIBUS_VERSION=${DOMIBUS_VERSION} && $DOCKER_DOMINSTALL/install-domibus.sh"
+#${CATALINA_HOME} ${DOMIBUS_CONFIG_LOCATION} ${DOCKER_DOMINSTALL} ${DOCKER_DOMIBUS_DISTRIBUTION} ${DB_TYPE} ${DB_HOST} ${DB_PORT} ${DB_NAME} ${DB_USER} ${DB_PASS} '${DOMIBUS_VERSION}'
+RUN su - domibus -c export CATALINA_HOME=${CATALINA_HOME} && \
+    export DOMIBUS_CONFIG_LOCATION=${DOMIBUS_CONFIG_LOCATION} && \
+    export DOCKER_DOMINSTALL=${DOCKER_DOMINSTALL} && \
+    export DOCKER_DOMIBUS_DISTRIBUTION=${DOCKER_DOMIBUS_DISTRIBUTION} && \
+    export DB_TYPE=${DB_TYPE} && \
+    export DB_HOST=${DB_HOST} && \
+    export DB_PORT=${DB_PORT} && \
+    export DB_NAME=${DB_NAME} && \
+    export DB_USER=${DB_USER} && \
+    export DB_PASS=${DB_PASS} && \
+    export DOMIBUS_VERSION=${DOMIBUS_VERSION} && \
+    $DOCKER_DOMINSTALL/install-domibus.sh"
