@@ -14,6 +14,7 @@ DB_PORT=$7
 DB_NAME=$8
 DB_USER=$9
 DB_PASS=${10}
+DOMIBUS_VERSION=${11}
 
 
 echo "--------------CATALINA_HOME: " ${CATALINA_HOME}
@@ -26,6 +27,7 @@ echo "--------------DB_PORT: ${DB_PORT}"
 echo "--------------DB_NAME: ${DB_NAME}"
 echo "--------------DB_USER: ${DB_USER}"
 echo "--------------DB_PASS: ${DB_PASS}"
+echo "--------------DOMIBUS_VERSION: ${DOMIBUS_VERSION}"
 
 
 function displayBanner {
