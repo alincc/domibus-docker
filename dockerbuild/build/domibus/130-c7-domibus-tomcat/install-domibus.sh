@@ -66,7 +66,7 @@ function initInstallation {
 
   #copy the policies
   mkdir -p ${DOMIBUS_CONFIG_LOCATION}/policies
-  cp ${DOCKER_DOMINSTALL}/policies ${DOMIBUS_CONFIG_LOCATION}
+  cp ${DOCKER_DOMINSTALL}/policies/* ${DOMIBUS_CONFIG_LOCATION}/policies
 
   #installing the plugins
   mkdir -p ${DOMIBUS_CONFIG_LOCATION}/conf/domibus/plugins/config
