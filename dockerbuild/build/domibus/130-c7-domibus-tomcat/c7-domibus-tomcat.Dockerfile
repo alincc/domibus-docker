@@ -21,5 +21,6 @@ COPY ${DOMIBUS_DISTRIBUTION} $DOCKER_DOMIBUS_DISTRIBUTION
 
 RUN chown domibus:domibus $DOCKER_DOMINSTALL/install-domibus.sh
 RUN chmod +x $DOCKER_DOMINSTALL/install-domibus.sh
+RUN export CATALINA_HOME=${CATALINA_HOME} && export DOMIBUS_VERSION=${DOMIBUS_VERSION}
 # Running Domibus Installation Script (As 'domibus user')
-RUN su - domibus -c "$DOCKER_DOMINSTALL/install-domibus.sh ${CATALINA_HOME} ${DOMIBUS_CONFIG_LOCATION} ${DOCKER_DOMINSTALL} ${DOCKER_DOMIBUS_DISTRIBUTION} ${DB_TYPE} ${DB_HOST} ${DB_PORT} ${DB_NAME} ${DB_USER} ${DB_PASS} '4'"
+RUN su - domibus -c "$DOCKER_DOMINSTALL/install-domibus.sh"
