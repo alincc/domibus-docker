@@ -71,8 +71,8 @@ function initInstallation {
   #installing the plugins
   mkdir -p ${DOMIBUS_CONFIG_LOCATION}/conf/domibus/plugins/config
   mkdir -p ${DOMIBUS_CONFIG_LOCATION}/conf/domibus/plugins/lib
-  unzip -j $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/config/tomcat/* -d ${DOMIBUS_CONFIG_LOCATION}/conf/domibus/plugins/config
-  unzip -j $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/lib/* -d ${DOMIBUS_CONFIG_LOCATION}/conf/domibus/plugins/lib
+  unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/config/tomcat/* -d ${DOMIBUS_CONFIG_LOCATION}/conf/domibus/plugins/config
+  unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/lib/* -d ${DOMIBUS_CONFIG_LOCATION}/conf/domibus/plugins/lib
 
 }
 
