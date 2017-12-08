@@ -65,12 +65,12 @@ function initInstallation {
   #rm -rf ${DOMIBUS_CONFIG_LOCATION}/temp
 
   #copy the policies
-  #mkdir -p ${DOMIBUS_CONFIG_LOCATION}/policies
+  mkdir -p ${DOMIBUS_CONFIG_LOCATION}/policies
   cp ${DOCKER_DOMINSTALL}/policies ${DOMIBUS_CONFIG_LOCATION}
 
   #installing the plugins
-  #mkdir -p ${DOMIBUS_CONFIG_LOCATION}/conf/domibus/plugins/config
-  #mkdir -p ${DOMIBUS_CONFIG_LOCATION}/conf/domibus/plugins/lib
+  mkdir -p ${DOMIBUS_CONFIG_LOCATION}/conf/domibus/plugins/config
+  mkdir -p ${DOMIBUS_CONFIG_LOCATION}/conf/domibus/plugins/lib
   unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/config/tomcat/* -d ${DOMIBUS_CONFIG_LOCATION}/conf/domibus/plugins/config
   unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/lib/* -d ${DOMIBUS_CONFIG_LOCATION}/conf/domibus/plugins/lib
 
