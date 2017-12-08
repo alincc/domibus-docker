@@ -23,7 +23,6 @@ function sourceExternalFunctions {
 
    . $DOM_INSTALL/scripts/functions/common.functions
    . $DOM_INSTALL/scripts/functions/downloadJDBC.functions
-   . $DOM_INSTALL/scripts/functions/Tomcat.functions
 }
 
 function installTomcat {

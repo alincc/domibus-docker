@@ -20,7 +20,6 @@ function sourceExternalFunctions {
    . ${SCRIPTPATH}/scripts/functions/downloadJDBC.functions
    . ${SCRIPTPATH}/scripts/functions/getDomibus.functions
    . ${SCRIPTPATH}/scripts/functions/configureDomibus.functions
-   . ${SCRIPTPATH}/scripts/functions/Tomcat.functions
    . ${SCRIPTPATH}/scripts/functions/WildFly.functions
    . ${SCRIPTPATH}/scripts/functions/WebLogic.functions
 }
@@ -226,7 +225,7 @@ case "$ApplicationServer" in
       esac
       ;;
    "Tomcat") echo ; echo "Installing Tomcat"
-       installDomibusTomcatSingle
+       #installDomibusTomcatSingle
       ;;
    "WildFly") echo ; echo "Installing Wildfly"
       case "${DomibusInstallationType}" in

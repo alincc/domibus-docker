@@ -27,9 +27,6 @@ echo "--------------DB_NAME: ${DB_NAME}"
 echo "--------------DB_USER: ${DB_USER}"
 echo "--------------DB_PASS: ${DB_PASS}"
 
-export CATALINA_HOME=-DmycustomVariable=myCustomValue:$CATALINA_HOME
-
-exit
 
 function displayBanner {
    cat ${DOCKER_DOMINSTALL}/scripts/textBanner.txt
@@ -42,7 +39,6 @@ function sourceExternalFunctions {
    . ${DOCKER_DOMINSTALL}/scripts/functions/common.functions
    . ${DOCKER_DOMINSTALL}/scripts/functions/downloadJDBC.functions
    . ${DOCKER_DOMINSTALL}/scripts/functions/getDomibus.functions
-   . ${DOCKER_DOMINSTALL}/scripts/functions/Tomcat.functions
 }
 
 
@@ -50,8 +46,27 @@ function initInstallation {
   displayFunctionBanner ${FUNCNAME[0]}
 
   mkdir -p ${DOMIBUS_CONFIG_LOCATION}
-  unzip $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-tomcat-configuration.zip -d ${cef_edelivery_path}/domibus/conf/domibus
 
+  #copy the Tomcat configuration
+  unzip $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-tomcat-configuration.zip -d ${DOMIBUS_CONFIG_LOCATION}
+
+  #copy the war in the webapps directory
+  unzip $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-tomcat-war.zip -d ${CATALINA_HOME}/webapps
+  mv ${CATALINA_HOME}/webapps/domibus-MSH-tomcat-4.0-SNAPSHOT.war ${CATALINA_HOME}/webapps/domibus.war
+
+  #copy the sample keystore/truststore
+  unzip -j $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-sample-configuration-and-testing.zip conf/domibus/keystores/* -d ${DOMIBUS_CONFIG_LOCATION}/keystores
+
+  #unzip $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-sample-configuration-and-testing.zip -d ${DOMIBUS_CONFIG_LOCATION}/temp
+  #mv ${DOMIBUS_CONFIG_LOCATION}/conf/domibus/keystores ${DOMIBUS_CONFIG_LOCATION}
+  #rm -rf ${DOMIBUS_CONFIG_LOCATION}/temp
+
+  #copy the policies
+  cp $DOCKER_DOMINSTALL/policies ${DOMIBUS_CONFIG_LOCATION}
+
+  #installing the plugins
+  unzip -j $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/config/tomcat/* -d ${DOMIBUS_CONFIG_LOCATION}/conf/domibus/plugins/config
+  unzip -j $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/lib/* -d ${DOMIBUS_CONFIG_LOCATION}/conf/domibus/plugins/lib
 
 }
 
@@ -62,7 +77,6 @@ function initInstallation {
 displayBanner
 sourceExternalFunctions
 initInstallation
-installDomibusTomcatSingle
 
 exit
 
