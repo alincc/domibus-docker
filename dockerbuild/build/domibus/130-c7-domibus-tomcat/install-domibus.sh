@@ -4,6 +4,8 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 # Set DEBUG TO 1 to activate debugging
 DEBUG=0
 
+echo "before --------------CATALINA_HOME: " ${CATALINA_HOME}
+
 CATALINA_HOME=$1
 DOMIBUS_CONFIG_LOCATION=$2
 DOCKER_DOMINSTALL=$3
