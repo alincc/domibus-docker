@@ -4,27 +4,18 @@ echo ; echo "Sourcing domInstall Common Functions"
 . /data/domInstall/scripts/functions/common.functions
 . /data/domInstall/scripts/functions/database.functions
 
-echo ; echo "RECEIVED Parameters:"
-echo "   WORKING_DIR             : ${WORKING_DIR}"
-echo "   PARTY_ID                : ${PARTY_ID}"
-echo "   DB_TYPE                 : ${DB_TYPE}"
-echo "   DB_HOST                 : ${DB_HOST}"
-echo "   DB_PORT                 : ${DB_PORT}"
-echo "   DB_NAME                 : ${DB_NAME}"
-echo "   DB_USER                 : ${DB_USER}"
-echo "   DB_PASS                 : ${DB_PASS}"
-
-
-function niceSleep {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   let waitTime=$1
-   for i in $(eval echo "{0..${waitTime}..5}") ; do
-      echo -n "${i}s"
-      sleep 1
-      for j in {1..4} ; do echo -n . ; sleep 1 ; done
-   done
-}
+echo "--------------entrypoint: "
+echo "--------------CATALINA_HOME: " ${CATALINA_HOME}
+echo "--------------DOMIBUS_CONFIG_LOCATION: ${DOMIBUS_CONFIG_LOCATION}"
+echo "--------------DOCKER_DOMINSTALL: ${DOCKER_DOMINSTALL}"
+echo "--------------DOCKER_DOMIBUS_DISTRIBUTION: ${DOCKER_DOMIBUS_DISTRIBUTION}"
+echo "--------------DB_TYPE: ${DB_TYPE}"
+echo "--------------DB_HOST: ${DB_HOST}"
+echo "--------------DB_PORT: ${DB_PORT}"
+echo "--------------DB_NAME: ${DB_NAME}"
+echo "--------------DB_USER: ${DB_USER}"
+echo "--------------DB_PASS: ${DB_PASS}"
+echo "--------------DOMIBUS_VERSION: ${DOMIBUS_VERSION}"
 
 function buildDomibusStartupParams {
    displayFunctionBanner ${FUNCNAME[0]}
@@ -76,90 +67,13 @@ echo "   DB_PASS                 : ${DB_PASS}"
    fi
 }
 
-function configureDomibusProperties {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   echo ; echo "Updating COMMON PROPERTIES for MySQL and Oracle Database"
-   updateJavaPropertiesFile domibus.database.serverName ${DB_HOST}		"/data/domibus/domibus/conf/domibus/domibus.properties"
-
-   case "${DB_TYPE}" in
-      "MySQL")
-         echo ; echo "Updating Properties for Database: ${DB_TYPE}"
-#         updateStringInFile \
-#	    "domibus.datasource.xa.property.url=jdbc:mysql://\${domibus.database.serverName}:\${domibus.database.port}/domibus?pinGlobalTxToPhysicalConnection=true" \
-#	    "domibus.datasource.xa.property.url=jdbc:mysql://\${domibus.database.serverName}:\${domibus.database.port}/${DB_NAME}?pinGlobalTxToPhysicalConnection=true" \
-#	    "/data/domibus/domibus/conf/domibus/domibus.properties"
-#         updateStringInFile \
-#	    "domibus.datasource.url=jdbc:mysql://\${domibus.database.serverName}:\${domibus.database.port}/domibus?useSSL=false" \
-#	    "domibus.datasource.url=jdbc:mysql://\${domibus.database.serverName}:\${domibus.database.port}/${DB_NAME}?useSSL=false" \
-#	    "/data/domibus/domibus/conf/domibus/domibus.properties"
-      ;;
-      "Oracle")
-         updateJavaPropertiesFile domibus.database.port	${DB_PORT}		"/data/domibus/domibus/conf/domibus/domibus.properties"
-
-         echo ; echo "Updating Properties for Database: ${DB_TYPE}"
-         updateStringInFile	\
-	    "^domibus.datasource.xa.xaDataSourceClassName=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" \
-	    "#domibus.datasource.xa.xaDataSourceClassName=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" \
-	    "/data/domibus/domibus/conf/domibus/domibus.properties"
-         updateStringInFile	\
-	    "^#domibus.datasource.xa.xaDataSourceClassName=oracle.jdbc.xa.client.OracleXADataSource" \
-	    "domibus.datasource.xa.xaDataSourceClassName=oracle.jdbc.xa.client.OracleXADataSource" \
-	    "/data/domibus/domibus/conf/domibus/domibus.properties"
-         updateStringInFile \
-	    "^domibus.datasource.xa.property.url=jdbc:mysql://\${domibus.database.serverName}:\${domibus.database.port}/domibus?pinGlobalTxToPhysicalConnection=true"	\
-	    "#domibus.datasource.xa.property.url=jdbc:mysql://\${domibus.database.serverName}:\${domibus.database.port}/domibus?pinGlobalTxToPhysicalConnection=true"	\
-	    "/data/domibus/domibus/conf/domibus/domibus.properties"              
-         updateStringInFile	\
-	    "^#domibus.datasource.xa.property.URL=jdbc:oracle:thin:@\${domibus.database.serverName}:\${domibus.database.port}/XE" \
-	    "domibus.datasource.xa.property.URL=jdbc:oracle:thin:@\${domibus.database.serverName}:\${domibus.database.port}${DB_NAME}" \
-	    "/data/domibus/domibus/conf/domibus/domibus.properties"
-         updateStringInFile	\
-	    "^domibus.datasource.driverClassName=com.mysql.jdbc.Driver" \
-	    "#domibus.datasource.driverClassName=com.mysql.jdbc.Driver" \
-	    "/data/domibus/domibus/conf/domibus/domibus.properties"
-        updateStringInFile	\
-	    "^#domibus.datasource.driverClassName=oracle.jdbc.OracleDriver" \
-	    "domibus.datasource.driverClassName=oracle.jdbc.OracleDriver" \
-	    "/data/domibus/domibus/conf/domibus/domibus.properties"
-         updateStringInFile	\
-	    "domibus.datasource.url=jdbc:mysql://\${domibus.database.serverName}:\${domibus.database.port}/domibus?useSSL=false" \
-	    "#domibus.datasource.url=jdbc:mysql://\${domibus.database.serverName}:\${domibus.database.port}/domibus?useSSL=false" \
-	    "/data/domibus/domibus/conf/domibus/domibus.properties"
-         updateStringInFile	\
-	    "^#domibus.datasource.url=jdbc:oracle:thin:@\${domibus.database.serverName}:\${domibus.database.port}/XE" \
-	    "domibus.datasource.url=jdbc:oracle:thin:@\${domibus.database.serverName}:\${domibus.database.port}${DB_NAME}" \
-	    "/data/domibus/domibus/conf/domibus/domibus.properties"
-         updateStringInFile	\
-	    "^domibus.entityManagerFactory.jpaProperty.hibernate.connection.driver_class=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" \
-	    "#domibus.entityManagerFactory.jpaProperty.hibernate.connection.driver_class=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" \
-	    "/data/domibus/domibus/conf/domibus/domibus.properties"
-         updateStringInFile	\
-	    "^#domibus.entityManagerFactory.jpaProperty.hibernate.connection.driver_class=oracle.jdbc.xa.client.OracleXADataSource" \
-	    "domibus.entityManagerFactory.jpaProperty.hibernate.connection.driver_class=oracle.jdbc.xa.client.OracleXADataSource" \
-	    "/data/domibus/domibus/conf/domibus/domibus.properties"
-         updateStringInFile	\
-	    "^domibus.entityManagerFactory.jpaProperty.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect" \
-	    "#domibus.entityManagerFactory.jpaProperty.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect" \
-	    "/data/domibus/domibus/conf/domibus/domibus.properties"
-         updateStringInFile	\
-	    "^#domibus.entityManagerFactory.jpaProperty.hibernate.dialect=org.hibernate.dialect.Oracle10gDialect" \
-	    "domibus.entityManagerFactory.jpaProperty.hibernate.dialect=org.hibernate.dialect.Oracle10gDialect" \
-	    "/data/domibus/domibus/conf/domibus/domibus.properties"
-#domibus.datasource.url=jdbc:oracle:thin:@${domibus.database.serverName}:${domibus.database.port}/XE
-      ;;
-      *)
-         ABORT_JOB "Database Type (\${DB_TYPE}) but MUST BE EITHER 'MySQL' or 'Oracle': ${DB_TYPE}"
-      ;;
-   esac 
-}
-
-
 ##########################################################################
 # MAIN PROGRAMM STARTS HERE
 ##########################################################################
 
+#TODO pass the database parameters to the script
 waitForDatabase
-configureDomibusProperties
-startDomibus
-Wait4Domibus
+
+echo ; echo "Starting Tomcat: $CATALINA_HOME/bin/catalina.sh run"
+$CATALINA_HOME/bin/catalina.sh $domStartupParams run > $CATALINA_HOME/logs/catalina.out 2>&1
+

@@ -14,12 +14,7 @@ ENV DB_TYPE="" DB_HOST="" DB_PORT="" DB_NAME="" DB_USER="" DB_PASS=""
 
 #DB_NAME cannot be passed to Domibus via properties yet
 
-ENV domibus.database.serverName=$DB_HOST
-ENV domibus.database.port=$DB_PORT
-ENV domibus.datasource.xa.property.user=$DB_USER
-ENV domibus.datasource.xa.property.password=$DB_PASS
-ENV domibus.datasource.user=$DB_USER
-ENV domibus.datasource.password=$DB_PASS
+
 
 RUN rm -rf $DOCKER_DOMINSTALL
 RUN mkdir -p $DOCKER_DOMINSTALL
@@ -41,10 +36,4 @@ RUN su - domibus -c export CATALINA_HOME=${CATALINA_HOME} && \
     export DB_NAME=${DB_NAME} && \
     export DB_USER=${DB_USER} && \
     export DB_PASS=${DB_PASS} && \
-    env domibus.database.serverName=${domibus.database.serverName} && \
-    env domibus.database.port=${domibus.database.port} && \
-    env domibus.datasource.xa.property.user=${domibus.datasource.xa.property.user} && \
-    env domibus.datasource.xa.property.password=${domibus.datasource.xa.property.password} && \
-    env domibus.datasource.user=${domibus.datasource.user} && \
-    env domibus.datasource.password=${domibus.datasource.password} && \
     $DOCKER_DOMINSTALL/install-domibus.sh
