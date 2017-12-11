@@ -58,7 +58,8 @@ function uploadPmode {
    -b cookie.txt \
    -v \
    -H "X-XSRF-TOKEN: ${XSRFTOKEN}" \
-   -F  file=@${pmodeFile2Upload}
+   -F  file=@${pmodeFile2Upload} \
+   -F  description="soapUI tests"
 }
 
 DOMIBUS_DISTRIBUTION=$1
