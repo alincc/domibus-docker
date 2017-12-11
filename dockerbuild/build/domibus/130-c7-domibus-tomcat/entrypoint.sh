@@ -1,8 +1,11 @@
 #!/bin/bash
 
+
+echo ; echo "--------------Domibus entry point"
+
 echo ; echo "Sourcing domInstall Common Functions"
-. /data/domInstall/scripts/functions/common.functions
-. /data/domInstall/scripts/functions/database.functions
+. ${DOCKER_DOMINSTALL}/scripts/functions/common.functions
+. ${DOCKER_DOMINSTALL}/scripts/functions/database.functions
 
 echo "--------------entrypoint: "
 echo "--------------CATALINA_HOME: " ${CATALINA_HOME}
@@ -32,7 +35,7 @@ echo "   DB_PASS                 : ${DB_PASS}"
       domStartupParams="${domStartupParams} -Ddomibus.database.serverName=${DB_HOST}"
    fi
 
-   if [ ! "${DB_PORT}" = "" ] ; then
+   if [ ! "${DB_PORT}" == "" ] ; then
       domStartupParams="${domStartupParams} -Ddomibus.database.port=${DB_PORT}"
    fi
 
@@ -72,7 +75,7 @@ echo "   DB_PASS                 : ${DB_PASS}"
 ##########################################################################
 
 #TODO pass the database parameters to the script
-waitForDatabase
+waitForDatabase ${DB_TYPE} ${DB_HOST} ${DB_PORT} ${DB_USER} ${DB_PASS} ${DB_NAME}
 
 echo ; echo "Starting Tomcat: $CATALINA_HOME/bin/catalina.sh run"
 $CATALINA_HOME/bin/catalina.sh $domStartupParams run > $CATALINA_HOME/logs/catalina.out 2>&1

@@ -6,13 +6,20 @@ echo "   - ${functionsFile}"
 function WaitForOracleDatabase {
    displayFunctionBanner ${FUNCNAME[0]}
 
+    local dbHost=$1
+    local dbPort=$2
+    local dbUser=$3
+    local dbPassword=$4
+    local dbSchema=$5
+
+   #TODO export these variables directly in the centos image
    SQLPLUS_HOME=/usr/local/Oracle/SQLPlus
    export LD_LIBRARY_PATH=${SQLPLUS_HOME}
 
-   echo ; echo "Wait for Oracle Database to be ready (${DB_HOST}:${DB_PORT}/${DB_NAME})"
+   echo ; echo "Wait for Oracle Database to be ready dbHost=$dbHost, dbUser=$dbUser, dbPassword=$dbPassword, dbSchema=$dbSchema"
 
    while [ ! "${OracleTableCheck}" == "admin" ] ; do
-      OracleTableCheck=$(${SQLPLUS_HOME}/sqlplus -s ${DB_USER}/${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME} << EOF | sed 's/[  ]//g'
+      OracleTableCheck=$(${SQLPLUS_HOME}/sqlplus -s ${dbUser}/${dbPassword}@${dbHost}:${dbPort}/${dbSchema} << EOF | sed 's/[  ]//g'
       SET heading OFF;
       SET echo OFF;
       SET feedback OFF;
@@ -29,10 +36,16 @@ EOF
 
 function waitForMySQLDatabase {
 
-   echo ; echo "Wait for MySQL Database to be ready"
+   local dbHost=$1
+   local dbPort=$2
+   local dbUser=$3
+   local dbPassword=$4
+   local dbSchema=$5
+
+   echo ; echo "Wait for MySQL Database to be ready dbHost=$dbHost, dbUser=$dbUser, dbPassword=$dbPassword, dbSchema=$dbSchema"
 
    while [ ! "${MySQLTableCheck}" == "admin" ] ; do
-      MySQLTableCheck=$(mysql -sN -h${DB_HOST} -uedelivery -pedelivery domibus 2> /dev/null << EOF | sed 's/[  ]//g'
+      MySQLTableCheck=$(mysql -sN -h${dbHost} -u$dbUser -p$dbPassword $dbSchema 2> /dev/null << EOF | sed 's/[  ]//g'
       select USER_NAME from TB_USER where ID_PK=1;
 EOF
 )
@@ -45,11 +58,18 @@ EOF
 function waitForDatabase {
    displayFunctionBanner ${FUNCNAME[0]}
 
-   if [ "${DB_TYPE}" == "MySQL" ] ; then
-      waitForMySQLDatabase
+   local databaseType=$1
+   local dbHost=$2
+   local dbPort=$3
+   local dbUser=$4
+   local dbPassword=$5
+   local dbSchema=$6
+
+   if [ "${databaseType}" == "MySQL" ] ; then
+      waitForMySQLDatabase $databaseType $dbHost $dbPort $dbUser $dbPassword $dbSchema
       #echo "DO NOT WAIT for MySQL for now..."
    fi
-   if [ "${DB_TYPE}" == "Oracle" ] ; then
-      WaitForOracleDatabase
+   if [ "${databaseType}" == "Oracle" ] ; then
+      WaitForOracleDatabase $databaseType $dbHost $dbPort $dbUser $dbPassword $dbSchema
    fi
 }
