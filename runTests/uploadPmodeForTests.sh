@@ -69,8 +69,6 @@ DOMIBUS_RED_URL=$3
 LOCAL_ARTEFACTS=${WORKING_DIR}/temp
 LOCAL_PMODES=${WORKING_DIR}/temp/pmodes
 
-echo "--------------LOCAL_PMODES: " ${LOCAL_PMODES}
-
 echo "Deleting local artefacts: " ${LOCAL_ARTEFACTS}
 rm -rf  ${LOCAL_ARTEFACTS}
 mkdir -p ${LOCAL_PMODES}
