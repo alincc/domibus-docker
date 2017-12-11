@@ -37,36 +37,36 @@ echo "   DB_PASS                 : ${DB_PASS}"
 
 
    if [ ! "${DB_HOST}" == "" ] ; then
-      domStartupParams=${domStartupParams} -Ddomibus.database.serverName="${DB_HOST}"
+      domStartupParams="${domStartupParams} -Ddomibus.database.serverName=${DB_HOST}"
    fi
 
    if [ ! "${DB_PORT}" == "" ] ; then
-      domStartupParams=${domStartupParams} -Ddomibus.database.port="${DB_PORT}"
+      domStartupParams="${domStartupParams} -Ddomibus.database.port=${DB_PORT}"
    fi
 
    if [ ! "${DB_USER}" == "" ] ; then
-      domStartupParams=${domStartupParams} -Ddomibus.datasource.user="${DB_USER}"
-      domStartupParams=${domStartupParams} -Ddomibus.datasource.xa.property.user="${DB_USER}"
+      domStartupParams="${domStartupParams} -Ddomibus.datasource.user=${DB_USER}"
+      domStartupParams="${domStartupParams} -Ddomibus.datasource.xa.property.user=${DB_USER}"
    fi
 
    if [ ! "${DB_PASS}" == "" ] ; then
-      domStartupParams=${domStartupParams} -Ddomibus.datasource.xa.property.password="${DB_PASS}"
-      domStartupParams=${domStartupParams} -Ddomibus.datasource.password="${DB_PASS}"
+      domStartupParams="${domStartupParams} -Ddomibus.datasource.xa.property.password=${DB_PASS}"
+      domStartupParams="${domStartupParams} -Ddomibus.datasource.password=${DB_PASS}"
    fi
 
    if [ ! "${DB_TYPE}" == "" ] ; then
       case "${DB_TYPE}" in
          "MySQL")
-            domStartupParams=${domStartupParams} -Ddomibus.datasource.xa.xaDataSourceClassName="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource"
-            domStartupParams=${domStartupParams} -Ddomibus.datasource.xa.property.url="jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?pinGlobalTxToPhysicalConnection=true"
-            domStartupParams=${domStartupParams} -Ddomibus.datasource.driverClassName="com.mysql.jdbc.Driver"
-            domStartupParams=${domStartupParams} -Ddomibus.datasource.url="jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false"
+            domStartupParams="${domStartupParams} -Ddomibus.datasource.xa.xaDataSourceClassName=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource"
+            domStartupParams="${domStartupParams} -Ddomibus.datasource.xa.property.url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?pinGlobalTxToPhysicalConnection=true"
+            domStartupParams="${domStartupParams} -Ddomibus.datasource.driverClassName=com.mysql.jdbc.Driver"
+            domStartupParams="${domStartupParams} -Ddomibus.datasource.url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false"
          ;;
          "Oracle")
-            domStartupParams=${domStartupParams} -Ddomibus.datasource.xa.xaDataSourceClassName=oracle.jdbc.xa.client.OracleXADataSource
-            domStartupParams=${domStartupParams} -Ddomibus.datasource.xa.property.URL=jdbc:oracle:thin:@${DB_HOST}:${DB_PORT}${DB_NAME}
-            domStartupParams=${domStartupParams} -Ddomibus.datasource.driverClassName=oracle.jdbc.OracleDriver
-            domStartupParams=${domStartupParams} -Ddomibus.datasource.url=jdbc:oracle:thin:@${DB_HOST}:${DB_PORT}${DB_NAME}
+            domStartupParams="${domStartupParams} -Ddomibus.datasource.xa.xaDataSourceClassName=oracle.jdbc.xa.client.OracleXADataSource"
+            domStartupParams="${domStartupParams} -Ddomibus.datasource.xa.property.URL=jdbc:oracle:thin:@${DB_HOST}:${DB_PORT}${DB_NAME}"
+            domStartupParams="${domStartupParams} -Ddomibus.datasource.driverClassName=oracle.jdbc.OracleDriver"
+            domStartupParams="${domStartupParams} -Ddomibus.datasource.url=jdbc:oracle:thin:@${DB_HOST}:${DB_PORT}${DB_NAME}"
          ;;
          *)
             ABORT_JOB "Database Type provided ({$DB_TYPE}) but MUST BE EITHER 'MySQL' or 'Oracle'"
@@ -77,7 +77,7 @@ echo "   DB_PASS                 : ${DB_PASS}"
    echo ; echo "Before: $CATALINA_OPTS"
    CATALINA_OPTS=${CATALINA_OPTS} ${domStartupParams}
    export CATALINA_OPTS=${CATALINA_OPTS}
-   echo ; echo "After: ${CATALINA_OPTS}"
+   echo ; echo "After: $CATALINA_OPTS"
 }
 
 ##########################################################################
@@ -87,6 +87,6 @@ echo "   DB_PASS                 : ${DB_PASS}"
 buildDomibusStartupParams
 waitForDatabase ${DB_TYPE} ${DB_HOST} ${DB_PORT} ${DB_USER} ${DB_PASS} ${DB_NAME}
 
-echo ; echo "Starting Tomcat: $CATALINA_HOME/bin/catalina.sh run"
-$CATALINA_HOME/bin/catalina.sh run > $CATALINA_HOME/logs/catalina.out 2>&1
+echo ; echo "Starting Tomcat: $CATALINA_HOME/bin/catalina.sh run $CATALINA_OPTS"
+$CATALINA_HOME/bin/catalina.sh run -DCATALINA_OPTS="$CATALINA_OPTS" > $CATALINA_HOME/logs/catalina.out 2>&1
 
