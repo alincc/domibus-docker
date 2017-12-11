@@ -79,7 +79,7 @@ echo "   DB_PASS                 : ${DB_PASS}"
 # MAIN PROGRAMM STARTS HERE
 ##########################################################################
 
-#TODO pass the database parameters to the script
+buildDomibusStartupParams
 waitForDatabase ${DB_TYPE} ${DB_HOST} ${DB_PORT} ${DB_USER} ${DB_PASS} ${DB_NAME}
 
 echo ; echo "Starting Tomcat: $CATALINA_HOME/bin/catalina.sh run ${domStartupParams}"
