@@ -16,10 +16,6 @@ echo "--------------DB_USER: ${DB_USER}"
 echo "--------------DB_PASS: ${DB_PASS}"
 echo "--------------DOMIBUS_VERSION: ${DOMIBUS_VERSION}"
 
-function displayBanner {
-   cat ${DOCKER_DOMINSTALL}/scripts/textBanner.txt
-}
-
 function sourceExternalFunctions {
 
    echo ; echo "--Sourcing External Functions:"
@@ -65,7 +61,6 @@ function initInstallation {
 ##### MAIN PROGRAMM START HERE
 ####################################################################################################################
 
-displayBanner
 sourceExternalFunctions
 initInstallation
 

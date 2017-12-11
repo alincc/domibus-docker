@@ -24,6 +24,9 @@ COPY ${WORKING_DIR}/install-domibus.sh $DOCKER_DOMINSTALL
 COPY ${DOMIBUS_DISTRIBUTION} $DOCKER_DOMIBUS_DISTRIBUTION
 
 COPY ${WORKING_DIR}/entrypoint.sh $CATALINA_HOME
+RUN chown domibus:domibus $CATALINA_HOME/entrypoint.sh
+RUN chmod +x $CATALINA_HOME/entrypoint.sh
+
 RUN chown domibus:domibus $DOCKER_DOMINSTALL/install-domibus.sh
 RUN chmod +x $DOCKER_DOMINSTALL/install-domibus.sh
 # Running Domibus Installation Script (As 'domibus user')
