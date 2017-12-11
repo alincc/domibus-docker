@@ -34,7 +34,7 @@ function uploadPmode {
    local appServerURL=$1
    local pmodeFile2Upload=$2
 
-   echo ; echo "Uploadling Pmode ${pmodeFile2Upload}"
+   echo ; echo "Uploadling Pmode ${pmodeFile2Upload} to ${appServerURL}"
 
    echo "   Loging to Domibus to obtain cookies"
    curl ${appServerURL}/rest/security/authentication \
