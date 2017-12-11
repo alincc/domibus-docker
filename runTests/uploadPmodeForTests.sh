@@ -1,29 +1,39 @@
 #!/bin/bash -ex
 
+WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+echo ; echo "WORKING_DIR: ${WORKING_DIR}"
+
 function configurePmode4Tests {
     echo ; echo "Configuring:  Domibus pModes"
 
-    initialString="endpoint=\"http://localhost:8080/domibus/services/msh\""
-    replacedString="endpoint=\"${APP_SERVER_URL_BLUE}/services/msh\""
-    echo "   Replacing : ${initialString}"
-    echo "   By        : ${replacedString}"
-    echo "   In files   : ${targetFileBlue} and ${targetFileRed}"
-    sed -i -e "s#${initialString}#${replacedString}#" ${TARGET_FILE_BLUE}
-    sed -i -e "s#${initialString}#${replacedString}#" ${TARGET_FILE_RED}
+    local blueDomibusURL=$1
+    local blueSamplePMode=$2
 
-    initialString="endpoint=\"http://localhost:8180/domibus/services/msh\""
-    replacedString="endpoint=\"${APP_SERVER_URL_RED}/services/msh\""
+    local redDomibusURL=$3
+    local redSamplePMode=$4
+
+    initialString="endpoint=\"http://<blue_hostname>:8080/domibus/services/msh\""
+    replacedString="endpoint=\"${blueDomibusURL}/services/msh\""
     echo "   Replacing : ${initialString}"
     echo "   By        : ${replacedString}"
-    echo "   In files   : ${targetFileBlue} and ${targetFileRed}"
-    sed -i -e "s#${initialString}#${replacedString}#" ${TARGET_FILE_BLUE}
-    sed -i -e "s#${initialString}#${replacedString}#" ${TARGET_FILE_RED}
+    echo "   In files   : ${blueSamplePMode} and ${redSamplePMode}"
+    sed -i -e "s#${initialString}#${replacedString}#" ${blueSamplePMode}
+    sed -i -e "s#${initialString}#${replacedString}#" ${redSamplePMode}
+
+    initialString="endpoint=\"http://<red_hostname>:8080/domibus/services/msh\""
+    replacedString="endpoint=\"${redDomibusURL}/services/msh\""
+    echo "   Replacing : ${initialString}"
+    echo "   By        : ${replacedString}"
+    echo "   In files   : ${blueSamplePMode} and ${redSamplePMode}"
+    sed -i -e "s#${initialString}#${replacedString}#" ${blueSamplePMode}
+    sed -i -e "s#${initialString}#${replacedString}#" ${redSamplePMode}
 
 }
 
 function uploadPmode {
-   appServerURL=$1
-   pmodeFile2Upload=$2
+   local appServerURL=$1
+   local pmodeFile2Upload=$2
+
    echo ; echo "Uploadling Pmode ${pmodeFile2Upload}"
 
    echo "   Loging to Domibus to obtain cookies"
@@ -51,29 +61,31 @@ function uploadPmode {
    -F  file=@${pmodeFile2Upload}
 }
 
-DOMIBUS_ARTEFACTS=${1}
-APP_SERVER_URL_BLUE=${2}
-APP_SERVER_URL_RED=${3}
-localURL=${4}
-remoteURL=${5}
+DOMIBUS_DISTRIBUTION=$1
+DOMIBUS_BLUE_URL=$2
+DOMIBUS_RED_URL=$3
 
-ADMIN_USER="admin"
-ADMIN_PASSW="123456"
+LOCAL_ARTEFACTS=${WORKING_DIR}/temp
+LOCAL_PMODES=${WORKING_DIR}/temp/pmodes
 
-TARGET_FILE_BLUE="${DOMIBUS_ARTEFACTS}/../../Domibus-MSH-soapui-tests/src/main/soapui/domibus-gw-sample-pmode-blue.xml"
-TARGET_FILE_RED="${DOMIBUS_ARTEFACTS}/../../Domibus-MSH-soapui-tests/src/main/soapui/domibus-gw-sample-pmode-red.xml"
+echo "--------------LOCAL_PMODES: " ${LOCAL_PMODES}
+
+echo "Deleting local artefacts: " ${LOCAL_ARTEFACTS}
+rm -rf  ${LOCAL_ARTEFACTS}
+mkdir -p ${LOCAL_PMODES}
+
+unzip -j ${DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-sample-configuration-and-testing.zip conf/pmodes/* -d ${LOCAL_PMODES}
+
+TARGET_FILE_BLUE="${LOCAL_PMODES}/domibus-gw-sample-pmode-blue.xml"
+TARGET_FILE_RED="${LOCAL_PMODES}/domibus-gw-sample-pmode-red.xml"
 
 
 echo ; echo "Starting pMode upload with the following Parameters:"
-echo "   ${DOMIBUS_ARTEFACTS}"
-echo "   APP_SERVER_URL_BLUE=${APP_SERVER_URL_BLUE}                 \\"
-echo "   APP_SERVER_URL_RED=${APP_SERVER_URL_RED}               \\"
-echo "   localURL=${localURL}               \\"
-echo "   remoteURL=${remoteURL}               \\"
-echo "   TARGET_FILE_BLUE=${TARGET_FILE_BLUE}               \\"
-echo "   TARGET_FILE_RED=${TARGET_FILE_RED}"
+echo "   DOMIBUS_DISTRIBUTION=${DOMIBUS_DISTRIBUTION}"
+echo "   DOMIBUS_BLUE_URL=${DOMIBUS_BLUE_URL}                 \\"
+echo "   DOMIBUS_RED_URL=${DOMIBUS_RED_URL}               \\"
 
 
-configurePmode4Tests
-uploadPmode $localURL $TARGET_FILE_BLUE
-uploadPmode $remoteURL $TARGET_FILE_RED
+configurePmode4Tests ${DOMIBUS_BLUE_URL} ${TARGET_FILE_BLUE} ${DOMIBUS_RED_URL} ${TARGET_FILE_RED}
+#uploadPmode ${DOMIBUS_BLUE_URL} ${TARGET_FILE_BLUE}
+#uploadPmode ${DOMIBUS_RED_URL} ${TARGET_FILE_RED}
