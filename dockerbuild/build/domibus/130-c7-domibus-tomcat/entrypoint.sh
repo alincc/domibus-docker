@@ -75,7 +75,7 @@ echo "   DB_PASS                 : ${DB_PASS}"
    fi
 
    echo ; echo "Before: $CATALINA_OPTS"
-   CATALINA_OPTS=${CATALINA_OPTS} ${domStartupParams}
+   CATALINA_OPTS="${CATALINA_OPTS} ${domStartupParams}"
    export CATALINA_OPTS=${CATALINA_OPTS}
    echo ; echo "After: $CATALINA_OPTS"
 }
