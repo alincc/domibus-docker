@@ -40,7 +40,7 @@ cp -r ${WORKING_DIR}/../../../../../domibus/Domibus-MSH/src/main/conf/domibus/po
 
 domibusVersionLowerCase="`echo ${DOMIBUS_VERSION} | tr '[:upper:]' '[:lower:]'`"
 dockerFile=c7-domibus-tomcat.Dockerfile
-dockerImage=domibus-${domibusVersionLowerCase}-tomcat
+dockerImage=domibus-tomcat:${domibusVersionLowerCase}
 dockerBuildContext=.
 
 DockerBuildArgs="

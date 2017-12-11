@@ -1,8 +1,6 @@
 #!/bin/bash
 
-
 echo ; echo "--------------Domibus entry point"
-
 
 
 echo "--------------entrypoint: "

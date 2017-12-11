@@ -12,10 +12,6 @@ ENV MEMORY_SETTINGS="-Xms128m -Xmx1024m -XX:MaxPermSize=256m"
 ENV CATALINA_OPTS="-Ddomibus.config.location=$DOMIBUS_CONFIG_LOCATION $MEMORY_SETTINGS"
 ENV DB_TYPE="" DB_HOST="" DB_PORT="" DB_NAME="domibus" DB_USER="" DB_PASS=""
 
-#DB_NAME cannot be passed to Domibus via properties yet
-
-
-
 RUN rm -rf $DOCKER_DOMINSTALL
 RUN mkdir -p $DOCKER_DOMINSTALL
 COPY ${DOMINSTALL} $DOCKER_DOMINSTALL
