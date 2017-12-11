@@ -66,10 +66,10 @@ function waitForDatabase {
    local dbSchema=$6
 
    if [ "${databaseType}" == "MySQL" ] ; then
-      waitForMySQLDatabase $databaseType $dbHost $dbPort $dbUser $dbPassword $dbSchema
+      waitForMySQLDatabase $dbHost $dbPort $dbUser $dbPassword $dbSchema
       #echo "DO NOT WAIT for MySQL for now..."
    fi
    if [ "${databaseType}" == "Oracle" ] ; then
-      WaitForOracleDatabase $databaseType $dbHost $dbPort $dbUser $dbPassword $dbSchema
+      WaitForOracleDatabase $dbHost $dbPort $dbUser $dbPassword $dbSchema
    fi
 }
