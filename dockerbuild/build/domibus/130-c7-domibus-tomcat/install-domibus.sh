@@ -15,7 +15,7 @@ echo "--------------DB_NAME: ${DB_NAME}"
 echo "--------------DB_USER: ${DB_USER}"
 echo "--------------DB_PASS: ${DB_PASS}"
 echo "--------------DOMIBUS_VERSION: ${DOMIBUS_VERSION}"
-echo "--------------domibus.database.serverName: ${domibus.database.serverName}"
+echo "--------------domibus.database.serverName: " ${domibus.database.serverName}
 echo "--------------domibus.database.port: ${domibus.database.port}"
 echo "--------------domibus.datasource.xa.property.user: ${domibus.datasource.xa.property.user}"
 echo "--------------domibus.datasource.xa.property.password: ${domibus.datasource.xa.property.password}"
