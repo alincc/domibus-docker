@@ -3,9 +3,7 @@
 
 echo ; echo "--------------Domibus entry point"
 
-echo ; echo "Sourcing domInstall Common Functions"
-. ${DOCKER_DOMINSTALL}/scripts/functions/common.functions
-. ${DOCKER_DOMINSTALL}/scripts/functions/database.functions
+
 
 echo "--------------entrypoint: "
 echo "--------------CATALINA_HOME: " ${CATALINA_HOME}
@@ -19,6 +17,13 @@ echo "--------------DB_NAME: ${DB_NAME}"
 echo "--------------DB_USER: ${DB_USER}"
 echo "--------------DB_PASS: ${DB_PASS}"
 echo "--------------DOMIBUS_VERSION: ${DOMIBUS_VERSION}"
+
+echo "ls DOCKER_DOMINSTALL"
+ls ${DOCKER_DOMINSTALL}
+
+echo ; echo "Sourcing domInstall Common Functions"
+. ${DOCKER_DOMINSTALL}/scripts/functions/common.functions
+. ${DOCKER_DOMINSTALL}/scripts/functions/database.functions
 
 function buildDomibusStartupParams {
    displayFunctionBanner ${FUNCNAME[0]}
