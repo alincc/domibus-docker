@@ -73,6 +73,11 @@ echo "   DB_PASS                 : ${DB_PASS}"
          ;;
       esac
    fi
+
+   echo ; echo "Before: $CATALINA_OPTS"
+   CATALINA_OPTS=$CATALINA_OPTS $domStartupParams
+   export CATALINA_OPTS=${CATALINA_OPTS}
+   echo ; echo "After: ${CATALINA_OPTS}"
 }
 
 ##########################################################################
@@ -83,5 +88,5 @@ buildDomibusStartupParams
 waitForDatabase ${DB_TYPE} ${DB_HOST} ${DB_PORT} ${DB_USER} ${DB_PASS} ${DB_NAME}
 
 echo ; echo "Starting Tomcat: $CATALINA_HOME/bin/catalina.sh run ${domStartupParams}"
-$CATALINA_HOME/bin/catalina.sh run ${domStartupParams} > $CATALINA_HOME/logs/catalina.out 2>&1
+$CATALINA_HOME/bin/catalina.sh run > $CATALINA_HOME/logs/catalina.out 2>&1
 
