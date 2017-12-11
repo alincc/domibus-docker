@@ -41,10 +41,10 @@ RUN su - domibus -c export CATALINA_HOME=${CATALINA_HOME} && \
     export DB_NAME=${DB_NAME} && \
     export DB_USER=${DB_USER} && \
     export DB_PASS=${DB_PASS} && \
-    export domibus.database.serverName=${domibus.database.serverName} && \
-    export domibus.database.port=${domibus.database.port} && \
-    export domibus.datasource.xa.property.user=${domibus.datasource.xa.property.user} && \
-    export domibus.datasource.xa.property.password=${domibus.datasource.xa.property.password} && \
-    export domibus.datasource.user=${domibus.datasource.user} && \
-    export domibus.datasource.password=${domibus.datasource.password} && \
+    export "domibus.database.serverName"=${domibus.database.serverName} && \
+    export "domibus.database.port"=${domibus.database.port} && \
+    export "domibus.datasource.xa.property.user"=${domibus.datasource.xa.property.user} && \
+    export "domibus.datasource.xa.property.password"=${domibus.datasource.xa.property.password} && \
+    export "domibus.datasource.user"=${domibus.datasource.user} && \
+    export "domibus.datasource.password"=${domibus.datasource.password} && \
     $DOCKER_DOMINSTALL/install-domibus.sh
