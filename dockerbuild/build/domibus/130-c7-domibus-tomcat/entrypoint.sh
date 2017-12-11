@@ -82,6 +82,6 @@ echo "   DB_PASS                 : ${DB_PASS}"
 #TODO pass the database parameters to the script
 waitForDatabase ${DB_TYPE} ${DB_HOST} ${DB_PORT} ${DB_USER} ${DB_PASS} ${DB_NAME}
 
-echo ; echo "Starting Tomcat: $CATALINA_HOME/bin/catalina.sh run"
-$CATALINA_HOME/bin/catalina.sh $domStartupParams run > $CATALINA_HOME/logs/catalina.out 2>&1
+echo ; echo "Starting Tomcat: $CATALINA_HOME/bin/catalina.sh run ${domStartupParams}"
+$CATALINA_HOME/bin/catalina.sh run ${domStartupParams} > $CATALINA_HOME/logs/catalina.out 2>&1
 
