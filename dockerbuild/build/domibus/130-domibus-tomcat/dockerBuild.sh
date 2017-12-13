@@ -39,7 +39,7 @@ copyDomibus "${DOMIBUS_DISTRIBUTION}"  'tomcat' 'single' "${LOCAL_DOMIBUS_DISTRI
 cp -r ${WORKING_DIR}/../../../../../domibus/Domibus-MSH/src/main/conf/domibus/policies ${DOM_INSTALL}
 
 domibusVersionLowerCase="`echo ${DOMIBUS_VERSION} | tr '[:upper:]' '[:lower:]'`"
-dockerFile=c7-domibus-tomcat.Dockerfile
+dockerFile="`ls -1 ${WORKING_DIR}/*.Dockerfile`"
 dockerImage=domibus-tomcat:${domibusVersionLowerCase}
 dockerBuildContext=.
 

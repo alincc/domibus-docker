@@ -1,7 +1,7 @@
 version: '2'
 services:
   mysqlblue:
-    image: c7mys7
+    image: domibus-mysql:${DOMIBUS_VERSION}
     container_name: mysql_blue
     environment:
       - MYSQL_ROOT_PASSWORD=123456
@@ -13,7 +13,7 @@ services:
     ports:
           - "13306:3306"
   mysqlred:
-    image: c7mys7
+    image: domibus-mysql:${DOMIBUS_VERSION}
     container_name: mysql_red
     environment:
       - MYSQL_ROOT_PASSWORD=123456

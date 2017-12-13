@@ -13,7 +13,7 @@ mkdir -p ${WORKING_DIR}/temp/domInstall/downloads/jdbc
       ABORT_JOB "ERROR Copying Oracle jdbc drivers from ${ORACLE_REPO}/jdbc to  ${WORKING_DIR}/temp/domInstall/downloads/jdbc"
    fi
 
-dockerFile=edelivery-tomcat-8.0.39.Dockerfile
+dockerFile="`ls -1 ${WORKING_DIR}/*.Dockerfile`"
 dockerImage=edelivery-tomcat-8.0.39
 dockerBuildContext=.
 
