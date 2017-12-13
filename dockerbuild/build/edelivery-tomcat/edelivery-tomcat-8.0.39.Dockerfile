@@ -1,4 +1,4 @@
-FROM centos7
+FROM edelivery-centos
 
 ENV CATALINA_HOME=/data/tomcat
 

@@ -14,7 +14,7 @@ mkdir -p ${WORKING_DIR}/temp/domInstall/downloads/jdbc
    fi
 
 dockerFile="`ls -1 ${WORKING_DIR}/*.Dockerfile`"
-dockerImage=edelivery-tomcat-8.0.39
+dockerImage=edelivery-tomcat:8.0.39
 dockerBuildContext=.
 
 

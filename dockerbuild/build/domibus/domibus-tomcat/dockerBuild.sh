@@ -45,6 +45,7 @@ dockerBuildContext=.
 
 DockerBuildArgs="
 --build-arg DOMINSTALL=${DOM_INSTALL} \
+--build-arg DOMIBUS_VERSION=${DOMIBUS_VERSION} \
 --build-arg DOMIBUS_DISTRIBUTION=${LOCAL_DOMIBUS_DISTRIBUTION} \
 "
 
