@@ -8,9 +8,9 @@ cp -r ../../../../domInstall ${WORKING_DIR}/temp
 
 #Oracle
 mkdir -p ${WORKING_DIR}/temp/domInstall/downloads/jdbc
-   cp ${ORACLE_REPO}/jdbc/* ${WORKING_DIR}/temp/domInstall/downloads/jdbc
+   cp ${JDBC_DRIVERS}/* ${WORKING_DIR}/temp/domInstall/downloads/jdbc
    if [ $? -ne 0 ] ; then
-      ABORT_JOB "ERROR Copying Oracle jdbc drivers from ${ORACLE_REPO}/jdbc to  ${WORKING_DIR}/temp/domInstall/downloads/jdbc"
+      ABORT_JOB "ERROR Copying Oracle jdbc drivers from ${JDBC_DRIVERS} to  ${WORKING_DIR}/temp/domInstall/downloads/jdbc"
    fi
 
 dockerFile="`ls -1 ${WORKING_DIR}/*.Dockerfile`"
