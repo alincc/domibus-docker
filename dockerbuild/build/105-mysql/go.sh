@@ -34,12 +34,13 @@ echo ; echo "Database schema SQL creation is:" ${SQLDatabaseInitScript}
 echo ; echo "unzip -p	${WORKING_DIR}/temp/sql-scripts/${zipFilename} ${SQLDatabaseInitScript}	> ${WORKING_DIR}/temp/${SQLDatabaseInitScript}.sql"
 unzip -p	${WORKING_DIR}/temp/sql-scripts/${zipFilename} ${SQLDatabaseInitScript}	> ${WORKING_DIR}/temp/${SQLDatabaseInitScript}.sql
 
-dockerFile="`ls -1 *.Dockerfile`"
-
+domibusVersionLowerCase="`echo ${DOMIBUS_VERSION} | tr '[:upper:]' '[:lower:]'`"
 dockerBuildContext="${WORKING_DIR}"
 dockerFile="`ls -1 ${WORKING_DIR}/*.Dockerfile`"
-dockerImage=`basename ${dockerFile} | cut -d. -f1`
+dockerImage=domibus-mysql:${domibusVersionLowerCase}
 DockerBuildArgs="--build-arg DOMIBUS_SCHEMA=$(basename ${SQLDatabaseInitScript})"
+
+
 
 echo
 echo "Building Docker Image: ${dockerImage}:"
