@@ -229,4 +229,3 @@ Note: You'll need to adapt some argument variables defined on Dockerfile in orde
 ```
 docker run --name httpd -p 80:80 --restart=always -d httpd_domibusfs:2.4
 ```
-
