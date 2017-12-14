@@ -89,13 +89,6 @@ docker-compose logs oraclexe
 docker-compose exec oraclexe sh -c 'rm -rf /docker-entrypoint-initdb.d/*'
 ```
 
-* TODO AUTOMATED: Save the message filter configuration:
-* Access Corner 2 Domibus URL: http://<VHOST_C2_HOSTNAME>/domibus-weblogic/
-* Authenticate with the admin user;
-* Access the "Message Filter";
-* Modify the filters order so that the FS Plugin is in the first position;
-* Click on "Save".
-   
 ## Setup Network File Shares (On Host machine)
 
 Setup the network file shares to be used by Domibus FS Plugin.
