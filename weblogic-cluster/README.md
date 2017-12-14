@@ -35,15 +35,19 @@ mkdir -p ~/domibus-files-wlc_c2/persistent_filestore
 mkdir -p ~/domibus-files-wlc_c3/persistent_filestore
 ```
 
-### Run Corner 2 and Corner 3
+### Build images
 
-Configure WebLogic eDelivery corner 2/corner 3:
-* Download the following resources to images/weblogic_domibus/resources/:
+Download resources:
+
+* Download the following resources to images/edelivery-weblogic-cluster/resources/:
 ```
    https://github.com/jwilder/dockerize/releases/download/v0.6.0/dockerize-linux-amd64-v0.6.0.tar.gz
    http://download.oracle.com/otn/nt/middleware/12c/wls/1213/fmw_12.1.3.0.0_wls.jar
    http://download.oracle.com/otn/java/jdk/8u144-b01/090f390dda5b47b9b721c7dfaa008135/jdk-8u144-linux-x64.tar.gz
-   http://download.oracle.com/otn/java/jdk/7u80-b15/jdk-7u80-linux-x64.tar.gz
+```
+
+* Download the following resources to images/weblogic-cluster-domibus/resources/:
+```
    https://ec.europa.eu/cefdigital/artifact/content/repositories/eDelivery/eu/europa/ec/digit/ipcis/wslt-api/1.9.1/wslt-api-1.9.1.zip
    https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-weblogic-war.zip
    https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-default-fs-plugin.zip
@@ -53,10 +57,23 @@ Configure WebLogic eDelivery corner 2/corner 3:
    https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-weblogic-configuration.zip
    https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-sql-scripts.zip
 ```
-* Initialize the correspondent Docker Compose project:
+
+Build if the images were not built yet, please build all images:
+* oraclexe-domibus
+* edelivery-weblogic-cluster
+* weblogic-cluster-domibus
+
 ```
-cd compose/corner2/
-docker-compose up -d
+cd images
+docker-compose -f docker-compose.build.yml build
+```
+
+### Run Test Corner2 and Corner3
+
+Initialize the correspondent Docker Compose project:
+```
+cd compose/test/
+docker-compose up -d && docker-compose logs -f
 ```
 Notes:
 - You'll need to adapt some build arguments and environment variables defined on docker-compose.yml in order to reflect your environment hostnames and ports;

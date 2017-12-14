@@ -1,0 +1,153 @@
+version: '3'
+services:
+  #
+  # CORNER 2
+  #
+
+  # oracle xe db
+  oraclexec2:
+    image: oraclexe-domibus:3.3
+    environment:
+      - ORACLE_ALLOW_REMOTE=true
+    expose:
+      - "1521"
+    # allow external access to oracle db via the host port 49161, at least during the development and test phases
+    ports:
+      - "49161:1521"
+    restart: always
+  # weblogic admin server
+  # NOTE: wlst connect does not support underscores in server name
+  wlsadminc2:
+    # depend of the startup of the db
+    depends_on:
+      - oraclexec2
+    environment:
+      - DB_HOST=oraclexec2
+      - ADMIN_HOST=localhost
+      - ADMIN_PASSWORD=changeMe!
+      - DOMIBUS_PASSWORD=changeMe!
+      - PMODE_TEMPLATE_PATH=/u01/oracle/user_projects/domains/base_domain/conf/pmodes/domibus-gw-sample-pmode-blue.xml.tmpl
+      - THIS_PARTY_DOMIBUS_URL=http://${COMPOSE_PROJECT_NAME}_serverc2i1_1:7002/domibus-weblogic
+      - OTHER_PARTY_DOMIBUS_URL=http://${COMPOSE_PROJECT_NAME}_serverc3i1_1:7002/domibus-weblogic
+    image: weblogic-cluster-domibus:3.3
+    hostname: wlsadminc2
+    ports:
+      - "7001:7001"
+    restart: always
+  # weblogic cluster machines
+  serverc2i1:
+    # depend of the WebLogic Admin Server which controls the WebLogic domain and cluster
+    depends_on:
+      - wlsadminc2
+    image: weblogic-cluster-domibus:3.3
+    environment:
+      - INSTANCE_NAME=c2i1
+      - DB_HOST=oraclexec2
+      - ADMIN_HOST=wlsadminc2
+    hostname: serverc2i1
+    ports:
+      - "7002:7002"
+    volumes:
+      - ~/domibus-files-wlc_c2:/u01/oracle/user_projects/domains/base_domain/filestores
+    restart: always
+    command: createServerEntrypoint.sh
+  serverc2i2:
+    depends_on:
+      - wlsadminc2
+    image: weblogic-cluster-domibus:3.3
+    environment:
+      - INSTANCE_NAME=c2i2
+      - DB_HOST=oraclexec2
+      - ADMIN_HOST=wlsadminc2
+    hostname: serverc2i2
+    ports:
+      - "7003:7002"
+    volumes:
+      - ~/domibus-files-wlc_c2:/u01/oracle/user_projects/domains/base_domain/filestores
+    restart: always
+    command: createServerEntrypoint.sh
+
+  #
+  # CORNER 3
+  #
+
+  # oracle xe db
+  oraclexec3:
+    image: oraclexe-domibus:3.3
+    environment:
+      - ORACLE_ALLOW_REMOTE=true
+    expose:
+      - "1521"
+    # allow external access to oracle db via the host port 49161, at least during the development and test phases
+    ports:
+      - "49261:1521"
+    restart: always
+  # weblogic admin server
+  # NOTE: wlst connect does not support underscores in server name
+  wlsadminc3:
+    # depend of the startup of the db
+    depends_on:
+      - oraclexec3
+    environment:
+      - DB_HOST=oraclexec3
+      - ADMIN_HOST=localhost
+      - ADMIN_PASSWORD=changeMe!
+      - DOMIBUS_PASSWORD=changeMe!
+      - PMODE_TEMPLATE_PATH=/u01/oracle/user_projects/domains/base_domain/conf/pmodes/domibus-gw-sample-pmode-red.xml.tmpl
+      - THIS_PARTY_NAME=red_gw
+      - THIS_PARTY_ID=domibus-red
+      - THIS_PARTY_DOMIBUS_URL=http://${COMPOSE_PROJECT_NAME}_serverc3i1_1:7002/domibus-weblogic
+      - OTHER_PARTY_NAME=blue_gw
+      - OTHER_PARTY_ID=domibus-blue
+      - OTHER_PARTY_DOMIBUS_URL=http://${COMPOSE_PROJECT_NAME}_serverc2i1_1:7002/domibus-weblogic
+    image: weblogic-cluster-domibus:3.3
+    hostname: wlsadminc3
+    ports:
+      - "7101:7001"
+    restart: always
+  # weblogic cluster machines
+  serverc3i1:
+    # depend of the WebLogic Admin Server which controls the WebLogic domain and cluster
+    depends_on:
+      - wlsadminc3
+    image: weblogic-cluster-domibus:3.3
+    environment:
+      - INSTANCE_NAME=c3i1
+      - DB_HOST=oraclexec3
+      - ADMIN_HOST=wlsadminc3
+      - PMODE_TEMPLATE_PATH=/u01/oracle/user_projects/domains/base_domain/conf/pmodes/domibus-gw-sample-pmode-red.xml.tmpl
+      - THIS_PARTY_NAME=red_gw
+      - THIS_PARTY_ID=domibus-red
+      - THIS_PARTY_DOMIBUS_URL=http://${COMPOSE_PROJECT_NAME}_serverc3i1_1:7002/domibus-weblogic
+      - OTHER_PARTY_NAME=blue_gw
+      - OTHER_PARTY_ID=domibus-blue
+      - OTHER_PARTY_DOMIBUS_URL=http://${COMPOSE_PROJECT_NAME}_serverc2i1_1:7002/domibus-weblogic
+    hostname: serverc3i1
+    ports:
+      - "7102:7002"
+    volumes:
+      - ~/domibus-files-wlc_c3:/u01/oracle/user_projects/domains/base_domain/filestores
+    restart: always
+    command: createServerEntrypoint.sh
+  serverc3i2:
+    depends_on:
+      - wlsadminc3
+    image: weblogic-cluster-domibus:3.3
+    environment:
+      - INSTANCE_NAME=c3i2
+      - DB_HOST=oraclexec3
+      - ADMIN_HOST=wlsadminc3
+      - PMODE_TEMPLATE_PATH=/u01/oracle/user_projects/domains/base_domain/conf/pmodes/domibus-gw-sample-pmode-red.xml.tmpl
+      - THIS_PARTY_NAME=red_gw
+      - THIS_PARTY_ID=domibus-red
+      - THIS_PARTY_DOMIBUS_URL=http://${COMPOSE_PROJECT_NAME}_serverc3i1_1:7002/domibus-weblogic
+      - OTHER_PARTY_NAME=blue_gw
+      - OTHER_PARTY_ID=domibus-blue
+      - OTHER_PARTY_DOMIBUS_URL=http://${COMPOSE_PROJECT_NAME}_serverc2i1_1:7002/domibus-weblogic
+    hostname: serverc3i2
+    ports:
+      - "7103:7002"
+    volumes:
+      - ~/domibus-files-wlc_c3:/u01/oracle/user_projects/domains/base_domain/filestores
+    restart: always
+    command: createServerEntrypoint.sh

@@ -1,0 +1,60 @@
+version: '3'
+services:
+  # oracle xe db
+  oraclexe:
+    image: oraclexe-domibus:3.3
+    environment:
+      - ORACLE_ALLOW_REMOTE=true
+    expose:
+      - "1521"
+    ports:
+      - "49161:1521"
+    restart: always
+  # weblogic admin server
+  wlsadmin:
+    # depend of the startup of the db
+    depends_on:
+      - oraclexe
+    environment:
+      - ADMIN_HOST=localhost
+      - DB_HOST=oraclexe
+      - ADMIN_PASSWORD=changeMe!
+      - DOMIBUS_PASSWORD=changeMe!
+      - THIS_PARTY_DOMIBUS_URL=http://${COMPOSE_PROJECT_NAME}_serverc2i1_1:7002/domibus-weblogic
+    image: weblogic-cluster-domibus:3.3
+    hostname: wlsadmin
+    ports:
+      - "7001:7001"
+    restart: always
+  # weblogic cluster machines
+  serverc2i1:
+    # depend of the WebLogic Admin Server which controls the WebLogic domain and cluster
+    depends_on:
+      - wlsadmin
+    image: weblogic-cluster-domibus:3.3
+    environment:
+      - DB_HOST=oraclexe
+      - ADMIN_HOST=wlsadmin
+      - INSTANCE_NAME=c2i1
+    hostname: serverc2i1
+    ports:
+      - "7002:7002"
+    volumes:
+      - ~/domibus-files-wlc_c2:/u01/oracle/user_projects/domains/base_domain/filestores
+    restart: always
+    command: createServer.sh
+  serverc2i2:
+    depends_on:
+      - wlsadmin
+    image: weblogic-cluster-domibus:3.3
+    environment:
+      - DB_HOST=oraclexe
+      - ADMIN_HOST=wlsadmin
+      - INSTANCE_NAME=c2i2
+    hostname: serverc2i2
+    ports:
+      - "7003:7002"
+    volumes:
+      - ~/domibus-files-wlc_c2:/u01/oracle/user_projects/domains/base_domain/filestores
+    restart: always
+    command: createServer.sh
