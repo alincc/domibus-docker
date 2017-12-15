@@ -1,5 +1,4 @@
 #!/bin/bash
-DOMIBUS_SCHEMA=${1}
 
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 echo ; echo "WORKING_DIR: ${WORKING_DIR}"; echo
@@ -15,24 +14,25 @@ function abortJob {
    exit
 }
 
-#[ ! -d "${WORKING_DIR}/temp/sql-scripts" ] && mkdir -p "${WORKING_DIR}/temp/sql-scripts"
-rm -rf  ${WORKING_DIR}/temp ; mkdir -p ${WORKING_DIR}/temp/sql-scripts
+DOMIBUS_DISTRIBUTION=$1
+LOCAL_ARTEFACTS=${WORKING_DIR}/temp
+SQL_SCRIPTS_DISTRIBUTION_NAME=domibus-distribution-${DOMIBUS_VERSION}-sql-scripts.zip
+SQL_SCRIPTS_DISTRIBUTION=${DOMIBUS_DISTRIBUTION}/${SQL_SCRIPTS_DISTRIBUTION_NAME}
 
-# Getting Domibus SQL Scripts into the Docker-Build Context
-echo ; echo "Copying ${DOMIBUS_SCHEMA} to Docker-Build Context directory (`pwd`)"
-. ../../../domInstall/scripts/functions/getDomibus.functions
-. ../../../domInstall/scripts/functions/common.functions
+rm -rf  ${LOCAL_ARTEFACTS} ; mkdir -p ${LOCAL_ARTEFACTS}/sql-scripts
 
-getDomibusSQLScripts $1 ./temp/sql-scripts
+#. ../../../domInstall/scripts/functions/getDomibus.functions
+#. ../../../domInstall/scripts/functions/common.functions
 
-zipFilename="`ls -1 ${WORKING_DIR}/temp/sql-scripts`"
-echo ; echo "Getting ZIP file name: ${zipFilename}"
+#getDomibusSQLScripts $1 ./temp/sql-scripts
 
-SQLDatabaseInitScript="`zipinfo -1 ${WORKING_DIR}/temp/sql-scripts/${zipFilename} | grep mysql | grep -v migration`"
+unzip ${SQL_SCRIPTS_DISTRIBUTION} -d ${LOCAL_ARTEFACTS}
+
+#zipFilename="`ls -1 ${LOCAL_ARTEFACTS}/sql-scripts`"
+#echo ; echo "Getting ZIP file name: ${zipFilename}"
+
+SQLDatabaseInitScript="`ls -1 ${LOCAL_ARTEFACTS}/sql-scripts | grep mysql | grep -v migration`"
 echo ; echo "Database schema SQL creation is:" ${SQLDatabaseInitScript}
-
-echo ; echo "unzip -p	${WORKING_DIR}/temp/sql-scripts/${zipFilename} ${SQLDatabaseInitScript}	> ${WORKING_DIR}/temp/${SQLDatabaseInitScript}.sql"
-unzip -p	${WORKING_DIR}/temp/sql-scripts/${zipFilename} ${SQLDatabaseInitScript}	> ${WORKING_DIR}/temp/${SQLDatabaseInitScript}.sql
 
 domibusVersionLowerCase="`echo ${DOMIBUS_VERSION} | tr '[:upper:]' '[:lower:]'`"
 dockerBuildContext="${WORKING_DIR}"
@@ -56,7 +56,7 @@ echo
 echo "   - Command				: ${dockerBuildCmd}"
 echo
 
-eval ${dockerBuildCmd}
+#eval ${dockerBuildCmd}
 
 #rm -rf ${WORKING_DIR}/temp
 
