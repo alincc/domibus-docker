@@ -1,3 +1,14 @@
+#
+# Docker compose project used to build docker images
+#
+# NOTE: Please verify the default environment vars defined in .env file
+#
+# Usage:
+#   build all images:
+#     docker-compose -f docker-compose.build.yml build
+#   build specific image:
+#     docker-compose -f docker-compose.build.yml build [service-name]
+#
 version: '3'
 services:
   oraclexe-domibus:
@@ -6,11 +17,10 @@ services:
       args:
       - ORACLE_SYS_PASSWORD=changeMe!
       - DOMIBUS_PASSWORD=changeMe!
-      - DOMIBUS_DIST_VERSION=3.3
-    image: oraclexe-domibus:3.3
+      - DOMIBUS_DIST_VERSION
+      - DOMIBUS_DIST_SHORT_VERSION
+    image: oraclexe-domibus:${DOMIBUS_DIST_VERSION}
   edelivery-weblogic-cluster:
-    depends_on:
-      - oraclexe-domibus
     build:
       context: edelivery-weblogic-cluster
       args:
@@ -19,6 +29,7 @@ services:
     image: edelivery-weblogic-cluster:12.1.3
   weblogic-cluster-domibus:
     depends_on:
+      - oraclexe-domibus
       - edelivery-weblogic-cluster
     build:
       context: weblogic-cluster-domibus
@@ -26,4 +37,5 @@ services:
         - USER_ID
         - ENV_ADMIN_PASSWORD=changeMe!
         - DOMIBUS_PASSWORD=changeMe!
-    image: weblogic-cluster-domibus:3.3
+        - DOMIBUS_DIST_VERSION
+    image: weblogic-cluster-domibus:${DOMIBUS_DIST_VERSION}

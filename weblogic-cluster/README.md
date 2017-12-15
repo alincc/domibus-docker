@@ -39,23 +39,47 @@ mkdir -p ~/domibus-files-wlc_c3/persistent_filestore
 
 Download resources:
 
-* Download the following resources to images/edelivery-weblogic-cluster/resources/:
+* Download the following resources to RESOURCES_REPO/edelivery-weblogic-cluster/resources/:
 ```
    https://github.com/jwilder/dockerize/releases/download/v0.6.0/dockerize-linux-amd64-v0.6.0.tar.gz
    http://download.oracle.com/otn/nt/middleware/12c/wls/1213/fmw_12.1.3.0.0_wls.jar
    http://download.oracle.com/otn/java/jdk/8u144-b01/090f390dda5b47b9b721c7dfaa008135/jdk-8u144-linux-x64.tar.gz
 ```
-
-* Download the following resources to images/weblogic-cluster-domibus/resources/:
+* Download the following resources to RESOURCES_REPO/oraclexe-domibus/resources/:
 ```
-   https://ec.europa.eu/cefdigital/artifact/content/repositories/eDelivery/eu/europa/ec/digit/ipcis/wslt-api/1.9.1/wslt-api-1.9.1.zip
-   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-weblogic-war.zip
+   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-sql-scripts.zip
+```
+* Download the following resources to RESOURCES_REPO/weblogic-cluster-domibus/resources/:
+```
    https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-default-fs-plugin.zip
+   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-default-jms-plugin.zip
    https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-default-ws-plugin.zip
    https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-sample-configuration-and-testing.zip
-   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-default-jms-plugin.zip
    https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-weblogic-configuration.zip
-   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-sql-scripts.zip
+   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-weblogic-war.zip
+   https://ec.europa.eu/cefdigital/artifact/content/repositories/eDelivery/eu/europa/ec/digit/ipcis/wslt-api/1.9.1/wslt-api-1.9.1.zip
+```
+
+Resources repository structure:
+```
+RESOURCES_REPO
+├── edelivery-weblogic-cluster
+│   └── resources
+│       ├── dockerize-linux-amd64-v0.6.0.tar.gz
+│       ├── fmw_12.1.3.0.0_wls.jar
+│       └── jdk-8u144-linux-x64.tar.gz
+├── oraclexe-domibus
+│   └── resources
+│       └── domibus-distribution-3.3-sql-scripts.zip
+└── weblogic-cluster-domibus
+    └── resources
+        ├── domibus-distribution-3.3-default-fs-plugin.zip
+        ├── domibus-distribution-3.3-default-jms-plugin.zip
+        ├── domibus-distribution-3.3-default-ws-plugin.zip
+        ├── domibus-distribution-3.3-sample-configuration-and-testing.zip
+        ├── domibus-distribution-3.3-weblogic-configuration.zip
+        ├── domibus-distribution-3.3-weblogic-war.zip
+        └── wslt-api-1.9.1.zip
 ```
 
 Build if the images were not built yet, please build all images:
