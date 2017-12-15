@@ -31,14 +31,16 @@ unzip ${SQL_SCRIPTS_DISTRIBUTION} -d ${LOCAL_ARTEFACTS}
 #zipFilename="`ls -1 ${LOCAL_ARTEFACTS}/sql-scripts`"
 #echo ; echo "Getting ZIP file name: ${zipFilename}"
 
-SQLDatabaseInitScript="`ls -1 ${LOCAL_ARTEFACTS}/sql-scripts | grep mysql | grep -v migration`"
+SQLDatabaseInitScriptName="`ls -1 ${LOCAL_ARTEFACTS}/sql-scripts | grep mysql | grep -v migration`"
+echo ; echo "Database schema SQL creation nameis:" ${SQLDatabaseInitScriptName}
+SQLDatabaseInitScript=${LOCAL_ARTEFACTS}/sql-scripts/${SQLDatabaseInitScriptName}
 echo ; echo "Database schema SQL creation is:" ${SQLDatabaseInitScript}
 
 domibusVersionLowerCase="`echo ${DOMIBUS_VERSION} | tr '[:upper:]' '[:lower:]'`"
 dockerBuildContext="${WORKING_DIR}"
 dockerFile="`ls -1 ${WORKING_DIR}/*.Dockerfile`"
 dockerImage=domibus-mysql:${domibusVersionLowerCase}
-DockerBuildArgs="--build-arg DOMIBUS_SCHEMA=$(basename ${SQLDatabaseInitScript})"
+DockerBuildArgs="--build-arg DOMIBUS_SCHEMA=${SQLDatabaseInitScript}"
 
 
 
