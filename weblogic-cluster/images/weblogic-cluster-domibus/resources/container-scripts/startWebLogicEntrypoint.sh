@@ -11,7 +11,7 @@
 #   https://docs.oracle.com/middleware/1213/wls/WLSTC/reference.htm
 # =============================
 
-DOMIBUS_WAR_NAME=domibus-MSH-weblogic-${DOMIBUS_DIST_VERSION}.war
+DOMIBUS_WAR_NAME=domibus-MSH-weblogic-${DOMIBUS_VERSION}.war
 
 main() {
     dockerizeTemplates
