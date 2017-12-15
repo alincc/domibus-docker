@@ -1,7 +1,7 @@
 #
 # Docker compose project used to build docker images
 #
-# NOTE: Please verify the default environment vars defined in .env file
+# NOTE: Please verify the default environment vars override in .env file
 #
 # Usage:
 #   build all images:
@@ -17,15 +17,15 @@ services:
       args:
       - ORACLE_SYS_PASSWORD=changeMe!
       - DOMIBUS_PASSWORD=changeMe!
-      - DOMIBUS_DIST_VERSION
-      - DOMIBUS_DIST_SHORT_VERSION
-    image: oraclexe-domibus:${DOMIBUS_DIST_VERSION}
+      - DOMIBUS_VERSION
+      - DOMIBUS_SHORT_VERSION
+    image: oraclexe-domibus:${DOMIBUS_VERSION}
   edelivery-weblogic-cluster:
     build:
       context: edelivery-weblogic-cluster
       args:
         - USER_ID
-        - ENV_ADMIN_PASSWORD=changeMe!
+        - ADMIN_PASSWORD=changeMe!
     image: edelivery-weblogic-cluster:12.1.3
   weblogic-cluster-domibus:
     depends_on:
@@ -35,7 +35,7 @@ services:
       context: weblogic-cluster-domibus
       args:
         - USER_ID
-        - ENV_ADMIN_PASSWORD=changeMe!
+        - ADMIN_PASSWORD=changeMe!
         - DOMIBUS_PASSWORD=changeMe!
-        - DOMIBUS_DIST_VERSION
-    image: weblogic-cluster-domibus:${DOMIBUS_DIST_VERSION}
+        - DOMIBUS_VERSION
+    image: weblogic-cluster-domibus:${DOMIBUS_VERSION}
