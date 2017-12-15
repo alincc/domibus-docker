@@ -15,20 +15,21 @@ function abortJob {
 }
 
 DOMIBUS_DISTRIBUTION=$1
-LOCAL_ARTEFACTS=./temp
+LOCAL_ARTEFACTS=./temp/sql-scripts
 SQL_SCRIPTS_DISTRIBUTION_NAME=domibus-distribution-${DOMIBUS_VERSION}-sql-scripts.zip
 SQL_SCRIPTS_DISTRIBUTION=${DOMIBUS_DISTRIBUTION}/${SQL_SCRIPTS_DISTRIBUTION_NAME}
 
-rm -rf  ${LOCAL_ARTEFACTS} ; mkdir -p ${LOCAL_ARTEFACTS}/sql-scripts
+rm -rf  ${LOCAL_ARTEFACTS} ; #mkdir -p ${LOCAL_ARTEFACTS}/sql-scripts
 unzip ${SQL_SCRIPTS_DISTRIBUTION} -d ${LOCAL_ARTEFACTS}
 
 
-DDLDatabaseInitScriptName="`ls -1 ${LOCAL_ARTEFACTS}/sql-scripts | grep mysql | grep -v migration`"
+DDLDatabaseInitScriptName="`ls -1 ${LOCAL_ARTEFACTS} | grep mysql | grep -v migration`"
 echo ; echo "Discovered database script SQL:" ${DDLDatabaseInitScriptName}
 SQLDatabaseInitScriptName=${DDLDatabaseInitScriptName}.sql
 echo ; echo "Renaming database script SQL:" ${SQLDatabaseInitScriptName}
-mv ${DDLDatabaseInitScriptName} ${SQLDatabaseInitScriptName}
-SQLDatabaseInitScript=${LOCAL_ARTEFACTS}/sql-scripts/${SQLDatabaseInitScriptName}
+mv ${LOCAL_ARTEFACTS}/${DDLDatabaseInitScriptName} ${LOCAL_ARTEFACTS}/${SQLDatabaseInitScriptName}
+SQLDatabaseInitScript=${LOCAL_ARTEFACTS}/${SQLDatabaseInitScriptName}
+
 echo ; echo "Database schema SQL creation is:" ${SQLDatabaseInitScript}
 
 domibusVersionLowerCase="`echo ${DOMIBUS_VERSION} | tr '[:upper:]' '[:lower:]'`"
