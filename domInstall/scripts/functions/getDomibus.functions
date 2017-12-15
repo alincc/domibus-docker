@@ -76,22 +76,6 @@ function copyDomibus {
    done
 }
 
-function copyDomibusSQLScripts {
-   displayFunctionBanner "${FUNCNAME[0]}: \$1=${1} \$2=${2}"
-
-   echo ; echo "Copying Domibus Artefacts:"
-   echo "   - From              : ${1}"
-   echo "   - to		: ${2}"
-
-   echo ; echo "   cp $1/*sql-scripts*.zip $2"
-   cp $1/*sql-scripts*.zip $2
-}
-
-function getDomibusSQLScripts {
-   displayFunctionBanner "${FUNCNAME[0]}: \$1=${1} \$2=${2}"
-
-   copyDomibusSQLScripts "${1}" "${2}"
-}
 
 function getDomibus { 
    displayFunctionBanner "${FUNCNAME[0]}: \$1=${1} \$2=${2} \$3=${3} \$4=${4}"
