@@ -23,8 +23,11 @@ rm -rf  ${LOCAL_ARTEFACTS} ; mkdir -p ${LOCAL_ARTEFACTS}/sql-scripts
 unzip ${SQL_SCRIPTS_DISTRIBUTION} -d ${LOCAL_ARTEFACTS}
 
 
-SQLDatabaseInitScriptName="`ls -1 ${LOCAL_ARTEFACTS}/sql-scripts | grep mysql | grep -v migration`"
-echo ; echo "Database schema SQL creation nameis:" ${SQLDatabaseInitScriptName}
+DDLDatabaseInitScriptName="`ls -1 ${LOCAL_ARTEFACTS}/sql-scripts | grep mysql | grep -v migration`"
+echo ; echo "Discovered database script SQL:" ${DDLDatabaseInitScriptName}
+SQLDatabaseInitScriptName=${DDLDatabaseInitScriptName}.sql
+echo ; echo "Renaming database script SQL:" ${SQLDatabaseInitScriptName}
+mv ${DDLDatabaseInitScriptName} ${SQLDatabaseInitScriptName}
 SQLDatabaseInitScript=${LOCAL_ARTEFACTS}/sql-scripts/${SQLDatabaseInitScriptName}
 echo ; echo "Database schema SQL creation is:" ${SQLDatabaseInitScript}
 
