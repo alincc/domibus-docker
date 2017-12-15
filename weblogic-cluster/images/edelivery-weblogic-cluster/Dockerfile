@@ -5,7 +5,7 @@ FROM oraclelinux:7-slim
 #
 ARG USER_ID
 ARG PRODUCTION_MODE
-ARG ENV_ADMIN_PASSWORD
+ARG ADMIN_PASSWORD
 ARG FMW_PKG=fmw_12.1.3.0.0_wls.jar
 
 #
@@ -19,7 +19,7 @@ ENV JAVA_HOME=/usr/java/default \
     ADMIN_PORT="7001" \
     ADMIN_HOST="wlsadmin" \
     ADMIN_USERNAME=weblogic \
-    ADMIN_PASSWORD=${ENV_ADMIN_PASSWORD} \
+    ADMIN_PASSWORD=${ADMIN_PASSWORD} \
     CLUSTER_NAME=EDeliveryCluster \
     CLUSTER_SERVERS=2 \
     NM_PORT="5556" \
