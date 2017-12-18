@@ -15,7 +15,7 @@ ENV JAVA_HOME=/usr/java/default \
     ORACLE_HOME=/u01/oracle \
     DOMAIN_NAME="base_domain" \
     DOMAIN_HOME="/u01/oracle/user_projects/domains/base_domain" \
-    USER_MEM_ARGS="-Djava.security.egd=file:/dev/./urandom -Ddomibus.config.location=/u01/oracle/user_projects/domains/base_domain/conf/domibus -Xms1024m -Xmx1024m -XX:PermSize=512m" \
+    USER_MEM_ARGS="-Djava.security.egd=file:/dev/./urandom -Ddomibus.config.location=/u01/oracle/user_projects/domains/base_domain/conf/domibus -Xms1024m -Xmx1024m" \
     ADMIN_PORT="7001" \
     ADMIN_HOST="wlsadmin" \
     ADMIN_USERNAME=weblogic \
