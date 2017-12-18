@@ -12,7 +12,7 @@ function configurePmode4Tests {
     local redDomibusURL=$3
     local redSamplePMode=$4
 
-    initialString="endpoint=\"http://<blue_hostname>:8080/domibus/services/msh\""
+    initialString="endpoint=\"http://localhost:8080/domibus/services/msh\""
     replacedString="endpoint=\"${blueDomibusURL}/services/msh\""
     echo "   Replacing : ${initialString}"
     echo "   By        : ${replacedString}"
@@ -20,7 +20,7 @@ function configurePmode4Tests {
     sed -i -e "s#${initialString}#${replacedString}#" ${blueSamplePMode}
     sed -i -e "s#${initialString}#${replacedString}#" ${redSamplePMode}
 
-    initialString="endpoint=\"http://<red_hostname>:8080/domibus/services/msh\""
+    initialString="endpoint=\"http://localhost:8081/domibus/services/msh\""
     replacedString="endpoint=\"${redDomibusURL}/services/msh\""
     echo "   Replacing : ${initialString}"
     echo "   By        : ${replacedString}"
