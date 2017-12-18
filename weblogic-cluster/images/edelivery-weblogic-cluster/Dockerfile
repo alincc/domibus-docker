@@ -13,9 +13,9 @@ ARG FMW_PKG=fmw_12.1.3.0.0_wls.jar
 #
 ENV JAVA_HOME=/usr/java/default \
     ORACLE_HOME=/u01/oracle \
-    USER_MEM_ARGS="-Djava.security.egd=file:/dev/./urandom -Ddomibus.config.location=/u01/oracle/user_projects/domains/base_domain/conf/domibus -Xms2048m -Xmx2048m -XX:PermSize=512m -XX:MaxPermSize=512m" \
     DOMAIN_NAME="base_domain" \
     DOMAIN_HOME="/u01/oracle/user_projects/domains/base_domain" \
+    USER_MEM_ARGS="-Djava.security.egd=file:/dev/./urandom -Ddomibus.config.location=/u01/oracle/user_projects/domains/base_domain/conf/domibus -Xms1024m -Xmx1024m -XX:PermSize=512m" \
     ADMIN_PORT="7001" \
     ADMIN_HOST="wlsadmin" \
     ADMIN_USERNAME=weblogic \
@@ -74,9 +74,9 @@ RUN $JAVA_HOME/bin/java -jar /u01/$FMW_PKG -ignoreSysPrereqs -novalidation -sile
 WORKDIR /u01/oracle
 RUN chmod +x *.sh && \
     /u01/oracle/wlst /u01/oracle/create-wls-domain.py && \
-    mkdir -p /u01/oracle/user_projects/domains/base_domain/servers/AdminServer/security && \
-    echo "username=${ADMIN_USERNAME}" > /u01/oracle/user_projects/domains/base_domain/servers/AdminServer/security/boot.properties && \
-    echo "password=${ADMIN_PASSWORD}" >> /u01/oracle/user_projects/domains/base_domain/servers/AdminServer/security/boot.properties && \
+    mkdir -p ${DOMAIN_HOME}/servers/AdminServer/security && \
+    echo "username=${ADMIN_USERNAME}" > ${DOMAIN_HOME}/servers/AdminServer/security/boot.properties && \
+    echo "password=${ADMIN_PASSWORD}" >> ${DOMAIN_HOME}/servers/AdminServer/security/boot.properties && \
     echo ". ${DOMAIN_HOME}/bin/setDomainEnv.sh" >> /u01/oracle/.bashrc && \
     echo "export PATH=$PATH:/u01/oracle/wlserver/common/bin:${DOMAIN_HOME}/bin" >> /u01/oracle/.bashrc && \
     cp /u01/oracle/commEnv.sh /u01/oracle/wlserver/common/bin/commEnv.sh && \
