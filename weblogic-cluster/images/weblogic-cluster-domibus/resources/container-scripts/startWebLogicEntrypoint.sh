@@ -14,7 +14,7 @@
 source domibusCommon.sh
 
 main() {
-    dockerizeTemplates
+    updateWeblogicClusterProperties
     startAdminServer
     waitForDatabaseServer
     waitForAdminServer
@@ -26,17 +26,6 @@ main() {
     prepareDomibusForAutomatedTests
 
     tail -f ${DOMAIN_HOME}/servers/AdminServer/logs/AdminServer.log
-}
-
-dockerizeTemplates() {
-    echo "Dockerizing templates..."
-    #dockerize -template ${ORACLE_HOME}/wslt-api-1.9.1/WeblogicCluster.properties.tmpl > ${ORACLE_HOME}/wslt-api-1.9.1/WeblogicCluster.properties && \
-    updateWeblogicClusterProperties
-
-    dockerize -template ${DOMAIN_HOME}/conf/pmodes/domibus-gw-sample-pmode.xml.tmpl > ${DOMAIN_HOME}/conf/pmodes/domibus-gw-sample-pmode.xml
-    if [ "${PMODE_TEMPLATE_PATH}" != "" ] ; then
-        dockerize -template ${PMODE_TEMPLATE_PATH} > ${DOMAIN_HOME}/conf/pmodes/domibus-gw-sample-pmode.xml
-    fi
 }
 
 startAdminServer() {
@@ -104,9 +93,14 @@ deployDomibusWar() {
         -source ${DOMAIN_HOME}/conf/domibus/${DOMIBUS_WAR_NAME}
 }
 
-# TODO extract to the test context...
+# TODO extract to the test execution context...
 prepareDomibusForAutomatedTests() {
     echo "Preparing Domibus for automated tests..."
+
+    dockerize -template ${DOMAIN_HOME}/conf/pmodes/domibus-gw-sample-pmode.xml.tmpl > ${DOMAIN_HOME}/conf/pmodes/domibus-gw-sample-pmode.xml
+    if [ "${PMODE_TEMPLATE_PATH}" != "" ] ; then
+        dockerize -template ${PMODE_TEMPLATE_PATH} > ${DOMAIN_HOME}/conf/pmodes/domibus-gw-sample-pmode.xml
+    fi
 
     if [ "${PMODE_FILE_PATH}" == "" ] ; then
         PMODE_FILE_PATH="$DOMAIN_HOME/conf/pmodes/domibus-gw-sample-pmode.xml"
