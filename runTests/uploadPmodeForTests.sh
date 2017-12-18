@@ -62,25 +62,26 @@ function uploadPmode {
    -F  description="soapUI tests"
 }
 
-DOMIBUS_DISTRIBUTION=$1
-DOMIBUS_BLUE_URL=$2
-DOMIBUS_RED_URL=$3
+PMODE_FILE_BLUE=$1
+PMODE_FILE_RED=$2
+DOMIBUS_BLUE_URL=$3
+DOMIBUS_RED_URL=$4
 
-LOCAL_ARTEFACTS=${WORKING_DIR}/temp
 LOCAL_PMODES=${WORKING_DIR}/temp/pmodes
-
-echo "Deleting local artefacts: " ${LOCAL_ARTEFACTS}
-rm -rf  ${LOCAL_ARTEFACTS}
+echo "Deleting local PModes: " ${LOCAL_PMODES}
+rm -rf  ${LOCAL_PMODES}
 mkdir -p ${LOCAL_PMODES}
-
-unzip -j ${DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-sample-configuration-and-testing.zip conf/pmodes/* -d ${LOCAL_PMODES}
 
 TARGET_FILE_BLUE="${LOCAL_PMODES}/domibus-gw-sample-pmode-blue.xml"
 TARGET_FILE_RED="${LOCAL_PMODES}/domibus-gw-sample-pmode-red.xml"
 
+echo "Copying PModes to " ${LOCAL_PMODES}
+cp ${PMODE_FILE_BLUE} ${TARGET_FILE_BLUE}
+cp ${PMODE_FILE_RED} ${TARGET_FILE_RED}
 
 echo ; echo "Starting pMode upload with the following Parameters:"
-echo "   DOMIBUS_DISTRIBUTION=${DOMIBUS_DISTRIBUTION}"
+echo "   TARGET_FILE_BLUE=${TARGET_FILE_BLUE}                 \\"
+echo "   TARGET_FILE_RED=${TARGET_FILE_RED}                 \\"
 echo "   DOMIBUS_BLUE_URL=${DOMIBUS_BLUE_URL}                 \\"
 echo "   DOMIBUS_RED_URL=${DOMIBUS_RED_URL}               \\"
 
