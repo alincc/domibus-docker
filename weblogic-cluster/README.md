@@ -47,16 +47,16 @@ Download resources:
 ```
 * Download the following resources to RESOURCES_REPO/oraclexe-domibus/resources/:
 ```
-   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-sql-scripts.zip
+   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-sql-scripts.zip
 ```
 * Download the following resources to RESOURCES_REPO/weblogic-cluster-domibus/resources/:
 ```
-   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-default-fs-plugin.zip
-   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-default-jms-plugin.zip
-   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-default-ws-plugin.zip
-   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-sample-configuration-and-testing.zip
-   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-weblogic-configuration.zip
-   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/3.3/domibus-distribution-3.3-weblogic-war.zip
+   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip
+   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip
+   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip
+   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-sample-configuration-and-testing.zip
+   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-weblogic-configuration.zip
+   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-weblogic-war.zip
    https://ec.europa.eu/cefdigital/artifact/content/repositories/eDelivery/eu/europa/ec/digit/ipcis/wslt-api/1.9.1/wslt-api-1.9.1.zip
 ```
 
@@ -70,15 +70,15 @@ RESOURCES_REPO
 │       └── jdk-8u144-linux-x64.tar.gz
 ├── oraclexe-domibus
 │   └── resources
-│       └── domibus-distribution-3.3-sql-scripts.zip
+│       └── domibus-distribution-${DOMIBUS_VERSION}-sql-scripts.zip
 └── weblogic-cluster-domibus
     └── resources
-        ├── domibus-distribution-3.3-default-fs-plugin.zip
-        ├── domibus-distribution-3.3-default-jms-plugin.zip
-        ├── domibus-distribution-3.3-default-ws-plugin.zip
-        ├── domibus-distribution-3.3-sample-configuration-and-testing.zip
-        ├── domibus-distribution-3.3-weblogic-configuration.zip
-        ├── domibus-distribution-3.3-weblogic-war.zip
+        ├── domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip
+        ├── domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip
+        ├── domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip
+        ├── domibus-distribution-${DOMIBUS_VERSION}-sample-configuration-and-testing.zip
+        ├── domibus-distribution-${DOMIBUS_VERSION}-weblogic-configuration.zip
+        ├── domibus-distribution-${DOMIBUS_VERSION}-weblogic-war.zip
         └── wslt-api-1.9.1.zip
 ```
 
