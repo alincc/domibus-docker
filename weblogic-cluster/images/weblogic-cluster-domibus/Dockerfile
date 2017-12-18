@@ -29,10 +29,13 @@ ADD resources/wslt-api-1.9.1.zip ${ORACLE_HOME}
 ADD resources/domibus-distribution-${DOMIBUS_VERSION}-*.zip ${ORACLE_HOME}/
 
 # Add templates
-COPY resources/DOMAIN_HOME/conf/domibus/* ${DOMAIN_HOME}/conf/domibus/
-COPY resources/DOMAIN_HOME/conf/domibus/plugins/config/* ${DOMAIN_HOME}/conf/domibus/plugins/config/
+# Removing properties template
+#COPY resources/DOMAIN_HOME/conf/domibus/* ${DOMAIN_HOME}/conf/domibus/
+#COPY resources/DOMAIN_HOME/conf/domibus/plugins/config/* ${DOMAIN_HOME}/conf/domibus/plugins/config/
+
 COPY resources/DOMAIN_HOME/conf/pmodes/* ${DOMAIN_HOME}/conf/pmodes/
-COPY resources/ORACLE_HOME/wslt-api-1.9.1/* ${ORACLE_HOME}/wslt-api-1.9.1/
+#COPY resources/ORACLE_HOME/wslt-api-1.9.1/* ${ORACLE_HOME}/wslt-api-1.9.1/
+
 # Add policies
 COPY resources/DOMAIN_HOME/conf/domibus/policies/* ${DOMAIN_HOME}/conf/domibus/policies/
 

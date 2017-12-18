@@ -7,13 +7,10 @@
 #
 # =============================
 
-dockerizeTemplates() {
-    echo "Dockerizing templates..."
-    dockerize -template ${DOMAIN_HOME}/conf/domibus/domibus.properties.tmpl > ${DOMAIN_HOME}/conf/domibus/domibus.properties && \
-    dockerize -template ${DOMAIN_HOME}/conf/domibus/plugins/config/fs-plugin.properties.tmpl > ${DOMAIN_HOME}/conf/domibus/plugins/config/fs-plugin.properties
-}
+source domibusCommon.sh
 
-dockerizeTemplates
+updateDomibusProperties
+updateFSPluginProperties
 
 echo "Calling createServer.sh..."
 /u01/oracle/createServer.sh

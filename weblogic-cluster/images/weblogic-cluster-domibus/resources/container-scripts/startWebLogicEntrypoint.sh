@@ -11,7 +11,7 @@
 #   https://docs.oracle.com/middleware/1213/wls/WLSTC/reference.htm
 # =============================
 
-DOMIBUS_WAR_NAME=domibus-MSH-weblogic-${DOMIBUS_VERSION}.war
+source domibusCommon.sh
 
 main() {
     dockerizeTemplates
@@ -30,15 +30,13 @@ main() {
 
 dockerizeTemplates() {
     echo "Dockerizing templates..."
-    dockerize -template ${ORACLE_HOME}/wslt-api-1.9.1/WeblogicCluster.properties.tmpl > ${ORACLE_HOME}/wslt-api-1.9.1/WeblogicCluster.properties && \
+    #dockerize -template ${ORACLE_HOME}/wslt-api-1.9.1/WeblogicCluster.properties.tmpl > ${ORACLE_HOME}/wslt-api-1.9.1/WeblogicCluster.properties && \
+    updateWeblogicClusterProperties
+
     dockerize -template ${DOMAIN_HOME}/conf/pmodes/domibus-gw-sample-pmode.xml.tmpl > ${DOMAIN_HOME}/conf/pmodes/domibus-gw-sample-pmode.xml
     if [ "${PMODE_TEMPLATE_PATH}" != "" ] ; then
         dockerize -template ${PMODE_TEMPLATE_PATH} > ${DOMAIN_HOME}/conf/pmodes/domibus-gw-sample-pmode.xml
     fi
-
-    # These templates are dockerized in the cluster nodes:
-    # - domibus.properties.tmpl
-    # - fs-plugin.properties.tmpl
 }
 
 startAdminServer() {
@@ -90,6 +88,8 @@ importDomibusWeblogicClusterResources() {
 
 
 deployDomibusWar() {
+    DOMIBUS_WAR_NAME=domibus-MSH-weblogic-${DOMIBUS_VERSION}.war
+
     echo "Deploying Domibus War..."
     # prepare environment (required for weblogic.Deployer)
     source ~/.bashrc
