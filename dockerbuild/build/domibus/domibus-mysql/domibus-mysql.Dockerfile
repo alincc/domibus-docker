@@ -10,3 +10,5 @@ RUN apt-get install unzip
 COPY ${DOMIBUS_SCHEMA}  /docker-entrypoint-initdb.d
 
 EXPOSE 3306
+
+CMD ["mysqld", "--character-set-server=utf8"," -collation-server=utf8_bin"]
