@@ -45,7 +45,7 @@ else
    cp -r ${SQLPLUS_REPO_DIR}/* ${WORKING_DIR}/temp/SQLPlus
 fi
 
-dockerFile="`ls -1 ${WORKING_DIR}/*.Dockerfile`"
+dockerFile="edelivery-centos.Dockerfile"
 dockerBuildContext="."
 dockerImage=`basename ${dockerFile} | cut -d. -f1`
 DockerBuildArgs=""
