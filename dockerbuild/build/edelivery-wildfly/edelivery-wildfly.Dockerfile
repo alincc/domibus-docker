@@ -16,10 +16,9 @@ COPY ${WORKING_DIR}/temp/domInstall $DOM_INSTALL
 # Changing File ownership to 'domibus' user
 RUN chown -R domibus:domibus /data/
 
-RUN cd $HOME \
-    && tar xf ${WILDFLY_DIR}/wildfly-$WILDFLY_VERSION.tar.gz \
-    && mv $HOME/wildfly-$WILDFLY_VERSION $JBOSS_HOME \
-    && rm wildfly-$WILDFLY_VERSION.tar.gz \
+RUN tar xf ${WILDFLY_DIR}/wildfly-$WILDFLY_VERSION.tar.gz \
+    && mv ${WILDFLY_DIR}/wildfly-$WILDFLY_VERSION $JBOSS_HOME \
+    && rm ${WILDFLY_DIR}/wildfly-$WILDFLY_VERSION.tar.gz \
     && chown -R domibus:domibus ${JBOSS_HOME} \
     && chmod -R g+rw ${JBOSS_HOME}
 
