@@ -18,9 +18,10 @@ COPY ${WORKING_DIR}/temp/domInstall $DOM_INSTALL
 
 RUN ls ${WILDFLY_ARCHIVE_DIR}
 
-RUN tar xf ${WILDFLY_ARCHIVE_DIR}/wildfly-$WILDFLY_VERSION.tar.gz \
-    && mv ${WILDFLY_ARCHIVE_DIR}/wildfly-$WILDFLY_VERSION $JBOSS_HOME \
-    && rm ${WILDFLY_ARCHIVE_DIR}/wildfly-$WILDFLY_VERSION.tar.gz \
+RUN cd $WILDFLY_ARCHIVE_DIR \
+    && tar xf wildfly-$WILDFLY_VERSION.tar.gz \
+    && mv wildfly-$WILDFLY_VERSION $JBOSS_HOME \
+    && rm wildfly-$WILDFLY_VERSION.tar.gz \
     && chown -R domibus:domibus ${JBOSS_HOME} \
     && chmod -R g+rw ${JBOSS_HOME}
 
