@@ -15,6 +15,7 @@ ENV LAUNCH_JBOSS_IN_BACKGROUND true
 # Copying the Domibus installation Script
 RUN mkdir -p $DOM_INSTALL
 COPY ${WORKING_DIR}/temp/domInstall $DOM_INSTALL
+COPY ${JDBC_DRIVER_DIR}/ $DOM_INSTALL/jdbcDrivers
 COPY ${WORKING_DIR}/install-wildfly.sh $DOM_INSTALL
 
 RUN ls ${WILDFLY_ARCHIVE_DIR}
