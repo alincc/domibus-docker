@@ -5,6 +5,7 @@ ENV JBOSS_HOME=/data/wildfly
 ENV ADMIN_USER=admin ADMIN_PASSWORD=admin1
 
 ARG JDBC_DRIVER_DIR
+ARG WILDFLY_DIR
 ARG WORKING_DIR=.
 ARG DOM_INSTALL=/data/domInstall
 
@@ -16,8 +17,7 @@ COPY ${WORKING_DIR}/temp/domInstall $DOM_INSTALL
 RUN chown -R domibus:domibus /data/
 
 RUN cd $HOME \
-    && curl -O https://download.jboss.org/wildfly/$WILDFLY_VERSION/wildfly-$WILDFLY_VERSION.tar.gz \
-    && tar xf wildfly-$WILDFLY_VERSION.tar.gz \
+    && tar xf ${WILDFLY_DIR}/wildfly-$WILDFLY_VERSION.tar.gz \
     && mv $HOME/wildfly-$WILDFLY_VERSION $JBOSS_HOME \
     && rm wildfly-$WILDFLY_VERSION.tar.gz \
     && chown -R domibus:domibus ${JBOSS_HOME} \

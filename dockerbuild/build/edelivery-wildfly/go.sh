@@ -2,6 +2,8 @@
 
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+REPO=$1
+
 echo ; echo "WORKING_DIR: ${WORKING_DIR}"
 
 echo ; echo "Copying domInstall in: ${WORKING_DIR}/temp"
@@ -14,13 +16,19 @@ mkdir -p ${WORKING_DIR}/temp/domInstall/downloads/jdbc
       ABORT_JOB "ERROR Copying Oracle jdbc drivers from ${JDBC_DRIVERS} to  ${WORKING_DIR}/temp/domInstall/downloads/jdbc"
    fi
 
+WILDFLY_VERSION=9.0.2.Final
+
+echo ; echo "Copying wildfly archive in ${WORKING_DIR}/temp/wildfly"
+cp ${REPO}/wildfly-${WILDFLY_VERSION}.tar.gz ${WORKING_DIR}/temp/wildfly
+
 dockerFile="`ls -1 ${WORKING_DIR}/*.Dockerfile`"
-dockerImage=edelivery-wildfly:9.0.2.Final
+dockerImage=edelivery-wildfly:${WILDFLY_VERSION}
 dockerBuildContext=.
 
 
 DockerBuildArgs="
 --build-arg JDBC_DRIVER_DIR=temp/domInstall/downloads/jdbc \
+--build-arg WILDFLY_DIR=temp/wildfly \
 "
 
 echo
