@@ -30,7 +30,7 @@ RUN cd $WILDFLY_ARCHIVE_DIR \
     && chmod -R g+rw ${JBOSS_HOME}
 
 # Changing File ownership to 'domibus' user
-RUN chown -R domibus:domibus /data/
+#RUN chown -R domibus:domibus /data/
 
 RUN ${JBOSS_HOME}/bin/add-user.sh $ADMIN_USER $ADMIN_PASSWORD --silent
 
