@@ -38,7 +38,7 @@ RUN su - domibus -c "$DOM_INSTALL/install-wildfly.sh ${JBOSS_HOME} ${DOM_INSTALL
 USER domibus
 
 # Exposing WildFly Administration Console
-EXPOSE 9090
+EXPOSE 9990
 
 RUN rm -rf /data/wildfly/standalone/configuration/standalone_xml_history/current
 
