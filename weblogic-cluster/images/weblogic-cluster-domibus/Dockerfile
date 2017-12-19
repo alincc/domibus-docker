@@ -14,12 +14,7 @@ ARG DOMIBUS_VERSION
 ENV DB_HOST=oraclexe \
     DB_PORT=1521 \
     DOMIBUS_VERSION=${DOMIBUS_VERSION} \
-    THIS_PARTY_NAME=blue_gw \
-    THIS_PARTY_ID=domibus-blue \
-    THIS_PARTY_DOMIBUS_URL=http://wlcdomibusc2_weblogic_machine1_1:7002/domibus-weblogic \
-    OTHER_PARTY_NAME=red_gw \
-    OTHER_PARTY_ID=domibus-red \
-    OTHER_PARTY_DOMIBUS_URL=http://wlcdomibusc3_weblogic_machine1_1:7002/domibus-weblogic
+    THIS_PARTY_DOMIBUS_URL=http://wlcdomibusc2_weblogic_machine1_1:7002/domibus-weblogic
 
 #
 # Add required resources
@@ -27,17 +22,6 @@ ENV DB_HOST=oraclexe \
 COPY resources/container-scripts/* ${ORACLE_HOME}/
 ADD resources/wslt-api-1.9.1.zip ${ORACLE_HOME}
 ADD resources/domibus-distribution-${DOMIBUS_VERSION}-*.zip ${ORACLE_HOME}/
-
-# Add templates
-# Removing properties template
-#COPY resources/DOMAIN_HOME/conf/domibus/* ${DOMAIN_HOME}/conf/domibus/
-#COPY resources/DOMAIN_HOME/conf/domibus/plugins/config/* ${DOMAIN_HOME}/conf/domibus/plugins/config/
-
-COPY resources/DOMAIN_HOME/conf/pmodes/* ${DOMAIN_HOME}/conf/pmodes/
-#COPY resources/ORACLE_HOME/wslt-api-1.9.1/* ${ORACLE_HOME}/wslt-api-1.9.1/
-
-# Add policies
-COPY resources/DOMAIN_HOME/conf/domibus/policies/* ${DOMAIN_HOME}/conf/domibus/policies/
 
 #
 # Setup Oracle environment
@@ -71,11 +55,13 @@ RUN mkdir -p ${DOMAIN_HOME}/conf/domibus/keystores && \
 RUN if [ ! -d ${DOMAIN_HOME}/conf/domibus/plugins/lib ]; then mkdir -p ${DOMAIN_HOME}/conf/domibus/plugins/lib; fi && \
     if [ ! -d ${DOMAIN_HOME}/conf/domibus/plugins/config ]; then mkdir -p ${DOMAIN_HOME}/conf/domibus/plugins/config; fi && \
     unzip -j ${ORACLE_HOME}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/lib/domibus-default-ws-plugin-*.jar -d ${DOMAIN_HOME}/conf/domibus/plugins/lib && \
-    unzip -j ${ORACLE_HOME}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/config/weblogic/ws-plugin.xml -d ${DOMAIN_HOME}/conf/domibus/plugins/config && \
-    unzip -j ${ORACLE_HOME}/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/lib/domibus-default-jms-plugin-*.jar -d ${DOMAIN_HOME}/conf/domibus/plugins/lib && \
+    unzip -j ${ORACLE_HOME}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/config/weblogic/ws-plugin.xml -d ${DOMAIN_HOME}/conf/domibus/plugins/config
+
+RUN unzip -j ${ORACLE_HOME}/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/lib/domibus-default-jms-plugin-*.jar -d ${DOMAIN_HOME}/conf/domibus/plugins/lib && \
     unzip -j ${ORACLE_HOME}/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/config/weblogic/jms-plugin.xml -d ${DOMAIN_HOME}/conf/domibus/plugins/config && \
-    unzip -j ${ORACLE_HOME}/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/config/weblogic/jms-*.properties -d ${DOMAIN_HOME}/conf/domibus/plugins/config && \
-    unzip -j ${ORACLE_HOME}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip conf/domibus/plugins/lib/domibus-default-fs-plugin-*.jar -d ${DOMAIN_HOME}/conf/domibus/plugins/lib && \
+    unzip -j ${ORACLE_HOME}/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/config/weblogic/jms-*.properties -d ${DOMAIN_HOME}/conf/domibus/plugins/config
+
+RUN unzip -j ${ORACLE_HOME}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip conf/domibus/plugins/lib/domibus-default-fs-plugin-*.jar -d ${DOMAIN_HOME}/conf/domibus/plugins/lib && \
     unzip -j ${ORACLE_HOME}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip conf/domibus/plugins/config/weblogic/fs-plugin.xml -d ${DOMAIN_HOME}/conf/domibus/plugins/config && \
     unzip -j ${ORACLE_HOME}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip conf/domibus/plugins/config/weblogic/fs-plugin.properties -d ${DOMAIN_HOME}/conf/domibus/plugins/config
 
