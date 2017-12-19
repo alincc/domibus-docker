@@ -20,6 +20,8 @@ COPY ${WORKING_DIR}/install-wildfly.sh $DOM_INSTALL
 
 RUN ls ${WILDFLY_ARCHIVE_DIR}
 
+USER root
+
 RUN cd $WILDFLY_ARCHIVE_DIR \
     && tar xf wildfly-$WILDFLY_VERSION.tar.gz \
     && mv wildfly-$WILDFLY_VERSION $JBOSS_HOME \
