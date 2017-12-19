@@ -18,29 +18,29 @@ COPY ${WORKING_DIR}/temp/domInstall $DOM_INSTALL
 COPY ${JDBC_DRIVER_DIR}/ $DOM_INSTALL/jdbcDrivers
 COPY ${WORKING_DIR}/install-wildfly.sh $DOM_INSTALL
 
-RUN ls ${WILDFLY_ARCHIVE_DIR}
-
 USER root
 
 RUN cd $WILDFLY_ARCHIVE_DIR \
     && tar xf wildfly-$WILDFLY_VERSION.tar.gz \
     && mv wildfly-$WILDFLY_VERSION $JBOSS_HOME \
     && rm wildfly-$WILDFLY_VERSION.tar.gz \
-    && chown -R jboss:0 ${JBOSS_HOME} \
+    && chown -R domibus:domibus ${JBOSS_HOME} \
     && chmod -R g+rw ${JBOSS_HOME}
 
 # Changing File ownership to 'domibus' user
-#RUN chown -R domibus:domibus /data/
+RUN chown -R domibus:domibus /data/
 
 RUN ${JBOSS_HOME}/bin/add-user.sh $ADMIN_USER $ADMIN_PASSWORD --silent
 
 # Running Domibus Installation Script (As 'domibus user')
 RUN su - domibus -c "$DOM_INSTALL/install-wildfly.sh ${JBOSS_HOME} ${DOM_INSTALL} $DOM_INSTALL/jdbcDrivers"
 
-USER jboss
+USER domibus
 
 # Exposing WildFly Administration Console
 EXPOSE 9090
+
+RUN rm -rf /data/wildfly/standalone/configuration/standalone_xml_history/current
 
 # Set the default command to run on boot
 # This will boot WildFly in the standalone mode and bind to all interface
