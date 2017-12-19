@@ -1,12 +1,13 @@
 #!/bin/bash
 
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 echo ; echo "WORKING_DIR: ${WORKING_DIR}"
 
 echo ; echo "Copying domInstall in: ${WORKING_DIR}/temp"
 cp -r ../../../../domInstall ${WORKING_DIR}/temp
 
-#Oracle
+#Copy database drivers
 mkdir -p ${WORKING_DIR}/temp/domInstall/downloads/jdbc
    cp ${JDBC_DRIVERS}/* ${WORKING_DIR}/temp/domInstall/downloads/jdbc
    if [ $? -ne 0 ] ; then
