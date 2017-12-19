@@ -7,6 +7,7 @@ ENV ADMIN_USER=admin ADMIN_PASSWORD=admin1
 ARG JDBC_DRIVER_DIR
 ARG WORKING_DIR=.
 ARG DOM_INSTALL=/data/domInstall
+ENV WILDFLY_ARCHIVE_DIR=$DOM_INSTALL/wildfly
 
 # Copying the Domibus installation Script
 RUN mkdir -p $DOM_INSTALL
@@ -15,9 +16,9 @@ COPY ${WORKING_DIR}/temp/domInstall $DOM_INSTALL
 # Changing File ownership to 'domibus' user
 RUN chown -R domibus:domibus /data/
 
-RUN tar xf ${WORKING_DIR}/temp/wildfly/wildfly-$WILDFLY_VERSION.tar.gz \
-    && mv ${WORKING_DIR}/temp/wildfly/wildfly-$WILDFLY_VERSION $JBOSS_HOME \
-    && rm ${WORKING_DIR}/temp/wildfly/wildfly-$WILDFLY_VERSION.tar.gz \
+RUN tar xf ${WILDFLY_ARCHIVE_DIR}/wildfly-$WILDFLY_VERSION.tar.gz \
+    && mv ${WILDFLY_ARCHIVE_DIR}/wildfly-$WILDFLY_VERSION $JBOSS_HOME \
+    && rm ${WILDFLY_ARCHIVE_DIR}/wildfly-$WILDFLY_VERSION.tar.gz \
     && chown -R domibus:domibus ${JBOSS_HOME} \
     && chmod -R g+rw ${JBOSS_HOME}
 
