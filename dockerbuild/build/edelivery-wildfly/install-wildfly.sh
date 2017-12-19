@@ -63,7 +63,7 @@ exit
 EOF
 
     echo ; echo "Adding Oracle JDBC Driver"
-   ${cef_edelivery_path}/bin/jboss-cli.sh <<EOF
+   ${JBOSS_HOME}/bin/jboss-cli.sh <<EOF
 
 embed-server --server-config=standalone-full.xml
 
