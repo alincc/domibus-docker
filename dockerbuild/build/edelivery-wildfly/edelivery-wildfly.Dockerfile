@@ -35,6 +35,8 @@ RUN ${JBOSS_HOME}/bin/add-user.sh $ADMIN_USER $ADMIN_PASSWORD --silent
 # Running Domibus Installation Script (As 'domibus user')
 RUN su - domibus -c "$DOM_INSTALL/install-wildfly.sh ${JBOSS_HOME} ${DOM_INSTALL} $DOM_INSTALL/jdbcDrivers"
 
+USER domibus
+
 # Exposing WildFly Administration Console
 EXPOSE 9090
 
