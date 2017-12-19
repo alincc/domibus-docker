@@ -29,7 +29,7 @@ dockerBuildContext=.
 
 DockerBuildArgs="
 --build-arg JDBC_DRIVER_DIR=temp/domInstall/downloads/jdbc \
---build-arg WILDFLY_DIR=temp/wildfly \
+--build-arg WILDFLY_DIR=./temp/wildfly \
 "
 
 echo
