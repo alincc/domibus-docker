@@ -24,7 +24,7 @@ RUN cd $WILDFLY_ARCHIVE_DIR \
     && tar xf wildfly-$WILDFLY_VERSION.tar.gz \
     && mv wildfly-$WILDFLY_VERSION $JBOSS_HOME \
     && rm wildfly-$WILDFLY_VERSION.tar.gz \
-    && chown -R domibus:domibus ${JBOSS_HOME} \
+    && chown -R jboss:0 ${JBOSS_HOME} \
     && chmod -R g+rw ${JBOSS_HOME}
 
 # Changing File ownership to 'domibus' user
@@ -35,7 +35,7 @@ RUN ${JBOSS_HOME}/bin/add-user.sh $ADMIN_USER $ADMIN_PASSWORD --silent
 # Running Domibus Installation Script (As 'domibus user')
 RUN su - domibus -c "$DOM_INSTALL/install-wildfly.sh ${JBOSS_HOME} ${DOM_INSTALL} $DOM_INSTALL/jdbcDrivers"
 
-USER domibus
+USER jboss
 
 # Exposing WildFly Administration Console
 EXPOSE 9090
