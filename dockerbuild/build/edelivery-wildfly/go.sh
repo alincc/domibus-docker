@@ -7,7 +7,7 @@ REPO=$1
 echo ; echo "WORKING_DIR: ${WORKING_DIR}"
 
 echo ; echo "Copying domInstall in: ${WORKING_DIR}/temp"
-cp -r ../../../../domInstall ${WORKING_DIR}/temp
+cp -r ../../../domInstall ${WORKING_DIR}/temp
 
 #Copy database drivers
 mkdir -p ${WORKING_DIR}/temp/domInstall/downloads/jdbc
