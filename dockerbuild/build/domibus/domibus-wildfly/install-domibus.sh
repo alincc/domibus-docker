@@ -45,7 +45,7 @@ function configureArtefacts {
   unzip $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-wildfly-war.zip -d ${JBOSS_HOME}/standalone/deployments/
 
   #copy the sample keystore/truststore
-  unzip -j $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-sample-configuration-and-testing.zip conf/domibus/keystores/* -d ${DOMIBUS_CONFIG_LOCATION}/keystores
+  unzip -j -o $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-sample-configuration-and-testing.zip conf/domibus/keystores/* -d ${DOMIBUS_CONFIG_LOCATION}/keystores
 
   #copy the policies
   mkdir -p ${DOMIBUS_CONFIG_LOCATION}/policies
