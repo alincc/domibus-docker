@@ -19,7 +19,7 @@ mkdir -p ${WORKING_DIR}/temp/domInstall/downloads/jdbc
 WILDFLY_VERSION=9.0.2.Final
 
 echo ; echo "Copying wildfly archive in ${WORKING_DIR}/temp/wildfly"
-mkdir -p ${WORKING_DIR}/temp/domInstall/wildfly
+mkdir -p ${WORKING_DIR}/temp/domInstall/wildfly/resources
 cp ${REPO}/wildfly-${WILDFLY_VERSION}.tar.gz ${WORKING_DIR}/temp/domInstall/wildfly/
 cp ./resources ${WORKING_DIR}/temp/domInstall/wildfly/
 
