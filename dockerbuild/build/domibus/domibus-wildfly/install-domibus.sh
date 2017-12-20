@@ -66,5 +66,7 @@ sourceExternalFunctions
 configureArtefacts
 configureWildfly
 
+cat  ${JBOSS_HOME}/standalone/configuration/standalone-full.xml
+
 exit
 
