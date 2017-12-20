@@ -27,7 +27,7 @@ function sourceExternalFunctions {
 function configureWildfly {
    displayFunctionBanner ${FUNCNAME[0]}
 
-   ${JBOSS_HOME}/bin/jboss-cli.sh --file=${DOM_INSTALL}/wildfly/resources/domibus-wildfly.cli
+   ${JBOSS_HOME}/bin/jboss-cli.sh --file=${DOCKER_DOMINSTALL}/wildfly/resources/domibus-wildfly.cli
 }
 
 
