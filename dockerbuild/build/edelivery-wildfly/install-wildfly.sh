@@ -33,7 +33,7 @@ function sourceExternalFunctions {
 function configureJDBCDrivers {
    displayFunctionBanner ${FUNCNAME[0]}
 
-   ${JBOSS_HOME}/bin/jboss-cli.sh --file=${DOM_INSTALL}/wildfly/resources/domibus-wildfly.cli
+   ${JBOSS_HOME}/bin/jboss-cli.sh --file=${DOM_INSTALL}/wildfly/resources/edelivery-wildfly.cli
 }
 
 sourceExternalFunctions

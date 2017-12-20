@@ -24,6 +24,12 @@ function sourceExternalFunctions {
    . ${DOCKER_DOMINSTALL}/scripts/functions/getDomibus.functions
 }
 
+function configureWildfly {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   ${JBOSS_HOME}/bin/jboss-cli.sh --file=${DOM_INSTALL}/wildfly/resources/domibus-wildfly.cli
+}
+
 
 function configureArtefacts {
   displayFunctionBanner ${FUNCNAME[0]}
@@ -48,7 +54,6 @@ function configureArtefacts {
   mkdir -p ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
   unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/config/wildfly/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/config
   unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/lib/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
-
 }
 
 #####################################################################################################################
