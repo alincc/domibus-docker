@@ -11,6 +11,9 @@ JDBC_DRIVER_DIR=$3
 MYSQL_DRIVER=mysql-connector-java-5.1.45-bin.jar
 ORACLE_DRIVER=ojdbc7.jar
 
+export JDBC_DRIVER_DIR=$JDBC_DRIVER_DIR
+export MYSQL_DRIVER=$MYSQL_DRIVER
+
 
 echo "--------------JBOSS_HOME: ${JBOSS_HOME}"
 echo "--------------DOM_INSTALL: ${DOM_INSTALL}"
