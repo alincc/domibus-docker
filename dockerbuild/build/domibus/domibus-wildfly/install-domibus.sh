@@ -27,7 +27,7 @@ function sourceExternalFunctions {
 function configureWildfly {
    displayFunctionBanner ${FUNCNAME[0]}
 
-    unzip -j -o $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-wildfly-full.zip domibus/standalone/configuration/standalone-full.xml -d ${JBOSS_HOME}/standalone/configuration/
+    #unzip -j -o $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-wildfly-full.zip domibus/standalone/configuration/standalone-full.xml -d ${JBOSS_HOME}/standalone/configuration/
 
    ${JBOSS_HOME}/bin/jboss-cli.sh --file=${DOCKER_DOMINSTALL}/wildfly/resources/domibus-wildfly.cli
 }
