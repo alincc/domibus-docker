@@ -31,7 +31,7 @@ RUN cd $WILDFLY_ARCHIVE_DIR \
 RUN ${JBOSS_HOME}/bin/add-user.sh $ADMIN_USER $ADMIN_PASSWORD --silent
 
 # Running Domibus Installation Script (As 'domibus user')
-RUN "$DOM_INSTALL/install-wildfly.sh ${JBOSS_HOME} ${DOM_INSTALL} $DOM_INSTALL/jdbcDrivers"
+RUN $DOM_INSTALL/install-wildfly.sh ${JBOSS_HOME} ${DOM_INSTALL} $DOM_INSTALL/jdbcDrivers
 
 USER domibus
 
