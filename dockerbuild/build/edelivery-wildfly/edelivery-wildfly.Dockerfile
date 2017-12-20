@@ -15,6 +15,10 @@ ENV LAUNCH_JBOSS_IN_BACKGROUND true
 # Copying the Domibus installation Script
 RUN mkdir -p $DOM_INSTALL
 COPY ${WORKING_DIR}/temp/domInstall $DOM_INSTALL
+
+# Changing File ownership to 'domibus' user
+RUN chown -R domibus:domibus /data/
+
 COPY ${JDBC_DRIVER_DIR}/ $DOM_INSTALL/jdbcDrivers
 COPY ${WORKING_DIR}/install-wildfly.sh $DOM_INSTALL
 
@@ -26,9 +30,6 @@ RUN cd $WILDFLY_ARCHIVE_DIR \
     && rm wildfly-$WILDFLY_VERSION.tar.gz \
     && chown -R domibus:domibus ${JBOSS_HOME} \
     && chmod -R g+rw ${JBOSS_HOME}
-
-# Changing File ownership to 'domibus' user
-RUN chown -R domibus:domibus /data/
 
 RUN ${JBOSS_HOME}/bin/add-user.sh $ADMIN_USER $ADMIN_PASSWORD --silent
 
