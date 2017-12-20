@@ -10,7 +10,7 @@ ARG DOCKER_DOMIBUS_DISTRIBUTION=/data/temp/domibus
 
 ARG DOMIBUS_CONFIG_LOCATION=$JBOSS_HOME/conf/domibus
 ENV MEMORY_SETTINGS="-Xms128m -Xmx1024m"
-ENV JAVA_OPTS="-Ddomibus.config.location=$DOMIBUS_CONFIG_LOCATION $MEMORY_SETTINGS"
+ENV JAVA_OPTS="-Djava.net.preferIPv4Stack=true -Djboss.modules.system.pkgs=$JBOSS_MODULES_SYSTEM_PKGS -Djava.awt.headless=true -Ddomibus.config.location=$DOMIBUS_CONFIG_LOCATION $MEMORY_SETTINGS"
 ENV DB_TYPE="" DB_HOST="" DB_PORT="" DB_NAME="domibus" DB_USER="" DB_PASS=""
 
 RUN rm -rf $DOCKER_DOMINSTALL
