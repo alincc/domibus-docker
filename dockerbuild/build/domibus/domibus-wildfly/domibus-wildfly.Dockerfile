@@ -22,10 +22,10 @@ COPY ${DOMIBUS_DISTRIBUTION} $DOCKER_DOMIBUS_DISTRIBUTION
 
 COPY ${WORKING_DIR}/entrypoint.sh $JBOSS_HOME
 #RUN chown domibus:domibus $JBOSS_HOME/entrypoint.sh
-RUN chmod +x $JBOSS_HOME/entrypoint.sh
+#RUN chmod +x $JBOSS_HOME/entrypoint.sh
 
 #RUN chown domibus:domibus $DOCKER_DOMINSTALL/install-domibus.sh
-RUN chmod +x $DOCKER_DOMINSTALL/install-domibus.sh
+#RUN chmod +x $DOCKER_DOMINSTALL/install-domibus.sh
 # Running Domibus Installation Script (As 'domibus user')
 RUN su - domibus -c export JBOSS_HOME=${JBOSS_HOME} && \
     export DOMIBUS_CONFIG_LOCATION=${DOMIBUS_CONFIG_LOCATION} && \
