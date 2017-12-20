@@ -1,4 +1,4 @@
 embed-server --server-config=standalone-full.xml
 
-module add --name=com.mysql --resources=${JDBC_DRIVER_DIR}/${MYSQL_DRIVER} --dependencies=javax.api,javax.transaction.api
+module add --name=com.mysql --resources=/data/domInstall/jdbcDrivers/mysql-connector-java-5.1.45-bin.jar --dependencies=javax.api,javax.transaction.api
 
