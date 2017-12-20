@@ -27,7 +27,7 @@ ENV JAVA_HOME=/usr/java/default \
     PRODUCTION_MODE="${PRODUCTION_MODE:-prod}" \
     CONFIG_JVM_ARGS="-Dweblogic.security.SSL.ignoreHostnameVerification=true" \
     WL_HOME="/u01/oracle/wlserver" \
-    TZ=Europe/Lisbon \
+    TZ=Europe/Brussels \
     PATH=$PATH:/usr/java/default/bin:/u01/oracle/oracle_common/common/bin:/u01/oracle/wlserver/common/bin:/u01/oracle/user_projects/domains/base_domain/bin:/u01/oracle
 
 #

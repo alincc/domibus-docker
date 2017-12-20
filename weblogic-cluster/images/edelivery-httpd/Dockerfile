@@ -19,7 +19,7 @@ ENV TERM=xterm-256color
 ENV DEBIAN_FRONTEND noninteractive
 
 # Set the correct timezone
-ENV TZ=Europe/Lisbon
+ENV TZ=Europe/Brussels
 RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && \
     echo $TZ > /etc/timezone
 

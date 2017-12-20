@@ -6,7 +6,7 @@ ARG DOMIBUS_PASSWORD
 ARG DOMIBUS_VERSION
 ARG DOMIBUS_SHORT_VERSION
 
-ENV TZ=Europe/Lisbon
+ENV TZ=Europe/Brussels
 
 RUN apt-get install unzip
 
