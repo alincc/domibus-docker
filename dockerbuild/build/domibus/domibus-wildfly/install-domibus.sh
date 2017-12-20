@@ -25,7 +25,7 @@ function sourceExternalFunctions {
 }
 
 
-function initInstallation {
+function configureArtefacts {
   displayFunctionBanner ${FUNCNAME[0]}
 
   mkdir -p ${DOMIBUS_CONFIG_LOCATION}
@@ -56,7 +56,7 @@ function initInstallation {
 ####################################################################################################################
 
 sourceExternalFunctions
-initInstallation
+configureArtefacts
 
 exit
 
