@@ -62,6 +62,7 @@ function configureArtefacts {
 
 sourceExternalFunctions
 configureArtefacts
+configureWildfly
 
 exit
 
