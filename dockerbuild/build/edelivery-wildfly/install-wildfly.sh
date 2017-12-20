@@ -26,6 +26,13 @@ function sourceExternalFunctions {
    . $DOM_INSTALL/scripts/functions/downloadJDBC.functions
 }
 
+function createDomibusConfiguration {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   ${JBOSS_HOME}/bin/jboss-cli.sh --file=${DOM_INSTALL}/wildfly/resources/domibus-wildfly.cli
+}
+
+
 
 function configureJDBCDrivers {
    displayFunctionBanner ${FUNCNAME[0]}
@@ -76,7 +83,8 @@ EOF
 }
 
 sourceExternalFunctions
-configureJDBCDrivers
+#configureJDBCDrivers
+createDomibusConfiguration
 
 rm -r ${DOM_INSTALL}
 

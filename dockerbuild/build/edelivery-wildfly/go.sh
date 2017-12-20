@@ -21,6 +21,7 @@ WILDFLY_VERSION=9.0.2.Final
 echo ; echo "Copying wildfly archive in ${WORKING_DIR}/temp/wildfly"
 mkdir -p ${WORKING_DIR}/temp/domInstall/wildfly
 cp ${REPO}/wildfly-${WILDFLY_VERSION}.tar.gz ${WORKING_DIR}/temp/domInstall/wildfly/
+cp resources ${WORKING_DIR}/temp/domInstall/wildfly/
 
 dockerFile="`ls -1 ${WORKING_DIR}/*.Dockerfile`"
 dockerImage=edelivery-wildfly:${WILDFLY_VERSION}
