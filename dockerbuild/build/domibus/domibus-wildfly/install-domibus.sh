@@ -16,6 +16,12 @@ echo "--------------DB_USER: ${DB_USER}"
 echo "--------------DB_PASS: ${DB_PASS}"
 echo "--------------DOMIBUS_VERSION: ${DOMIBUS_VERSION}"
 
+export DB_HOST=$DB_HOST
+export DB_PORT=$DB_PORT
+export DB_NAME=$DB_NAME
+export DB_USER=$DB_USER
+export DB_PASS=$DB_PASS
+
 function sourceExternalFunctions {
 
    echo ; echo "--Sourcing External Functions:"
