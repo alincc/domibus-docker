@@ -13,13 +13,17 @@ version: '3'
 services:
   oraclexe-domibus:
     build:
-      context: oraclexe-domibus
+      context: ./oraclexe-domibus
       args:
-      - ORACLE_SYS_PASSWORD=changeMe!
-      - DOMIBUS_PASSWORD=changeMe!
-      - DOMIBUS_VERSION
-      - DOMIBUS_SHORT_VERSION
+        - ORACLE_SYS_PASSWORD=changeMe!
+        - DOMIBUS_PASSWORD=changeMe!
+        - DOMIBUS_VERSION
+        - DOMIBUS_SHORT_VERSION
     image: oraclexe-domibus:${DOMIBUS_VERSION}
+  edelivery-httpd:
+    build:
+      context: ./edelivery-httpd
+    image: edelivery-httpd:2.4
   edelivery-weblogic-cluster:
     build:
       context: edelivery-weblogic-cluster
@@ -32,7 +36,7 @@ services:
       - oraclexe-domibus
       - edelivery-weblogic-cluster
     build:
-      context: weblogic-cluster-domibus
+      context: ./weblogic-cluster-domibus
       args:
         - USER_ID
         - ADMIN_PASSWORD=changeMe!
