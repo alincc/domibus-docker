@@ -22,7 +22,7 @@ RUN chown -R domibus:domibus /data/
 COPY ${JDBC_DRIVER_DIR}/ $DOM_INSTALL/jdbcDrivers
 COPY ${WORKING_DIR}/install-wildfly.sh $DOM_INSTALL
 
-#USER root
+USER root
 
 RUN cd $WILDFLY_ARCHIVE_DIR \
     && tar xf wildfly-$WILDFLY_VERSION.tar.gz \
