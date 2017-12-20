@@ -48,6 +48,7 @@ function copyDomibus {
          for artifact in ${domibus_artefacts} ; do \
             echo ${artifact}            \
             | grep ${2}                 \
+            | grep -v full              \
             ; done`
 
 
