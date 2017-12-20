@@ -31,38 +31,14 @@ echo "   DB_NAME                 : ${DB_NAME}"
 echo "   DB_USER                 : ${DB_USER}"
 echo "   DB_PASS                 : ${DB_PASS}"
 
-
-   if [ ! "${DB_HOST}" == "" ] ; then
-      domStartupParams="${domStartupParams} -Ddomibus.database.serverName=${DB_HOST}"
-   fi
-
-   if [ ! "${DB_PORT}" == "" ] ; then
-      domStartupParams="${domStartupParams} -Ddomibus.database.port=${DB_PORT}"
-   fi
-
-   if [ ! "${DB_USER}" == "" ] ; then
-      domStartupParams="${domStartupParams} -Ddomibus.datasource.user=${DB_USER}"
-      domStartupParams="${domStartupParams} -Ddomibus.datasource.xa.property.user=${DB_USER}"
-   fi
-
-   if [ ! "${DB_PASS}" == "" ] ; then
-      domStartupParams="${domStartupParams} -Ddomibus.datasource.xa.property.password=${DB_PASS}"
-      domStartupParams="${domStartupParams} -Ddomibus.datasource.password=${DB_PASS}"
-   fi
-
    if [ ! "${DB_TYPE}" == "" ] ; then
       case "${DB_TYPE}" in
          "MySQL")
-            domStartupParams="${domStartupParams} -Ddomibus.datasource.xa.xaDataSourceClassName=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource"
-            domStartupParams="${domStartupParams} -Ddomibus.datasource.xa.property.url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?pinGlobalTxToPhysicalConnection=true"
-            domStartupParams="${domStartupParams} -Ddomibus.datasource.driverClassName=com.mysql.jdbc.Driver"
-            domStartupParams="${domStartupParams} -Ddomibus.datasource.url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false"
+            echo "Default properties are used"
          ;;
          "Oracle")
-            domStartupParams="${domStartupParams} -Ddomibus.datasource.xa.xaDataSourceClassName=oracle.jdbc.xa.client.OracleXADataSource"
-            domStartupParams="${domStartupParams} -Ddomibus.datasource.xa.property.URL=jdbc:oracle:thin:@${DB_HOST}:${DB_PORT}${DB_NAME}"
-            domStartupParams="${domStartupParams} -Ddomibus.datasource.driverClassName=oracle.jdbc.OracleDriver"
-            domStartupParams="${domStartupParams} -Ddomibus.datasource.url=jdbc:oracle:thin:@${DB_HOST}:${DB_PORT}${DB_NAME}"
+            domStartupParams="${domStartupParams} -Ddomibus.entityManagerFactory.jpaProperty.hibernate.connection.driver_class=oracle.jdbc.xa.client.OracleXADataSource"
+            domStartupParams="${domStartupParams} -Ddomibus.entityManagerFactory.jpaProperty.hibernate.dialect=org.hibernate.dialect.Oracle10gDialect"
          ;;
          *)
             ABORT_JOB "Database Type provided ({$DB_TYPE}) but MUST BE EITHER 'MySQL' or 'Oracle'"
@@ -71,9 +47,9 @@ echo "   DB_PASS                 : ${DB_PASS}"
    fi
 
    echo ; echo "Before: $JBOSS_OPTS"
-   JBOSS_OPTS="${JBOSS_OPTS} ${domStartupParams}"
-   export JBOSS_OPTS=${JBOSS_OPTS}
-   echo ; echo "After: $JBOSS_OPTS"
+   JAVA_OPTS="${JAVA_OPTS} ${domStartupParams}"
+   export JAVA_OPTS=${JAVA_OPTS}
+   echo ; echo "After: JAVA_OPTS"
 }
 
 ##########################################################################
