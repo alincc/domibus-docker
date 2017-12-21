@@ -1,6 +1,6 @@
 version: '2'
 services:
-  mysqlblue:
+  wildfly_mysql_blue:
     container_name: wildfly_mysql_blue
     image: domibus-mysql:${DOMIBUS_VERSION}
     environment:
@@ -12,7 +12,7 @@ services:
       - "3306"
     ports:
       - "13306:3306"
-  mysqlred:
+  wildfly_mysql_red:
     container_name: wildfly_mysql_red
     image: domibus-mysql:${DOMIBUS_VERSION}
     environment:
@@ -24,7 +24,7 @@ services:
       - "3306"
     ports:
       - "23306:3306"
-  domibusblue:
+  wildfly_domibus_blue:
     container_name: wildfly_domibus_blue
     image: domibus-wildfly:${DOMIBUS_VERSION}
     environment:
@@ -38,7 +38,7 @@ services:
       - "18083:8080"
     depends_on:
       - wildfly_mysql_blue
-  domibusred:
+  wildfly_domibus_red:
     container_name: wildfly_domibus_red
     image: domibus-wildfly:${DOMIBUS_VERSION}
     environment:
