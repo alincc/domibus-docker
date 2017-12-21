@@ -4,16 +4,16 @@ xa-data-source add \
 --name=eDeliveryMysqlXADS \
 --driver-name=com.mysql \
 --jndi-name=java:/jdbc/cipaeDeliveryDs \
---user-name=${env.DB_USER} \
---password=${env.DB_PASS} \
+--user-name=${DB_USER} \
+--password=${DB_PASS} \
 --use-ccm=true \
 --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker \
 --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter \
 --background-validation=true
 
-/subsystem=datasources/xa-data-source=eDeliveryMysqlXADS/xa-datasource-properties=ServerName:add(value=${env.DB_HOST})
-/subsystem=datasources/xa-data-source=eDeliveryMysqlXADS/xa-datasource-properties=PortNumber:add(value=${env.DB_PORT})
-/subsystem=datasources/xa-data-source=eDeliveryMysqlXADS/xa-datasource-properties=DatabaseName:add(value=${env.DB_NAME})
+/subsystem=datasources/xa-data-source=eDeliveryMysqlXADS/xa-datasource-properties=ServerName:add(value=${DB_HOST})
+/subsystem=datasources/xa-data-source=eDeliveryMysqlXADS/xa-datasource-properties=PortNumber:add(value=${DB_PORT})
+/subsystem=datasources/xa-data-source=eDeliveryMysqlXADS/xa-datasource-properties=DatabaseName:add(value=${DB_NAME})
 
 xa-data-source enable --name=eDeliveryMysqlXADS
 
@@ -21,9 +21,9 @@ data-source add \
 --name=eDeliveryMysqlNonXADS \
 --driver-name=com.mysql \
 --jndi-name=java:/jdbc/cipaeDeliveryNonXADs \
---user-name=${env.DB_USER} \
---password=${env.DB_PASS} \
---connection-url=jdbc:mysql://${env.DB_HOST}:${env.DB_PORT}/${env.DB_NAME} \
+--user-name=${DB_USER} \
+--password=${DB_PASS} \
+--connection-url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME} \
 --use-ccm=true \
 --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker \
 --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter \
