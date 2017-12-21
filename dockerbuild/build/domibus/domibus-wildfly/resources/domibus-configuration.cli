@@ -50,7 +50,7 @@ data-source enable --name=eDeliveryMysqlNonXADS
 /subsystem=messaging/hornetq-server=default/jms-queue=DomibusNotifyBackendQueue:add(durable=true,entries=[java:/jms/domibus.internal.notification.queue,java:/jms/queue/DomibusNotifyBackendQueue])
 /subsystem=messaging/hornetq-server=default/jms-queue=DomibusDLQ:add(durable=true,entries=[java:/jms/domibus.DLQ,java:/jms/queue/DomibusDLQ])
 
-/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.DomibusSendMessageQueue/:add(dead-letter-address=jms.queue.DomibusDLQ,expiry-address=jms.queue.ExpiryQueue,redelivery-delay=1000,max-delivery-attempts=1)
+/subsystem=messaging/hornetq-server=default/address-setting=jms.queue.DomibusSendMessageQueue/:add(expiry-address=jms.queue.ExpiryQueue,redelivery-delay=1000,max-delivery-attempts=1)
 /subsystem=messaging/hornetq-server=default/address-setting=jms.queue.DomibusPullMessageQueue/:add(dead-letter-address=jms.queue.DomibusDLQ,expiry-address=jms.queue.ExpiryQueue,redelivery-delay=1000,max-delivery-attempts=1)
 /subsystem=messaging/hornetq-server=default/address-setting=jms.queue.DomibusBusinessMessageOutQueue/:add(dead-letter-address=jms.queue.DomibusDLQ,expiry-address=jms.queue.ExpiryQueue,redelivery-delay=300000,max-delivery-attempts=10)
 /subsystem=messaging/hornetq-server=default/address-setting=jms.queue.DomibusNotifyBackendJmsQueue/:add(dead-letter-address=jms.queue.DomibusDLQ,expiry-address=jms.queue.ExpiryQueue,redelivery-delay=300000,max-delivery-attempts=10)
@@ -68,7 +68,8 @@ jms-topic add --topic-address=DomibusClusterCommandTopic --entries=[java:/jms/do
 
 /subsystem=messaging/hornetq-server=default/connection-factory=edeliveryConnectionFactory:add(connector={"in-vm"=>undefined},entries=["java:/jms/ConnectionFactory"], compress-large-messages=false, failover-on-initial-connection=false, use-global-pools=true)
 
-
+jms-queue remove --queue-address=ExpiryQueue
+jms-queue remove --queue-address=DLQ
 
 exit
 
