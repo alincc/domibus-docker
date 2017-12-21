@@ -53,4 +53,4 @@ services:
     ports:
       - "18084:8080"
     depends_on:
-      - wildfly_domibus_red
+      - wildfly_mysql_red
