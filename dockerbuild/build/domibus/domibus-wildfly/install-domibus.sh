@@ -16,11 +16,6 @@ echo "--------------DB_USER: ${DB_USER}"
 echo "--------------DB_PASS: ${DB_PASS}"
 echo "--------------DOMIBUS_VERSION: ${DOMIBUS_VERSION}"
 
-export DB_HOST=$DB_HOST
-export DB_PORT=$DB_PORT
-export DB_NAME=$DB_NAME
-export DB_USER=$DB_USER
-export DB_PASS=$DB_PASS
 
 function sourceExternalFunctions {
 
@@ -29,15 +24,6 @@ function sourceExternalFunctions {
    . ${DOCKER_DOMINSTALL}/scripts/functions/common.functions
    . ${DOCKER_DOMINSTALL}/scripts/functions/getDomibus.functions
 }
-
-function configureWildfly {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-    #unzip -j -o $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-wildfly-full.zip domibus/standalone/configuration/standalone-full.xml -d ${JBOSS_HOME}/standalone/configuration/
-
-   ${JBOSS_HOME}/bin/jboss-cli.sh --file=${DOCKER_DOMINSTALL}/wildfly/resources/domibus-wildfly.cli
-}
-
 
 function configureArtefacts {
   displayFunctionBanner ${FUNCNAME[0]}
@@ -70,9 +56,6 @@ function configureArtefacts {
 
 sourceExternalFunctions
 configureArtefacts
-configureWildfly
-
-cat  ${JBOSS_HOME}/standalone/configuration/standalone-full.xml
 
 exit
 

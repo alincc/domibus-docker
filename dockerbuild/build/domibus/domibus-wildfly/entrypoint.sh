@@ -21,6 +21,15 @@ echo ; echo "Sourcing domInstall Common Functions"
 . ${DOCKER_DOMINSTALL}/scripts/functions/common.functions
 . ${DOCKER_DOMINSTALL}/scripts/functions/database.functions
 
+function configureDomibus {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+    #unzip -j -o $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-wildfly-full.zip domibus/standalone/configuration/standalone-full.xml -d ${JBOSS_HOME}/standalone/configuration/
+
+   ${JBOSS_HOME}/bin/jboss-cli.sh --file=${DOCKER_DOMINSTALL}/wildfly/resources/domibus-configuration.cli
+}
+
+
 function buildDomibusStartupParams {
    displayFunctionBanner ${FUNCNAME[0]}
 
@@ -57,6 +66,10 @@ echo "   DB_PASS                 : ${DB_PASS}"
 ##########################################################################
 
 buildDomibusStartupParams
+configureDomibus
+
+cat  ${JBOSS_HOME}/standalone/configuration/standalone-full.xml
+
 waitForDatabase ${DB_TYPE} ${DB_HOST} ${DB_PORT} ${DB_USER} ${DB_PASS} ${DB_NAME}
 
 echo ; echo "Starting WildFly:"
