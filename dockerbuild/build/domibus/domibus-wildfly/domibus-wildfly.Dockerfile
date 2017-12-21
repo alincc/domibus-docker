@@ -13,19 +13,19 @@ ENV MEMORY_SETTINGS="-Xms128m -Xmx1024m"
 ENV JAVA_OPTS="-Djava.net.preferIPv4Stack=true -Djboss.modules.system.pkgs=$JBOSS_MODULES_SYSTEM_PKGS -Djava.awt.headless=true -Ddomibus.config.location=$DOMIBUS_CONFIG_LOCATION $MEMORY_SETTINGS"
 ENV DB_TYPE="" DB_HOST="" DB_PORT="" DB_NAME="domibus" DB_USER="" DB_PASS=""
 
-RUN rm -rf $DOCKER_DOMINSTALL
-RUN mkdir -p $DOCKER_DOMINSTALL
+RUN rm -rf $DOCKER_DOMINSTALL && \
+    mkdir -p $DOCKER_DOMINSTALL
 COPY ${DOMINSTALL} $DOCKER_DOMINSTALL
 COPY ${WORKING_DIR}/install-domibus.sh $DOCKER_DOMINSTALL
 
 COPY ${DOMIBUS_DISTRIBUTION} $DOCKER_DOMIBUS_DISTRIBUTION
 
 COPY ${WORKING_DIR}/entrypoint.sh $JBOSS_HOME
-RUN chown domibus:domibus $JBOSS_HOME/entrypoint.sh
-RUN chmod +x $JBOSS_HOME/entrypoint.sh
+RUN chown domibus:domibus $JBOSS_HOME/entrypoint.sh && \
+ chmod +x $JBOSS_HOME/entrypoint.sh && \
+ chown domibus:domibus $DOCKER_DOMINSTALL/install-domibus.sh && \
+ chmod +x $DOCKER_DOMINSTALL/install-domibus.sh
 
-RUN chown domibus:domibus $DOCKER_DOMINSTALL/install-domibus.sh
-RUN chmod +x $DOCKER_DOMINSTALL/install-domibus.sh
 # Running Domibus Installation Script (As 'domibus user')
 RUN su - domibus -c export JBOSS_HOME=${JBOSS_HOME} && \
     export DOMIBUS_CONFIG_LOCATION=${DOMIBUS_CONFIG_LOCATION} && \

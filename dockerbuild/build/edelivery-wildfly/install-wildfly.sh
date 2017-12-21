@@ -36,7 +36,17 @@ function configureJDBCDrivers {
    ${JBOSS_HOME}/bin/jboss-cli.sh --file=${DOM_INSTALL}/wildfly/resources/edelivery-wildfly.cli
 }
 
+function enableWildFlyResolveVariables {
+    displayFunctionBanner ${FUNCNAME[0]}
+
+    sed -i "s/<resolve-parameter-values>false<\/resolve-parameter-values>/\
+           <resolve-parameter-values>true<\/resolve-parameter-values>/" \
+           $JBOSS_HOME/bin/jboss-cli.xml
+
+}
+
 sourceExternalFunctions
+enableWildFlyResolveVariables
 configureJDBCDrivers
 
 rm -r ${DOM_INSTALL}

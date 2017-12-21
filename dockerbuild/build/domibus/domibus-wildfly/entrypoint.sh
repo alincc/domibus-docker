@@ -14,12 +14,6 @@ echo "--------------DB_USER: ${DB_USER}"
 echo "--------------DB_PASS: ${DB_PASS}"
 echo "--------------DOMIBUS_VERSION: ${DOMIBUS_VERSION}"
 
-export DB_HOST=$DB_HOST
-export DB_PORT=$DB_PORT
-export DB_NAME=$DB_NAME
-export DB_USER=$DB_USER
-export DB_PASS=$DB_PASS
-
 echo "ls DOCKER_DOMINSTALL"
 ls ${DOCKER_DOMINSTALL}
 
@@ -32,7 +26,9 @@ function configureDomibus {
 
     #unzip -j -o $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-wildfly-full.zip domibus/standalone/configuration/standalone-full.xml -d ${JBOSS_HOME}/standalone/configuration/
 
-   ${JBOSS_HOME}/bin/jboss-cli.sh --file=${DOCKER_DOMINSTALL}/wildfly/resources/domibus-configuration.cli
+   printenv > env.properties
+   ${JBOSS_HOME}/bin/jboss-cli.sh --file=${DOCKER_DOMINSTALL}/wildfly/resources/domibus-configuration.cli --properties=env.properties
+   rm env.properties
 }
 
 
