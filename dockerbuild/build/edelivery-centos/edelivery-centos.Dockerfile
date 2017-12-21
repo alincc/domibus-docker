@@ -15,11 +15,6 @@ RUN useradd domibus -G cefsup
 RUN mkdir /home/domibus/.ssh
 RUN chown domibus:domibus /home/domibus/.ssh
 RUN chmod 700 /home/domibus/.ssh
-#COPY SSH_Keys/id_rsa /home/domibus/.ssh/id_rsa
-#RUN chown domibus:domibus /home/domibus/.ssh/id_rsa
-#RUN chmod 700 /home/domibus/.ssh/id_rsa
-#RUN mkdir /data/domibus
-#RUN chown -R domibus:cefsup /data/domibus
 RUN passwd -l domibus
 
 # smp user (By default locked)
@@ -27,20 +22,15 @@ RUN useradd smp -G cefsup
 RUN mkdir /home/smp/.ssh
 RUN chown smp:smp /home/smp/.ssh
 RUN chmod 700 /home/smp/.ssh
-#COPY SSH_Keys/id_rsa /home/smp/.ssh/id_rsa
-#RUN chown smp:smp /home/smp/.ssh/id_rsa
-#RUN chmod 700 /home/smp/.ssh/id_rsa
-#RUN mkdir /data/smp
-#RUN chown -R smp:cefsup /data/smp
 RUN passwd -l smp
 
 # Creating extra Directories
 RUN mkdir /temp
-RUN chown root:cefsup /temp
+RUN chown domibus:domibus /temp
 RUN chmod 770 /temp
 
 RUN mkdir /data
-RUN chown root:cefsup /data
+RUN chown domibus:domibus /data
 RUN chmod 770 /data
 
 # Installing extra Utilities used to automate installation

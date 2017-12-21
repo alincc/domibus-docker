@@ -1,8 +1,8 @@
 version: '2'
 services:
-  mysqlblue:
-    container_name: mysql_blue
-    image: c7mys7
+  wildfly_mysql_blue:
+    container_name: wildfly_mysql_blue
+    image: domibus-mysql:${DOMIBUS_VERSION}
     environment:
       - MYSQL_ROOT_PASSWORD=123456
       - MYSQL_DATABASE=domibus
@@ -11,10 +11,10 @@ services:
     expose:
       - "3306"
     ports:
-      - "13306:3306"
-  mysqlred:
-    container_name: mysql_red
-    image: c7mys7
+      - "33306:3306"
+  wildfly_mysql_red:
+    container_name: wildfly_mysql_red
+    image: domibus-mysql:${DOMIBUS_VERSION}
     environment:
       - MYSQL_ROOT_PASSWORD=123456
       - MYSQL_DATABASE=domibus
@@ -23,29 +23,34 @@ services:
     expose:
       - "3306"
     ports:
-      - "23306:3306"
-  domibusblue:
-    container_name: domibus_blue
-    image: c7-domibus-wildfly
+      - "43306:3306"
+  wildfly_domibus_blue:
+    container_name: wildfly_domibus_blue
+    image: domibus-wildfly:${DOMIBUS_VERSION}
     environment:
-      - DB_HOST=mysql_blue
-      - DB_PORT=3306
+       - DB_TYPE=MySQL
+       - DB_HOST=wildfly_mysql_blue
+       - DB_PORT=3306
+       - DB_USER=edelivery
+       - DB_PASS=edelivery
     command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 20s
     ports:
-      - "18081:8080"
+      - "28081:8080"
     depends_on:
-      - mysqlblue
-  domibusred:
-    container_name: domibus_red
-    image: c7-domibus-wildfly
+      - wildfly_mysql_blue
+  wildfly_domibus_red:
+    container_name: wildfly_domibus_red
+    image: domibus-wildfly:${DOMIBUS_VERSION}
     environment:
-      - pmodeFile2Upload=/data/domInstall/domibus-gw-sample-pmode-red.xml
-      - DB_HOST=mysql_red
+      - DB_TYPE=MySQL
+      - DB_HOST=wildfly_mysql_red
       - DB_PORT=3306
+      - DB_USER=edelivery
+      - DB_PASS=edelivery
     volumes:
-      - ../domibus-configs/wildfly/domibus_red/domibus:/data/domibus/domibus/conf/domibus
+      - ../domibus-configs/wildfly/domibus_red/domibus:/data/wildfly/conf/domibus
     command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 20s
     ports:
-      - "18082:8080"
+      - "28082:8080"
     depends_on:
-      - mysqlred
+      - wildfly_mysql_red
