@@ -55,10 +55,10 @@ echo "   DB_PASS                 : ${DB_PASS}"
       esac
    fi
 
-   echo ; echo "Before: $JAVA_OPTS"
+
    JAVA_OPTS="${JAVA_OPTS} ${domStartupParams}"
    export JAVA_OPTS=${JAVA_OPTS}
-   echo ; echo "After:  $JAVA_OPTS"
+   echo ; echo "Start with:  $JAVA_OPTS"
 }
 
 ##########################################################################
