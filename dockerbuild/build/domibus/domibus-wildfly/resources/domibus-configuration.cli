@@ -31,8 +31,8 @@ data-source add \
 
 data-source enable --name=eDeliveryMysqlNonXADS
 
-/profile=default-web/subsystem=ee/managed-executor-service=domibusExecutorService:add(jndi-name="java:jboss/ee/concurrency/executor/DomibusExecutorService", context-service="default", hung-task-threshold="60000",  core-threads="5", max-threads=25, keepalive-time="5000")
-/profile=default-web/subsystem=ee/managed-executor-service=quartzExecutorService:add(jndi-name="java:jboss/ee/concurrency/executor/QuartzExecutorService", context-service="default", hung-task-threshold="0", long-running-tasks="true",  core-threads="5", max-threads=25, keepalive-time="5000")
+/subsystem=ee/managed-executor-service=domibusExecutorService:add(jndi-name="java:jboss/ee/concurrency/executor/DomibusExecutorService", context-service="default", hung-task-threshold="60000",  core-threads="5", max-threads=25, keepalive-time="5000")
+/subsystem=ee/managed-executor-service=quartzExecutorService:add(jndi-name="java:jboss/ee/concurrency/executor/QuartzExecutorService", context-service="default", hung-task-threshold="0", long-running-tasks="true",  core-threads="5", max-threads=25, keepalive-time="5000")
 
 /subsystem=messaging/hornetq-server=default:write-attribute(name=jmx-management-enabled,value=true)
 
