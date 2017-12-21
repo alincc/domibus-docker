@@ -24,8 +24,6 @@ echo ; echo "Sourcing domInstall Common Functions"
 function configureDomibus {
    displayFunctionBanner ${FUNCNAME[0]}
 
-   unzip -j -o $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-wildfly-full.zip domibus/standalone/configuration/standalone-full.xml -d ${JBOSS_HOME}/standalone/configuration/
-
    printenv > env.properties
    ${JBOSS_HOME}/bin/jboss-cli.sh --file=${DOCKER_DOMINSTALL}/wildfly/resources/domibus-configuration.cli --properties=env.properties
    rm env.properties
