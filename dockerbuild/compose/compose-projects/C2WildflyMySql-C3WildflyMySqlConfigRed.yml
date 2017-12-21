@@ -35,7 +35,7 @@ services:
        - DB_PASS=edelivery
     command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 20s
     ports:
-      - "8085:8080"
+      - "28081:8080"
     depends_on:
       - wildfly_mysql_blue
   wildfly_domibus_red:
@@ -51,6 +51,6 @@ services:
       - ../domibus-configs/wildfly/domibus_red/domibus:/data/wildfly/conf/domibus
     command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 20s
     ports:
-      - "7003:8080"
+      - "28082:8080"
     depends_on:
       - wildfly_mysql_red
