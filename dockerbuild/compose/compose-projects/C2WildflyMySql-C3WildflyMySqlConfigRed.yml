@@ -11,7 +11,7 @@ services:
     expose:
       - "3306"
     ports:
-      - "13306:3306"
+      - "33306:3306"
   wildfly_mysql_red:
     container_name: wildfly_mysql_red
     image: domibus-mysql:${DOMIBUS_VERSION}
@@ -23,7 +23,7 @@ services:
     expose:
       - "3306"
     ports:
-      - "23306:3306"
+      - "43306:3306"
   wildfly_domibus_blue:
     container_name: wildfly_domibus_blue
     image: domibus-wildfly:${DOMIBUS_VERSION}
@@ -35,7 +35,7 @@ services:
        - DB_PASS=edelivery
     command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 20s
     ports:
-      - "18083:8080"
+      - "28081:8080"
     depends_on:
       - wildfly_mysql_blue
   wildfly_domibus_red:
@@ -51,6 +51,6 @@ services:
       - ../domibus-configs/wildfly/domibus_red/domibus:/data/wildfly/conf/domibus
     command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 20s
     ports:
-      - "18084:8080"
+      - "28082:8080"
     depends_on:
       - wildfly_mysql_red
