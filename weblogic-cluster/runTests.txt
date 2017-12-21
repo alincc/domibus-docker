@@ -9,31 +9,6 @@
 #OTHER_PARTY_ID
 #OTHER_PARTY_DOMIBUS_URL
 
-# Soap UI Test
-
-TODO:
-* Automate test execution
-* Confirm ojdbc7 dependency on Domibus-MSH-soapui-tests
-<dependency>
-    <groupId>com.oracle</groupId>
-    <artifactId>ojdbc7</artifactId>
-    <version>12.1.0</version>
-</dependency>
-
-mvn com.smartbear.soapui:soapui-pro-maven-plugin:5.1.2:test \
--DlocalUrl="http://localhost/domibus-weblogic" \
--DremoteUrl="http://localhost:8080/domibus-weblogic" \
--DjdbcUrlBlue="jdbc:oracle:thin:@127.0.0.1:49161/XE" \
--DjdbcUrlRed="jdbc:oracle:thin:@127.0.0.1:49261/XE" \
--DdriverBlue="oracle.jdbc.OracleDriver" \
--DdriverRed="oracle.jdbc.OracleDriver" \
--DdatabaseBlue="oracle" \
--DdatabaseRed="oracle" \
--DblueDbUser="domibus" \
--DredDbUser="domibus" \
--DblueDbPassword="XXXXXX" \
--DredDbPassword="XXXXXX"
-
 prepareDomibusForAutomatedTests() {
     echo "Preparing Domibus for automated tests..."
 
@@ -76,3 +51,19 @@ prepareDomibusForAutomatedTests() {
         --data-binary '[{"entityId":0,"index":1,"backendName":"backendWebservice","routingCriterias":[],"persisted":false,"from":null,"to":null,"action":null,"service":null,"$$index":0},{"entityId":0,"index":0,"backendName":"backendFSPlugin","routingCriterias":[],"persisted":false,"from":null,"to":null,"action":null,"service":null,"$$index":1},{"entityId":0,"index":2,"backendName":"Jms","routingCriterias":[],"persisted":false,"from":null,"to":null,"action":null,"service":null,"$$index":2}]' \
         --compressed
 }
+
+# Soap UI Test
+
+mvn com.smartbear.soapui:soapui-pro-maven-plugin:5.1.2:test \
+-DlocalUrl="http://localhost/domibus-weblogic" \
+-DremoteUrl="http://localhost:8080/domibus-weblogic" \
+-DjdbcUrlBlue="jdbc:oracle:thin:@127.0.0.1:49161/XE" \
+-DjdbcUrlRed="jdbc:oracle:thin:@127.0.0.1:49261/XE" \
+-DdriverBlue="oracle.jdbc.OracleDriver" \
+-DdriverRed="oracle.jdbc.OracleDriver" \
+-DdatabaseBlue="oracle" \
+-DdatabaseRed="oracle" \
+-DblueDbUser="domibus" \
+-DredDbUser="domibus" \
+-DblueDbPassword="XXXXXX" \
+-DredDbPassword="XXXXXX"
