@@ -55,7 +55,8 @@ services:
     ports:
       - "7002:7002"
     volumes:
-      - ~/domibus-files-wlc_c2:/u01/oracle/user_projects/domains/base_domain/filestores
+      - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
+      - ./c2:/u01/oracle/user_projects/domains/base_domain/filestores
     restart: always
     command: createServerEntrypoint.sh
   serverc2i2:
@@ -70,7 +71,8 @@ services:
     ports:
       - "7003:7002"
     volumes:
-      - ~/domibus-files-wlc_c2:/u01/oracle/user_projects/domains/base_domain/filestores
+      - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
+      - ./c2:/u01/oracle/user_projects/domains/base_domain/filestores
     restart: always
     command: createServerEntrypoint.sh
   httpdc2:
@@ -138,7 +140,8 @@ services:
     ports:
       - "7102:7002"
     volumes:
-      - ~/domibus-files-wlc_c3:/u01/oracle/user_projects/domains/base_domain/filestores
+      - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
+      - ./c3:/u01/oracle/user_projects/domains/base_domain/filestores
     restart: always
     command: createServerEntrypoint.sh
   serverc3i2:
@@ -154,7 +157,8 @@ services:
     ports:
       - "7103:7002"
     volumes:
-      - ~/domibus-files-wlc_c3:/u01/oracle/user_projects/domains/base_domain/filestores
+      - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
+      - ./c3:/u01/oracle/user_projects/domains/base_domain/filestores
     restart: always
     command: createServerEntrypoint.sh
   httpdc3:
