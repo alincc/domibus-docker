@@ -23,18 +23,6 @@ useradd -d /home/domibus -m -s /bin/bash domibus
 usermod -a -G docker domibus
 ```
 
-### Prepare local file share mount directories
-
-* Prepare local file share mount directories to be used by the Domibus FS Plugin
-
-* Create the following directories for each eDelivery corner, under domibus user home dir as we use this user to manage all the domibus instances:
-```
-mkdir -p ~/domibus-files-wlc_c2/fs_plugin_data/MAIN
-mkdir -p ~/domibus-files-wlc_c3/fs_plugin_data/MAIN
-mkdir -p ~/domibus-files-wlc_c2/persistent_filestore
-mkdir -p ~/domibus-files-wlc_c3/persistent_filestore
-```
-
 ### Build images
 
 Download resources:
@@ -60,9 +48,9 @@ Download resources:
    https://ec.europa.eu/cefdigital/artifact/content/repositories/eDelivery/eu/europa/ec/digit/ipcis/wslt-api/1.9.1/wslt-api-1.9.1.zip
 ```
 
-Resources repository structure:
+Images resources repository structure:
 ```
-RESOURCES_REPO
+images
 ├── edelivery-weblogic-cluster
 │   └── resources
 │       ├── dockerize-linux-amd64-v0.6.0.tar.gz
