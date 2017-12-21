@@ -20,7 +20,6 @@ xa-data-source enable --name=eDeliveryMysqlXADS
 data-source add \
 --name=eDeliveryMysqlNonXADS \
 --driver-name=com.mysql \
---driver-class-name=com.mysql.jdbc.Driver
 --jndi-name=java:/jdbc/cipaeDeliveryNonXADs \
 --user-name=${DB_USER} \
 --password=${DB_PASS} \
