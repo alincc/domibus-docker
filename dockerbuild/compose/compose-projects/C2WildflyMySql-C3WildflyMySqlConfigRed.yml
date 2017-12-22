@@ -48,7 +48,7 @@ services:
       - DB_USER=edelivery
       - DB_PASS=edelivery
     volumes:
-      - ${VOLUME_RED}:/data/wildfly/conf/domibus
+      - ../domibus-configs/wildfly/domibus_red/domibus:/data/wildfly/conf/domibus
     command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 20s
     ports:
       - "28082:8080"
