@@ -3,22 +3,20 @@
 copyDomibusSoapUITestPModes() {
     echo "Copy domibus soap ui tests pmodes..."
     ORIGIN_PMODES=${BASE}/domibus/Domibus-MSH-soapui-tests/src/main/soapui
-    DEST_PMODES=${BASE}/test/conf/pmodes
-    cp ${ORIGIN_PMODES}/domibus-gw-sample-pmode-blue.xml ${DEST_PMODES} && \
-    cp ${ORIGIN_PMODES}/domibus-gw-sample-pmode-red.xml ${DEST_PMODES}
+    cp ${ORIGIN_PMODES}/domibus-gw-sample-pmode-blue.xml ${BASE} && \
+    cp ${ORIGIN_PMODES}/domibus-gw-sample-pmode-red.xml ${BASE}
 }
 
 updatePModes() {
     # TODO inspect docker network info
-    TEST_PMODES=${BASE}/test/conf/pmodes
-    for FILE in ${TEST_PMODES}/*.xml; do
+    for FILE in ${BASE}/domibus-gw-sample-pmode-*.xml; do
         echo "Processing ${FILE} file.."
         sed -i "s/http:\/\/localhost:8080\/domibus\/services\/msh/http:\/\/localhost\/domibus-weblogic\/services\/msh/g" ${FILE}
         sed -i "s/http:\/\/localhost:8180\/domibus\/services\/msh/http:\/\/localhost:8080\/domibus-weblogic\/services\/msh/g" ${FILE}
     done
 }
 
-prepareDomibusCornerForTesting() {
+prepareDomibusCorner() {
     THIS_PARTY_DOMIBUS_URL=$1
     PMODE_FILE_PATH=$2
 
@@ -80,7 +78,7 @@ BASE=$(pwd)
 
 copyDomibusSoapUITestPModes
 updatePModes
-prepareDomibusCornerForTesting http://edelivery.domibus.eu/domibus-weblogic test/conf/pmodes/domibus-gw-sample-pmode-blue.xml
-prepareDomibusCornerForTesting http://edelivery.domibus.eu:8080/domibus-weblogic test/conf/pmodes/domibus-gw-sample-pmode-red.xml
+prepareDomibusCorner http://edelivery.domibus.eu/domibus-weblogic domibus-gw-sample-pmode-blue.xml
+prepareDomibusCorner http://edelivery.domibus.eu:8080/domibus-weblogic domibus-gw-sample-pmode-red.xml
 
 #runTests
