@@ -6,4 +6,5 @@ BASE=$(pwd)
 cd ${BASE}/compose/test/
 docker-compose down
 
+# Prune docker system
 docker system prune -f

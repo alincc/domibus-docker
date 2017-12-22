@@ -7,7 +7,7 @@ cloneDomibus() {
 
 buildDomibus() {
     echo "Build domibus..."
-    # Official build command for distribution
+    # TODO: Replace with official build command for distribution
     #mvn -f domibus/pom.xml clean install -Ptomcat -Pweblogic -Pwildfly -Pdefault-plugins -Pdatabase -Psample-configuration -PUI -Pdistribution
     mvn -f domibus/pom.xml clean install -Pweblogic -Pdefault-plugins -Pdatabase -Psample-configuration -PUI -Pdistribution -DskipTests=true -DskipITs=true
 }
@@ -26,7 +26,9 @@ copyDomibusDistributionImageResources() {
 
     echo "Copy domibus distribution artifacts..."
     ORIGIN_DIST=${BASE}/domibus/Domibus-MSH-distribution/target
+    # oraclexe-domibus/resources
     cp ${ORIGIN_DIST}/domibus-distribution-${DOMIBUS_VERSION}-sql-scripts.zip images/oraclexe-domibus/resources && \
+    # weblogic-cluster-domibus/resources
     cp ${ORIGIN_DIST}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip images/weblogic-cluster-domibus/resources && \
     cp ${ORIGIN_DIST}/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip images/weblogic-cluster-domibus/resources && \
     cp ${ORIGIN_DIST}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip images/weblogic-cluster-domibus/resources && \
