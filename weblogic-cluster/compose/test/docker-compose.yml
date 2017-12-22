@@ -57,7 +57,6 @@ services:
     volumes:
       - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
       - ./c2/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
-      #- ./c2/persistent_filestore:/u01/oracle/user_projects/domains/base_domain/persistent_filestore
     restart: always
     command: createServerEntrypoint.sh
   serverc2i2:
@@ -74,7 +73,6 @@ services:
     volumes:
       - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
       - ./c2/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
-      #- ./c2/persistent_filestore:/u01/oracle/user_projects/domains/base_domain/persistent_filestore
     restart: always
     command: createServerEntrypoint.sh
   httpdc2:
@@ -144,7 +142,6 @@ services:
     volumes:
       - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
       - ./c3/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
-      #- ./c3/persistent_filestore:/u01/oracle/user_projects/domains/base_domain/persistent_filestore
     restart: always
     command: createServerEntrypoint.sh
   serverc3i2:
@@ -162,7 +159,6 @@ services:
     volumes:
       - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
       - ./c3/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
-      #- ./c3/persistent_filestore:/u01/oracle/user_projects/domains/base_domain/persistent_filestore
     restart: always
     command: createServerEntrypoint.sh
   httpdc3:
