@@ -52,8 +52,8 @@ composeBuildWeblogicClusterImages() {
     cd ${BASE}/images && docker-compose -f docker-compose.build.yml build
 }
 
-composeUp_C2_C3_WeblogicClusterContainers() {
-    echo "Compose up C2 and C3 Weblogic Cluster Containers..."
+composeUp_C2_C3_WeblogicCluster() {
+    echo "Compose up C2 and C3 Weblogic Cluster..."
     cd ${BASE}/compose/test/ && docker-compose up -d && docker-compose logs -f
 }
 
@@ -64,7 +64,6 @@ composeUp_C2_C3_WeblogicClusterContainers() {
 DOMIBUS_BRANCH=development
 BASE=$(pwd)
 
-# Get domibus
 if [ ! -d "domibus" ]; then
     cloneDomibus
     buildDomibus
@@ -75,4 +74,4 @@ fi
 
 composeBuildWeblogicClusterImages
 copyDomibusConfigurationPolicies
-composeUp_C2_C3_WeblogicClusterContainers
+composeUp_C2_C3_WeblogicCluster
