@@ -62,6 +62,7 @@ composeUp_C2_C3_WeblogicCluster() {
 #
 # main
 #
+export USER_ID=$(id -u $USER)
 
 DOMIBUS_BRANCH=development
 BASE=$(pwd)

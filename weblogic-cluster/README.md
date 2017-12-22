@@ -28,7 +28,7 @@ Download the following resources to images/edelivery-weblogic-cluster/resources/
    http://download.oracle.com/otn/nt/middleware/12c/wls/1213/fmw_12.1.3.0.0_wls.jar
    http://download.oracle.com/otn/java/jdk/8u144-b01/090f390dda5b47b9b721c7dfaa008135/jdk-8u144-linux-x64.tar.gz
 ```
-Download the following resources to RESOURCES_REPO/weblogic-cluster-domibus/resources/:
+Download the following resources to images/weblogic-cluster-domibus/resources/:
 ```
    https://ec.europa.eu/cefdigital/artifact/content/repositories/eDelivery/eu/europa/ec/digit/ipcis/wslt-api/1.9.1/wslt-api-1.9.1.zip
 ```
