@@ -57,10 +57,7 @@ images
 
 __wslt-api fix__
 
-The WLST API doesn’t support yet the waitTimeInMillis parameter. We can create a request to the team responsible for
-developing it but it will take some time, so I would not rely on this to have it fast.
-In the meantime you can modify locally for your specific case the python scripts(in the jar WSLT/lib/wlstscripts.jar
-modify the WlsUtilities.py script ) that the WLST uses to import the properties file.
+The WLST API doesn’t support yet the waitTimeInMillis parameter.
 
 Procedure:
 * Extract wslt-api-1.9.1.zip
