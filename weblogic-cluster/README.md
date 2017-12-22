@@ -90,10 +90,3 @@ Initialize the correspondent Docker Compose project:
 cd compose/test/
 docker-compose up -d && docker-compose logs -f
 ```
-
-Notes:
-
-Right after the first project startup you must delete Oracle DB initialization scripts as its container image will always execute any scripts that finds on startup:
-```
-docker-compose exec oraclexe sh -c 'rm -rf /docker-entrypoint-initdb.d/*'
-```
