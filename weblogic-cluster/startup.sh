@@ -41,10 +41,12 @@ copyDomibusConfigurationPolicies() {
     echo "Copy domibus configuration policies..."
     ORIGIN_POLICIES=${BASE}/domibus/Domibus-MSH/src/main/conf/domibus/policies
     DEST_POLICIES=${BASE}/compose/test/common/conf/domibus/policies/
-    cp ${ORIGIN_POLICIES}/doNothingPolicy.xml ${DEST_POLICIES} && \
-    cp ${ORIGIN_POLICIES}/encryptAll.xml ${DEST_POLICIES} && \
-    cp ${ORIGIN_POLICIES}/signEncrypt.xml ${DEST_POLICIES} && \
-    cp ${ORIGIN_POLICIES}/signOnly.xml ${DEST_POLICIES}
+    cp ${ORIGIN_POLICIES}/*.xml ${DEST_POLICIES}
+
+    #cp ${ORIGIN_POLICIES}/doNothingPolicy.xml ${DEST_POLICIES} && \
+    #cp ${ORIGIN_POLICIES}/encryptAll.xml ${DEST_POLICIES} && \
+    #cp ${ORIGIN_POLICIES}/signEncrypt.xml ${DEST_POLICIES} && \
+    #cp ${ORIGIN_POLICIES}/signOnly.xml ${DEST_POLICIES}
 }
 
 composeBuildWeblogicClusterImages() {
