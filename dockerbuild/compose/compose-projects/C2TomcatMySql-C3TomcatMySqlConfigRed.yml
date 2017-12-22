@@ -48,7 +48,7 @@ services:
      - DB_USER=edelivery
      - DB_PASS=edelivery
     volumes:
-      - ../domibus-configs/tomcat/domibus_red/domibus:/data/tomcat/conf/domibus
+      - ${VOLUME_RED}:/data/tomcat/conf/domibus
     command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 20s
     depends_on:
       - mysqlred
