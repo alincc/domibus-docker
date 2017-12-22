@@ -1,4 +1,4 @@
-= Policies configuration folder
+# Policies configuration folder
 
 Please add the PMode policy dependencies configuration in this mount.
 
