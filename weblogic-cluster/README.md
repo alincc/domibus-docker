@@ -1,12 +1,5 @@
 # Domibus Weblogic Cluster Test Environment on Docker
 
-## Overview
-
-This project consists of the following directories:
-
-* images 
-* compose
-
 ## Pre-Requisites 
 
 In order to proceed with the project setup perform the following:
@@ -22,33 +15,25 @@ useradd -d /home/domibus -m -s /bin/bash domibus
 ```
 usermod -a -G docker domibus
 ```
+* Define the following environment on host environment (via ~/.bashrc for example)
+```
+export USER_ID=$(id -u $USER)
+```
 
-### Build images
+### Download image external resources
 
-Download resources:
-
-* Download the following resources to RESOURCES_REPO/edelivery-weblogic-cluster/resources/:
+* Download the following resources to images/edelivery-weblogic-cluster/resources/:
 ```
    https://github.com/jwilder/dockerize/releases/download/v0.6.0/dockerize-linux-amd64-v0.6.0.tar.gz
    http://download.oracle.com/otn/nt/middleware/12c/wls/1213/fmw_12.1.3.0.0_wls.jar
    http://download.oracle.com/otn/java/jdk/8u144-b01/090f390dda5b47b9b721c7dfaa008135/jdk-8u144-linux-x64.tar.gz
 ```
-* Download the following resources to RESOURCES_REPO/oraclexe-domibus/resources/:
-```
-   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-sql-scripts.zip
-```
 * Download the following resources to RESOURCES_REPO/weblogic-cluster-domibus/resources/:
 ```
-   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip
-   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip
-   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip
-   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-sample-configuration-and-testing.zip
-   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-weblogic-configuration.zip
-   https://ec.europa.eu/cefdigital/artifact/service/local/repositories/eDelivery/content/eu/domibus/domibus-distribution/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-weblogic-war.zip
    https://ec.europa.eu/cefdigital/artifact/content/repositories/eDelivery/eu/europa/ec/digit/ipcis/wslt-api/1.9.1/wslt-api-1.9.1.zip
 ```
 
-Images resources repository structure:
+Image resources repository structure:
 ```
 images
 ├── edelivery-weblogic-cluster
@@ -70,10 +55,13 @@ images
         └── wslt-api-1.9.1.zip
 ```
 
+### Build images
+
 Build if the images were not built yet, please build all images:
 * oraclexe-domibus
 * edelivery-weblogic-cluster
 * weblogic-cluster-domibus
+* edelivery-httpd
 
 ```
 cd images
@@ -88,8 +76,7 @@ cd compose/test/
 docker-compose up -d && docker-compose logs -f
 ```
 Notes:
-- You'll need to adapt some build arguments and environment variables defined on docker-compose.yml in order to reflect your environment hostnames and ports;
-- You'll need to define the following on domibus user environment (via ~/.bashrc for example) before being able to use docker-compose: export USER_ID=$(id -u $USER)
+- 
 
 * Right after the first project startup you must delete Oracle DB initialization scripts as its container image will always execute any scripts that finds on startup:
 * See if the container logs show that the initialization scripts were executed (if they have you'l see output about db inserts, updates, etc):
