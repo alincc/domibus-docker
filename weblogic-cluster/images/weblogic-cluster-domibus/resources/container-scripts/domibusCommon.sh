@@ -21,7 +21,7 @@ updateWeblogicClusterProperties() {
     sed -i "s/^jdbc.datasource.1.driver.username=/jdbc.datasource.1.driver.username=domibus/g" ${WEBLOGIC_CLUSTER_PROPERTIES} && \
     sed -i "s/^jdbc.datasource.1.driver.password=/jdbc.datasource.1.driver.password=${DOMIBUS_PASSWORD}/g" ${WEBLOGIC_CLUSTER_PROPERTIES} && \
     sed -i "s/^persistent.filestore.0.target=.*/persistent.filestore.0.target=${CLUSTER_NAME}/g" ${WEBLOGIC_CLUSTER_PROPERTIES} && \
-    sed -i "s#^persistent.filestore.0.location=#persistent.filestore.0.location=${DOMAIN_HOME}/filestores/persistent_filestore#g" ${WEBLOGIC_CLUSTER_PROPERTIES}
+    sed -i "s#^persistent.filestore.0.location=#persistent.filestore.0.location=${DOMAIN_HOME}/persistent_filestore#g" ${WEBLOGIC_CLUSTER_PROPERTIES}
 }
 
 updateDomibusProperties() {
@@ -38,5 +38,5 @@ updateFSPluginProperties() {
     FSPLUGIN_PROPERTIES=${DOMAIN_HOME}/conf/domibus/plugins/config/fs-plugin.properties
 
     echo "Updating FS Plugin Properties: ${FSPLUGIN_PROPERTIES}"
-    sed -i "s#^fsplugin.messages.location=.*#fsplugin.messages.location=${DOMAIN_HOME}/filestores/fs_plugin_data#g" ${DOMAIN_HOME}/conf/domibus/plugins/config/fs-plugin.properties
+    sed -i "s#^fsplugin.messages.location=.*#fsplugin.messages.location=${DOMAIN_HOME}/fs_plugin_data/MAIN#g" ${DOMAIN_HOME}/conf/domibus/plugins/config/fs-plugin.properties
 }
