@@ -17,13 +17,13 @@ updatePModes() {
 }
 
 prepareDomibusCorner() {
-    THIS_PARTY_DOMIBUS_URL=$1
+    DOMIBUS_URL=$1
     PMODE_FILE_PATH=$2
 
     echo "Preparing Domibus for automated tests..."
 
     echo "Logging to Domibus to obtain cookies"
-    curl ${THIS_PARTY_DOMIBUS_URL}/rest/security/authentication \
+    curl ${DOMIBUS_URL}/rest/security/authentication \
         -i \
         -H "Content-Type: application/json" \
         -X POST -d '{"username":"admin","password":"123456"}' \
@@ -37,7 +37,7 @@ prepareDomibusCorner() {
 
     # Upload PMode
     echo "Uploading PMode file ${PMODE_FILE_PATH}..."
-    curl ${THIS_PARTY_DOMIBUS_URL}/rest/pmode -v \
+    curl ${DOMIBUS_URL}/rest/pmode -v \
         --cookie /tmp/domibus_cookie.txt \
         -H "X-XSRF-TOKEN: ${XSRF_TOKEN}" \
         -F file=@${PMODE_FILE_PATH} \
@@ -45,7 +45,7 @@ prepareDomibusCorner() {
 
     # Set Message Filter Plugin Order
     echo "Setting Message Filter Plugin Order..."
-    curl ${THIS_PARTY_DOMIBUS_URL}/rest/messagefilters -v \
+    curl ${DOMIBUS_URL}/rest/messagefilters -v \
         --cookie /tmp/domibus_cookie.txt \
         -H "X-XSRF-TOKEN: ${XSRF_TOKEN}" \
         -H 'Content-Type: application/json' \

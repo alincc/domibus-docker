@@ -34,7 +34,6 @@ services:
       - ADMIN_HOST=localhost
       - ADMIN_PASSWORD=changeMe!
       - DOMIBUS_PASSWORD=changeMe!
-      - THIS_PARTY_DOMIBUS_URL=http://${COMPOSE_PROJECT_NAME}_serverc2i1_1:7002/domibus-weblogic
       - DOMIBUS_VERSION
     image: weblogic-cluster-domibus:${DOMIBUS_VERSION}
     hostname: wlsadminc2
@@ -118,7 +117,6 @@ services:
       - ADMIN_HOST=localhost
       - ADMIN_PASSWORD=changeMe!
       - DOMIBUS_PASSWORD=changeMe!
-      - THIS_PARTY_DOMIBUS_URL=http://${COMPOSE_PROJECT_NAME}_serverc3i1_1:7002/domibus-weblogic
       - DOMIBUS_VERSION
     image: weblogic-cluster-domibus:${DOMIBUS_VERSION}
     hostname: wlsadminc3
@@ -135,7 +133,6 @@ services:
       - INSTANCE_NAME=c3i1
       - DB_HOST=oraclexec3
       - ADMIN_HOST=wlsadminc3
-      - THIS_PARTY_DOMIBUS_URL=http://${COMPOSE_PROJECT_NAME}_serverc3i1_1:7002/domibus-weblogic
     hostname: serverc3i1
     ports:
       - "7102:7002"
@@ -152,7 +149,6 @@ services:
       - INSTANCE_NAME=c3i2
       - DB_HOST=oraclexec3
       - ADMIN_HOST=wlsadminc3
-      - THIS_PARTY_DOMIBUS_URL=http://${COMPOSE_PROJECT_NAME}_serverc3i1_1:7002/domibus-weblogic
     hostname: serverc3i2
     ports:
       - "7103:7002"

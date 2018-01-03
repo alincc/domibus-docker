@@ -22,7 +22,6 @@ main() {
     importDomibusWeblogicClusterResources
     storeUserConfigFile
     deployDomibusWar
-    waitForDomibus
 
     tail -f ${DOMAIN_HOME}/servers/AdminServer/logs/AdminServer.log
 }
@@ -45,11 +44,6 @@ waitForDatabaseServer() {
 waitForClusterNodesRunning() {
     echo "Waiting for Cluster Nodes to become available..."
     wlst ~/wait-cluster-nodes-running.py
-}
-
-waitForDomibus() {
-    echo "Waiting for Domibus on ${THIS_PARTY_DOMIBUS_URL} to become available..."
-    dockerize -wait ${THIS_PARTY_DOMIBUS_URL} -timeout 120s
 }
 
 storeUserConfigFile() {

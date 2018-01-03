@@ -13,8 +13,7 @@ ARG DOMIBUS_VERSION
 #
 ENV DB_HOST=oraclexe \
     DB_PORT=1521 \
-    DOMIBUS_VERSION=${DOMIBUS_VERSION} \
-    THIS_PARTY_DOMIBUS_URL=http://wlcdomibusc2_weblogic_machine1_1:7002/domibus-weblogic
+    DOMIBUS_VERSION=${DOMIBUS_VERSION}
 
 #
 # Add required resources
