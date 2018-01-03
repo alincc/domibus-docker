@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source common.sh
+
 copyDomibusSoapUITestPModes() {
     echo "Copy domibus soap ui tests pmodes..."
     ORIGIN_PMODES=${BASE}/domibus/Domibus-MSH-soapui-tests/src/main/soapui
@@ -70,15 +72,41 @@ runTests() {
         -DredDbPassword="XXXXXX"
 }
 
+# Args:
+#   $1 - Domibus URL
+#   $2 - Retries
+function waitDomibusURL {
+    echo "Waiting for Domibus URL $1..."
+
+    NEXT_WAIT_TIME=0
+    until [ $(curl -s -o /dev/null -w "%{http_code}" $1/) -eq 200 ] || [ ${NEXT_WAIT_TIME} -eq $2 ]; do
+        echo "Domibus is not available... retrying in ${NEXT_WAIT_TIME} seconds..."
+        sleep $(( NEXT_WAIT_TIME++ ))
+    done
+}
+
 #
 # main
 #
 
-BASE=$(pwd)
+echo "Getting IP addresses of Containers"
+DB_IP_BLUE="`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' test_oraclexec2_1`"
+DB_IP_RED="`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' test_oraclexec3_1`"
+DOMIBUS_IP_BLUE="`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' test_httpdc2_1`"
+DOMIBUS_IP_RED="`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' test_httpdc3_1`"
 
-copyDomibusSoapUITestPModes
-updatePModes
-prepareDomibusCorner http://edelivery.domibus.eu/domibus-weblogic domibus-gw-sample-pmode-blue.xml
-prepareDomibusCorner http://edelivery.domibus.eu:8080/domibus-weblogic domibus-gw-sample-pmode-red.xml
+echo "DB_IP_BLUE=${DB_IP_BLUE}"
+echo "DB_IP_RED=${DB_IP_RED}"
+echo "DOMIBUS_IP_BLUE=${DOMIBUS_IP_BLUE}"
+echo "DOMIBUS_IP_RED=${DOMIBUS_IP_RED}"
+
+# Wait for Domibus C2 and C3
+waitDomibusURL http://${DOMIBUS_IP_BLUE}/domibus-weblogic/ 40
+waitDomibusURL http://${DOMIBUS_IP_RED}/domibus-weblogic/ 40
+
+#copyDomibusSoapUITestPModes
+#updatePModes
+#prepareDomibusCorner http://edelivery.domibus.eu/domibus-weblogic domibus-gw-sample-pmode-blue.xml
+#prepareDomibusCorner http://edelivery.domibus.eu:8080/domibus-weblogic domibus-gw-sample-pmode-red.xml
 
 #runTests
