@@ -1,0 +1,45 @@
+#
+# Docker compose project used to build docker images
+#
+# NOTE: Please verify the default environment vars override in .env file
+#
+# Usage:
+#   build all images:
+#     docker-compose -f docker-compose.build.yml build
+#   build specific image:
+#     docker-compose -f docker-compose.build.yml build [service-name]
+#
+version: '3'
+services:
+  oraclexe-domibus:
+    build:
+      context: ./oraclexe-domibus
+      args:
+        - ORACLE_SYS_PASSWORD=changeMe!
+        - DOMIBUS_PASSWORD=changeMe!
+        - DOMIBUS_VERSION
+        - DOMIBUS_SHORT_VERSION
+    image: oraclexe-domibus:${DOMIBUS_VERSION}
+  edelivery-httpd:
+    build:
+      context: ./edelivery-httpd
+    image: edelivery-httpd:2.4
+  edelivery-weblogic-cluster:
+    build:
+      context: edelivery-weblogic-cluster
+      args:
+        - USER_ID
+        - ADMIN_PASSWORD=changeMe!
+    image: edelivery-weblogic-cluster:12.1.3
+  weblogic-cluster-domibus:
+    depends_on:
+      - oraclexe-domibus
+      - edelivery-weblogic-cluster
+    build:
+      context: ./weblogic-cluster-domibus
+      args:
+        - USER_ID
+        - ADMIN_PASSWORD=changeMe!
+        - DOMIBUS_PASSWORD=changeMe!
+        - DOMIBUS_VERSION
+    image: weblogic-cluster-domibus:${DOMIBUS_VERSION}
