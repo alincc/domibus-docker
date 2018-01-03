@@ -20,8 +20,8 @@ services:
     expose:
       - "1521"
     # allow external access to oracle db via the host port 49161, at least during the development and test phases
-    ports:
-      - "49161:1521"
+    #ports:
+    #  - "49161:1521"
     restart: always
   # weblogic admin server
   # NOTE: wlst connect does not support underscores in server name
@@ -37,8 +37,8 @@ services:
       - DOMIBUS_VERSION
     image: weblogic-cluster-domibus:${DOMIBUS_VERSION}
     hostname: wlsadminc2
-    ports:
-      - "7001:7001"
+    #ports:
+    #  - "7001:7001"
     restart: always
   # weblogic cluster machines
   serverc2i1:
@@ -51,8 +51,8 @@ services:
       - DB_HOST=oraclexec2
       - ADMIN_HOST=wlsadminc2
     hostname: serverc2i1
-    ports:
-      - "7002:7002"
+    #ports:
+    #  - "7002:7002"
     volumes:
       - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
       - ./c2/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
@@ -67,8 +67,8 @@ services:
       - DB_HOST=oraclexec2
       - ADMIN_HOST=wlsadminc2
     hostname: serverc2i2
-    ports:
-      - "7003:7002"
+    #ports:
+    #  - "7003:7002"
     volumes:
       - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
       - ./c2/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
@@ -87,8 +87,8 @@ services:
         - CORNER_WL_NODE2_HOSTNAME=${COMPOSE_PROJECT_NAME}_serverc2i2_1
         - CORNER_WL_NODE2_PORT=7002
       hostname: httpdc2
-      ports:
-        - "80:80"
+      #ports:
+      #  - "80:80"
       restart: always
 
   #
@@ -103,8 +103,8 @@ services:
     expose:
       - "1521"
     # allow external access to oracle db via the host port 49161, at least during the development and test phases
-    ports:
-      - "49261:1521"
+    #ports:
+    #  - "49261:1521"
     restart: always
   # weblogic admin server
   # NOTE: wlst connect does not support underscores in server name
@@ -120,8 +120,8 @@ services:
       - DOMIBUS_VERSION
     image: weblogic-cluster-domibus:${DOMIBUS_VERSION}
     hostname: wlsadminc3
-    ports:
-      - "7101:7001"
+    #ports:
+    #  - "7101:7001"
     restart: always
   # weblogic cluster machines
   serverc3i1:
@@ -134,8 +134,8 @@ services:
       - DB_HOST=oraclexec3
       - ADMIN_HOST=wlsadminc3
     hostname: serverc3i1
-    ports:
-      - "7102:7002"
+    #ports:
+    #  - "7102:7002"
     volumes:
       - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
       - ./c3/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
@@ -150,8 +150,8 @@ services:
       - DB_HOST=oraclexec3
       - ADMIN_HOST=wlsadminc3
     hostname: serverc3i2
-    ports:
-      - "7103:7002"
+    #ports:
+    #  - "7103:7002"
     volumes:
       - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
       - ./c3/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
@@ -170,6 +170,6 @@ services:
       - CORNER_WL_NODE2_HOSTNAME=${COMPOSE_PROJECT_NAME}_serverc3i2_1
       - CORNER_WL_NODE2_PORT=7002
     hostname: httpdc2
-    ports:
-      - "8080:80"
+    #ports:
+    #  - "8080:80"
     restart: always
