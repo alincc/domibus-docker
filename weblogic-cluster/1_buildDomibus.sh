@@ -16,10 +16,9 @@ buildDomibus() {
 # main
 #
 
-DOMIBUS_BRANCH=development
-
 if [ ! -d "domibus" ]; then
-    cloneDomibus
+    source setEnvironment.sh && \
+    cloneDomibus && \
     buildDomibus
 else
     echo "Domibus was already built..."
