@@ -18,7 +18,7 @@ copyDomibusDistributionImageResources() {
     setDomibusVersion
 
     echo "Copy domibus distribution artifacts..."
-    local ORIGIN_DIST=domibus/Domibus-MSH-distribution/target
+    local ORIGIN_DIST=../domibus/Domibus-MSH-distribution/target
     # oraclexe-domibus/resources
     cp ${ORIGIN_DIST}/domibus-distribution-${DOMIBUS_VERSION}-sql-scripts.zip images/oraclexe-domibus/resources && \
     # weblogic-cluster-domibus/resources
