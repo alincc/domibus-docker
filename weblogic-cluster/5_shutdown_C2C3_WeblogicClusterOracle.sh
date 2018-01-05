@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
 
+source common.sh
+setDomibusVersion
+
 # Run test docker compose project
-docker-compose -f compose/test/docker-compose.yml down
+cd compose/test && docker-compose down

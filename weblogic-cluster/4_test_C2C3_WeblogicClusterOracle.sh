@@ -76,7 +76,7 @@ runTests() {
 #   $1 - Domibus URL
 #   $2 - Retries
 function waitDomibusURL {
-    echo "Waiting for Domibus URL $1..."
+    echo "Waiting for Domibus URL $1"
 
     NEXT_WAIT_TIME=0
     until [ $(curl -s -o /dev/null -w "%{http_code}" $1/) -eq 200 ] || [ ${NEXT_WAIT_TIME} -eq $2 ]; do
