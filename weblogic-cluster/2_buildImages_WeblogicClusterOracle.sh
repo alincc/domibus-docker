@@ -4,7 +4,7 @@ source common.sh
 source setEnvironment.sh
 
 copyExternalImageResources() {
-    echo "Copy images external resources..."
+    echo "Copy external image resources..."
 
     # images/edelivery-weblogic-cluster/resources
     cp ${REPO}/fmw_12.1.3.0.0_wls.jar images/edelivery-weblogic-cluster/resources && \
