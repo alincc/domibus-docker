@@ -4,14 +4,14 @@ source common.sh
 
 copyDomibusSoapUITestPModes() {
     echo "Copy domibus soap ui tests pmodes..."
-    ORIGIN_PMODES=${BASE}/domibus/Domibus-MSH-soapui-tests/src/main/soapui
-    cp ${ORIGIN_PMODES}/domibus-gw-sample-pmode-blue.xml ${BASE} && \
-    cp ${ORIGIN_PMODES}/domibus-gw-sample-pmode-red.xml ${BASE}
+    local ORIGIN_PMODES=../domibus/Domibus-MSH-soapui-tests/src/main/soapui
+    cp ${ORIGIN_PMODES}/domibus-gw-sample-pmode-blue.xml . && \
+    cp ${ORIGIN_PMODES}/domibus-gw-sample-pmode-red.xml .
 }
 
 updatePModes() {
     # TODO inspect docker network info
-    for FILE in ${BASE}/domibus-gw-sample-pmode-*.xml; do
+    for FILE in domibus-gw-sample-pmode-*.xml; do
         echo "Processing ${FILE} file.."
         sed -i "s/http:\/\/localhost:8080\/domibus\/services\/msh/http:\/\/localhost\/domibus-weblogic\/services\/msh/g" ${FILE}
         sed -i "s/http:\/\/localhost:8180\/domibus\/services\/msh/http:\/\/localhost:8080\/domibus-weblogic\/services\/msh/g" ${FILE}
@@ -19,8 +19,8 @@ updatePModes() {
 }
 
 prepareDomibusCorner() {
-    DOMIBUS_URL=$1
-    PMODE_FILE_PATH=$2
+    local DOMIBUS_URL=$1
+    local PMODE_FILE_PATH=$2
 
     echo "Preparing Domibus for automated tests..."
 
@@ -104,9 +104,9 @@ echo "DOMIBUS_IP_RED=${DOMIBUS_IP_RED}"
 waitDomibusURL http://${DOMIBUS_IP_BLUE}/domibus-weblogic/ 40
 waitDomibusURL http://${DOMIBUS_IP_RED}/domibus-weblogic/ 40
 
-#copyDomibusSoapUITestPModes
-#updatePModes
-#prepareDomibusCorner http://edelivery.domibus.eu/domibus-weblogic domibus-gw-sample-pmode-blue.xml
-#prepareDomibusCorner http://edelivery.domibus.eu:8080/domibus-weblogic domibus-gw-sample-pmode-red.xml
+copyDomibusSoapUITestPModes
+updatePModes
+prepareDomibusCorner http://$DOMIBUS_IP_BLUE/domibus-weblogic domibus-gw-sample-pmode-blue.xml
+prepareDomibusCorner http://$DOMIBUS_IP_RED/domibus-weblogic domibus-gw-sample-pmode-red.xml
 
 #runTests
