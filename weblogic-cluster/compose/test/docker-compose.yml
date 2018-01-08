@@ -80,8 +80,6 @@ services:
       image: edelivery-httpd:2.4
       environment:
         - VHOST_CORNER_HOSTNAME=edelivery.domibus.eu
-        # Cookie domain
-        - VHOST_CORNER_DOMAIN=domibus.eu
         - CORNER_WL_NODE1_HOSTNAME=${COMPOSE_PROJECT_NAME}_serverc2i1_1
         - CORNER_WL_NODE1_PORT=7002
         - CORNER_WL_NODE2_HOSTNAME=${COMPOSE_PROJECT_NAME}_serverc2i2_1
@@ -163,8 +161,6 @@ services:
     image: edelivery-httpd:2.4
     environment:
       - VHOST_CORNER_HOSTNAME=edelivery.domibus.eu
-      # Cookie domain
-      - VHOST_CORNER_DOMAIN=domibus.eu
       - CORNER_WL_NODE1_HOSTNAME=${COMPOSE_PROJECT_NAME}_serverc3i1_1
       - CORNER_WL_NODE1_PORT=7002
       - CORNER_WL_NODE2_HOSTNAME=${COMPOSE_PROJECT_NAME}_serverc3i2_1
