@@ -58,18 +58,18 @@ prepareDomibusCorner() {
 runTests() {
     cd ../domibus/Domibus-MSH-soapui-tests/
     mvn com.smartbear.soapui:soapui-pro-maven-plugin:5.1.2:test \
-        -DlocalUrl="http://${DOMIBUS_IP_BLUE}/domibus-weblogic" \
-        -DremoteUrl="http://${DOMIBUS_IP_RED}/domibus-weblogic" \
-        -DjdbcUrlBlue="jdbc:oracle:thin:@${DB_IP_BLUE}:1521/XE" \
-        -DjdbcUrlRed="jdbc:oracle:thin:@${DB_IP_RED}:1521/XE" \
-        -DdriverBlue="oracle.jdbc.OracleDriver" \
-        -DdriverRed="oracle.jdbc.OracleDriver" \
-        -DdatabaseBlue="oracle" \
-        -DdatabaseRed="oracle" \
-        -DblueDbUser="domibus" \
-        -DredDbUser="domibus" \
-        -DblueDbPassword="changeMe!" \
-        -DredDbPassword="changeMe!"
+        -DlocalUrl="localUrl=http://${DOMIBUS_IP_BLUE}/domibus-weblogic" \
+        -DremoteUrl="remoteUrl=http://${DOMIBUS_IP_RED}/domibus-weblogic" \
+        -DjdbcUrlBlue="jdbcUrlBlue=jdbc:oracle:thin:@${DB_IP_BLUE}:1521/XE" \
+        -DjdbcUrlRed="jdbcUrlRed=jdbc:oracle:thin:@${DB_IP_RED}:1521/XE" \
+        -DdriverBlue="driverBlue=oracle.jdbc.OracleDriver" \
+        -DdriverRed="driverRed=oracle.jdbc.OracleDriver" \
+        -DdatabaseBlue="databaseBlue=oracle" \
+        -DdatabaseRed="databaseRed=oracle" \
+        -DblueDbUser="blueDbUser=domibus" \
+        -DredDbUser="redDbUser=domibus" \
+        -DblueDbPassword="blueDbPassword=changeMe!" \
+        -DredDbPassword="redDbPassword=changeMe!"
 }
 
 # Args:
