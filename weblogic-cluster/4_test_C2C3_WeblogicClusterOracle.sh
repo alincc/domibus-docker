@@ -10,11 +10,10 @@ copyDomibusSoapUITestPModes() {
 }
 
 updatePModes() {
-    # TODO inspect docker network info
     for FILE in domibus-gw-sample-pmode-*.xml; do
         echo "Processing ${FILE} file.."
-        sed -i "s/http:\/\/localhost:8080\/domibus\/services\/msh/http:\/\/localhost\/domibus-weblogic\/services\/msh/g" ${FILE}
-        sed -i "s/http:\/\/localhost:8180\/domibus\/services\/msh/http:\/\/localhost:8080\/domibus-weblogic\/services\/msh/g" ${FILE}
+        sed -i "s/http:\/\/localhost:8080\/domibus\/services\/msh/http:\/\/${DOMIBUS_IP_BLUE}\/domibus-weblogic\/services\/msh/g" ${FILE}
+        sed -i "s/http:\/\/localhost:8180\/domibus\/services\/msh/http:\/\/${DOMIBUS_IP_RED}\/domibus-weblogic\/services\/msh/g" ${FILE}
     done
 }
 
