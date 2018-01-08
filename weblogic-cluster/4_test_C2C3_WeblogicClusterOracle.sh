@@ -112,15 +112,15 @@ echo "DB_IP_RED=${DB_IP_RED}"
 echo "DOMIBUS_IP_BLUE=${DOMIBUS_IP_BLUE}"
 echo "DOMIBUS_IP_RED=${DOMIBUS_IP_RED}"
 
+copySoapUITestsDependencies
+copySoapUITestsPolicies
+copySoapUITestsPModes
+updatePModes
+
 # Wait for Domibus C2 and C3
 waitDomibusURL http://${DOMIBUS_IP_BLUE}/domibus-weblogic/ 40
 waitDomibusURL http://${DOMIBUS_IP_RED}/domibus-weblogic/ 40
 
-copySoapUITestsDependencies
-copySoapUITestsPolicies
-copySoapUITestsPModes
-
-updatePModes
 prepareDomibusCorner http://$DOMIBUS_IP_BLUE/domibus-weblogic domibus-gw-sample-pmode-blue.xml
 prepareDomibusCorner http://$DOMIBUS_IP_RED/domibus-weblogic domibus-gw-sample-pmode-red.xml
 
