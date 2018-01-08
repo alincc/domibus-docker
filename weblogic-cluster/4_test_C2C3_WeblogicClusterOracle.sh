@@ -5,7 +5,7 @@ source setEnvironment.sh
 
 copySoapUITestsDependencies() {
     echo "Copy Soap UI Tests Dependencies..."
-    cp -v ${REPO}/Oracle/jdbc/ojdbc7.jar ../domibus/Domibus-MSH-soapui-tests/src/main/soapui/lib
+    cp -v ${REPO}/jdbcdrivers/ojdbc7.jar ../domibus/Domibus-MSH-soapui-tests/src/main/soapui/lib
 }
 
 copySoapUITestsPModes() {
