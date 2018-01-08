@@ -1,12 +1,24 @@
 #!/usr/bin/env bash
 
 source common.sh
+source setEnvironment.sh
 
-copyDomibusSoapUITestPModes() {
-    echo "Copy domibus soap ui tests pmodes..."
+copySoapUITestsDependencies() {
+    echo "Copy Soap UI Tests Dependencies..."
+    cp -v ${REPO}/Oracle/jdbc/ojdbc7.jar ../domibus/Domibus-MSH-soapui-tests/src/main/soapui/lib
+}
+
+copySoapUITestsPModes() {
+    echo "Copy Soap UI Tests PModes..."
     local ORIGIN_PMODES=../domibus/Domibus-MSH-soapui-tests/src/main/soapui
-    cp ${ORIGIN_PMODES}/domibus-gw-sample-pmode-blue.xml . && \
-    cp ${ORIGIN_PMODES}/domibus-gw-sample-pmode-red.xml .
+    cp -v ${ORIGIN_PMODES}/domibus-gw-sample-pmode-blue.xml . && \
+    cp -v ${ORIGIN_PMODES}/domibus-gw-sample-pmode-red.xml .
+}
+
+copySoapUITestsPolicies() {
+    echo "Copy Soap UI Tests Policies..."
+    local ORIGIN_POLICIES=../domibus/Domibus-MSH/src/main/conf/domibus/policies
+    cp -v ${ORIGIN_POLICIES}/*.xml compose/test/common/conf/domibus/policies
 }
 
 updatePModes() {
@@ -104,7 +116,10 @@ echo "DOMIBUS_IP_RED=${DOMIBUS_IP_RED}"
 waitDomibusURL http://${DOMIBUS_IP_BLUE}/domibus-weblogic/ 40
 waitDomibusURL http://${DOMIBUS_IP_RED}/domibus-weblogic/ 40
 
-copyDomibusSoapUITestPModes
+copySoapUITestsDependencies
+copySoapUITestsPolicies
+copySoapUITestsPModes
+
 updatePModes
 prepareDomibusCorner http://$DOMIBUS_IP_BLUE/domibus-weblogic domibus-gw-sample-pmode-blue.xml
 prepareDomibusCorner http://$DOMIBUS_IP_RED/domibus-weblogic domibus-gw-sample-pmode-red.xml
