@@ -47,6 +47,7 @@ services:
       - DB_PORT=3306
       - DB_USER=edelivery
       - DB_PASS=edelivery
+      - CERT_ALIAS=red_gw
     volumes:
       - ../domibus-configs/wildfly/domibus_red/domibus:/data/wildfly/conf/domibus
     command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 20s

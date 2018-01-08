@@ -52,6 +52,10 @@ echo "   DB_PASS                 : ${DB_PASS}"
       domStartupParams="${domStartupParams} -Ddomibus.datasource.password=${DB_PASS}"
    fi
 
+   if [ ! "${CERT_ALIAS}" == "" ] ; then
+      domStartupParams="${domStartupParams} -Ddomibus.security.key.private.alias=${CERT_ALIAS}"
+   fi
+
    if [ ! "${DB_TYPE}" == "" ] ; then
       case "${DB_TYPE}" in
          "MySQL")
