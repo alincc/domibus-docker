@@ -56,19 +56,20 @@ prepareDomibusCorner() {
 }
 
 runTests() {
+    cd ../domibus/Domibus-MSH-soapui-tests/
     mvn com.smartbear.soapui:soapui-pro-maven-plugin:5.1.2:test \
-        -DlocalUrl="http://localhost/domibus-weblogic" \
-        -DremoteUrl="http://localhost:8080/domibus-weblogic" \
-        -DjdbcUrlBlue="jdbc:oracle:thin:@127.0.0.1:49161/XE" \
-        -DjdbcUrlRed="jdbc:oracle:thin:@127.0.0.1:49261/XE" \
+        -DlocalUrl="http://${DOMIBUS_IP_BLUE}/domibus-weblogic" \
+        -DremoteUrl="http://${DOMIBUS_IP_RED}/domibus-weblogic" \
+        -DjdbcUrlBlue="jdbc:oracle:thin:@${DB_IP_BLUE}:1521/XE" \
+        -DjdbcUrlRed="jdbc:oracle:thin:@${DB_IP_RED}:1521/XE" \
         -DdriverBlue="oracle.jdbc.OracleDriver" \
         -DdriverRed="oracle.jdbc.OracleDriver" \
         -DdatabaseBlue="oracle" \
         -DdatabaseRed="oracle" \
         -DblueDbUser="domibus" \
         -DredDbUser="domibus" \
-        -DblueDbPassword="XXXXXX" \
-        -DredDbPassword="XXXXXX"
+        -DblueDbPassword="changeMe!" \
+        -DredDbPassword="changeMe!"
 }
 
 # Args:
@@ -108,4 +109,4 @@ updatePModes
 prepareDomibusCorner http://$DOMIBUS_IP_BLUE/domibus-weblogic domibus-gw-sample-pmode-blue.xml
 prepareDomibusCorner http://$DOMIBUS_IP_RED/domibus-weblogic domibus-gw-sample-pmode-red.xml
 
-#runTests
+runTests
