@@ -11,10 +11,10 @@
 #   https://docs.oracle.com/middleware/1213/wls/WLSTC/reference.htm
 # =============================
 
-source domibusCommon.sh
+source domibusConfigurationOverride.sh
 
 main() {
-    updateWeblogicClusterProperties
+    overrideWeblogicClusterProperties
     startAdminServer
     waitForDatabaseServer
     waitForAdminServer

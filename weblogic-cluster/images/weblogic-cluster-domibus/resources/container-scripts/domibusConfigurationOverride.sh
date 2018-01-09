@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-updateWeblogicClusterProperties() {
+overrideWeblogicClusterProperties() {
     local FILE=${ORACLE_HOME}/wslt-api-1.9.1/WeblogicCluster.properties
     echo "Overriding Weblogic Cluster Default Properties: ${FILE}"
 
@@ -10,7 +10,7 @@ updateWeblogicClusterProperties() {
     diff ${FILE} "${FILE}.orig"
 }
 
-updateDomibusProperties() {
+overrideDomibusProperties() {
     local FILE=${DOMAIN_HOME}/conf/domibus/domibus.properties
     echo "Overriding Domibus Properties: ${FILE}"
 
@@ -20,7 +20,7 @@ updateDomibusProperties() {
     diff ${FILE} "${FILE}.orig"
 }
 
-updateFSPluginProperties() {
+overrideFSPluginProperties() {
     local FILE=${DOMAIN_HOME}/conf/domibus/plugins/config/fs-plugin.properties
     echo "Overriding FS Plugin Properties: ${FILE}"
 
