@@ -19,7 +19,6 @@ services:
       - ORACLE_ALLOW_REMOTE=true
     expose:
       - "1521"
-    # allow external access to oracle db via the host port 49161, at least during the development and test phases
     #ports:
     #  - "49161:1521"
     restart: always
@@ -37,6 +36,8 @@ services:
       - DOMIBUS_VERSION
     image: weblogic-cluster-domibus:${DOMIBUS_VERSION}
     hostname: wlsadminc2
+    volumes:
+      - ./common/conf-override:/u01/oracle/conf-override
     #ports:
     #  - "7001:7001"
     restart: always
@@ -55,6 +56,7 @@ services:
     #ports:
     #  - "7002:7002"
     volumes:
+      - ./common/conf-override:/u01/oracle/conf-override
       - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
       - ./c2/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
     restart: always
@@ -72,6 +74,7 @@ services:
     #ports:
     #  - "7003:7002"
     volumes:
+      - ./common/conf-override:/u01/oracle/conf-override
       - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
       - ./c2/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
     restart: always
@@ -102,7 +105,6 @@ services:
       - ORACLE_ALLOW_REMOTE=true
     expose:
       - "1521"
-    # allow external access to oracle db via the host port 49161, at least during the development and test phases
     #ports:
     #  - "49261:1521"
     restart: always
@@ -120,6 +122,8 @@ services:
       - DOMIBUS_VERSION
     image: weblogic-cluster-domibus:${DOMIBUS_VERSION}
     hostname: wlsadminc3
+    volumes:
+      - ./common/conf-override:/u01/oracle/conf-override
     #ports:
     #  - "7101:7001"
     restart: always
@@ -138,6 +142,7 @@ services:
     #ports:
     #  - "7102:7002"
     volumes:
+      - ./common/conf-override:/u01/oracle/conf-override
       - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
       - ./c3/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
     restart: always
@@ -155,6 +160,7 @@ services:
     #ports:
     #  - "7103:7002"
     volumes:
+      - ./common/conf-override:/u01/oracle/conf-override
       - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
       - ./c3/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
     restart: always
