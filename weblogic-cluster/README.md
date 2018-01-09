@@ -85,7 +85,7 @@ Run Soap UI integration tests for C2 and C3.
 Shutdown and remove docker compose containers for C2 and C3.
 
 ```
-4_test_C2C3_WeblogicClusterOracle.sh
+5_shutdown_C2C3_WeblogicClusterOracle.sh
 ```
 
 ## Cleanup
