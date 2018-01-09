@@ -1,7 +1,7 @@
 #
 # Docker compose project used to build docker images
 #
-# NOTE: Please verify the default environment vars override in .env file
+# NOTE: Please set required environment variables executing (setEnvironment.sh)
 #
 # Usage:
 #   build all images:

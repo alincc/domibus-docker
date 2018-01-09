@@ -1,7 +1,7 @@
 #
 # Docker compose project used to run test environment
 #
-# NOTE: Please verify the default environment vars override in .env file
+# NOTE: Please set required environment variables executing (setEnvironment.sh)
 #
 # Usage:
 #     docker-compose up -d

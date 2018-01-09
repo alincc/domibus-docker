@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+#
+# Clone and build Domibus repo
+#
 
 cloneDomibus() {
     echo "Clone domibus $1 branch..."

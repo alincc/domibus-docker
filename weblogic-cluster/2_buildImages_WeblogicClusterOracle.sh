@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
+#
+# Build Docker Images for Weblogic Cluster Domibus:
+#   * Copy external image resource dependencies from REPO
+#   * Copy domibus distribution required artigacts
+#   * Build Weblogic Cluster Domibus docker images using docker-compose configuration
+#
+# For more information see images/docker-compose.build.yml.
+#
 
 source common.sh
 source setEnvironment.sh

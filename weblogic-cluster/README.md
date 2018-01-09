@@ -1,17 +1,35 @@
 # Domibus Weblogic Cluster Test Environment on Docker
 
+## Overview
+
+This project allows the build of the required docker images in order to launch and execute the existing Domibus integration tests. The project structure contains the following folders:
+* __images__: contains the resources to build the required docker images
+* __compose__: contains the test environment configuration
+
+Several scripts are available in order to sequentially build and run the integration tests as described in the following chapters.
+
 ## Pre-Requisites 
 
 In order to proceed with the project setup perform the following:
 
-### Prepare host
+### Check docker configuration
+
+Please check that docker and docker compose tools are available on the host machine:
+```
+docker --version
+```
+Check at least: "Docker version 17.12.0-ce, build c97c6d6"
+```
+docker-compose --version
+```
+Check at least: "docker-compose version 1.16.1, build 6d1ac21"
 
 As the project uses Docker containers and we don't want our user to be a sudoer but want him to be able to issue Docker commands, we'll add him to the docker system group, which grants permissions on docker daemon:
 ```
 usermod -a -G docker domibus
 ```
 
-### Download image external resources
+### Download external image resources
 
 Download the following external resources into $REPO:
 ```
@@ -49,7 +67,7 @@ Procedure:
 Build Domibus artifacts. 
 
 ```
-1_build_Domibus.sh
+./1_build_Domibus.sh
 ```
 
 ## Build Docker Images
@@ -61,7 +79,7 @@ Build docker images containing Domibus distribution.
 * edelivery-httpd
 
 ```
-2_buildImages_WeblogicClusterOracle.sh
+./2_buildImages_WeblogicClusterOracle.sh
 ```
 
 ## Startup containers
@@ -69,7 +87,7 @@ Build docker images containing Domibus distribution.
 Startup docker compose containers for C2 and C3 running Weblogic Cluster with Oracle Database.
 
 ```
-3_startup_C2C3_WeblogicClusterOracle.sh
+./3_startup_C2C3_WeblogicClusterOracle.sh
 ```
 
 ## Run Integration Tests
@@ -77,7 +95,7 @@ Startup docker compose containers for C2 and C3 running Weblogic Cluster with Or
 Run Soap UI integration tests for C2 and C3.
 
 ```
-4_test_C2C3_WeblogicClusterOracle.sh
+./4_test_C2C3_WeblogicClusterOracle.sh
 ```
 
 ## Shutdown
@@ -85,7 +103,7 @@ Run Soap UI integration tests for C2 and C3.
 Shutdown and remove docker compose containers for C2 and C3.
 
 ```
-5_shutdown_C2C3_WeblogicClusterOracle.sh
+./5_shutdown_C2C3_WeblogicClusterOracle.sh
 ```
 
 ## Cleanup
@@ -93,5 +111,5 @@ Shutdown and remove docker compose containers for C2 and C3.
 Prune docker system.
 
 ```
-6_cleanup_C2C3_WeblogicClusterOracle.sh
+./6_cleanup_C2C3_WeblogicClusterOracle.sh
 ```

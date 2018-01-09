@@ -1,4 +1,15 @@
 #!/usr/bin/env bash
+#
+# Run integration tests for C2 and C3.
+#   * Inspect docker container IP addresses
+#   * Copy SoapUI Tests Dependencies (Database driver)
+#   * Copy SoapUI Tests Policies (required for the PMode)
+#   * Copy SoapUI Tests PModes
+#   * Update PModes configuration
+#   * Wait fot Domibus C2 and C3
+#   * Prepare Domibus C2 and C3 for testing (upload pmodes and define plugin order)
+#   * Execute Integration Tests
+#
 
 source common.sh
 source setEnvironment.sh
