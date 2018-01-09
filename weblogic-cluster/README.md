@@ -49,7 +49,7 @@ Procedure:
 Build Domibus artifacts. 
 
 ```
-1_buildDomibus.sh
+1_build_Domibus.sh
 ```
 
 ## Build Docker Images
