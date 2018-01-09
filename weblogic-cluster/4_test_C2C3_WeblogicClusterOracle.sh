@@ -118,8 +118,10 @@ copySoapUITestsPModes
 updatePModes
 
 # Wait for Domibus C2 and C3
-waitDomibusURL http://${DOMIBUS_IP_BLUE}/domibus-weblogic/ 40
-waitDomibusURL http://${DOMIBUS_IP_RED}/domibus-weblogic/ 40
+echo "Waiting for Domibus Cluster startup... (sleeping $1)"
+sleep $1
+waitDomibusURL http://${DOMIBUS_IP_BLUE}/domibus-weblogic/ 15
+waitDomibusURL http://${DOMIBUS_IP_RED}/domibus-weblogic/ 15
 
 prepareDomibusCorner http://$DOMIBUS_IP_BLUE/domibus-weblogic domibus-gw-sample-pmode-blue.xml
 prepareDomibusCorner http://$DOMIBUS_IP_RED/domibus-weblogic domibus-gw-sample-pmode-red.xml
