@@ -25,11 +25,12 @@ With the following structure:
 $REPO
 ├── dockerize-linux-amd64-v0.6.0.tar.gz
 ├── fmw_12.1.3.0.0_wls.jar
+├── jdbcdrivers
+│   └── ojdbc7.jar
 ├── Oracle
 │   ├── Java
-│   │   ├── jdk-8u144-linux-x64.tar.gz
+│   │   └── jdk-8u144-linux-x64.tar.gz
 │   └── wslt-api-1.9.1.zip
-
 ```
 __wslt-api fix__
 
@@ -43,23 +44,54 @@ Procedure:
 * Modify line 244 changing "wlst.startEdit()" to "wlst.startEdit(waitTimeInMillis=60000)"
 * Repackage wslt-api-1.9.1.zip according to the original
 
-## Build images
+## Build Domibus
 
-Build if the images were not built yet, please build all images:
+Build Domibus artifacts. 
+
+```
+1_buildDomibus.sh
+```
+
+## Build Docker Images
+
+Build docker images containing Domibus distribution.
 * oraclexe-domibus
 * edelivery-weblogic-cluster
 * weblogic-cluster-domibus
 * edelivery-httpd
 
 ```
-cd images
-docker-compose -f docker-compose.build.yml build
+2_buildImages_WeblogicClusterOracle.sh
 ```
 
-## Run Test Corner2 and Corner3
+## Startup containers
 
-Initialize the correspondent Docker Compose project:
+Startup docker compose containers for C2 and C3 running Weblogic Cluster with Oracle Database.
+
 ```
-cd compose/test/
-docker-compose up -d && docker-compose logs -f
+3_startup_C2C3_WeblogicClusterOracle.sh
+```
+
+## Run Integration Tests
+
+Run Soap UI integration tests for C2 and C3.
+
+```
+4_test_C2C3_WeblogicClusterOracle.sh
+```
+
+## Shutdown
+
+Shutdown and remove docker compose containers for C2 and C3.
+
+```
+4_test_C2C3_WeblogicClusterOracle.sh
+```
+
+## Cleanup
+
+Prune docker system.
+
+```
+6_cleanup_C2C3_WeblogicClusterOracle.sh
 ```
