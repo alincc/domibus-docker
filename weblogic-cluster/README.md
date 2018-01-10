@@ -142,7 +142,7 @@ DOMIBUS_BRANCH=development
 
 __images/docker-compose.build.yml__
 
-This is the compose file used to build the test environment docker images.
+This is the compose file used to build domibus docker images.
 
 ```
 # Configuration:
