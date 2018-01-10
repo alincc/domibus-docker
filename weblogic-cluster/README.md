@@ -160,7 +160,7 @@ This is the compose file used to build the test environment docker images.
 #   ADMIN_PASSWORD        - Weblogic admin console password
 ```
 
-__images/docker-compose.build.yml__
+__compose/test/docker-compose.yml__
 
 This is the compose file used to startup the test environment.
 
