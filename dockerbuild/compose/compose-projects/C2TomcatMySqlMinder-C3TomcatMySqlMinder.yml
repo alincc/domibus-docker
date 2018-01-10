@@ -33,7 +33,7 @@ services:
        - DB_PORT=3306
        - DB_USER=edelivery
        - DB_PASS=edelivery
-       - CERT_ALIAS=domibus_c2
+       - CERT_ALIAS=domibus-c2
        - KEYSTORE_PASSWD=123456
        - PRIVATE_PASSWD=123456
        - TRUSTSTORE_PASSWD=123456
@@ -53,7 +53,7 @@ services:
      - DB_PORT=3306
      - DB_USER=edelivery
      - DB_PASS=edelivery
-     - CERT_ALIAS=domibus_c3
+     - CERT_ALIAS=domibus-c3
      - KEYSTORE_PASSWD=123456
      - PRIVATE_PASSWD=123456
      - TRUSTSTORE_PASSWD=123456
