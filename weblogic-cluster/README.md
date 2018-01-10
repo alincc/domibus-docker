@@ -62,7 +62,11 @@ Procedure:
 * Modify line 244 changing "wlst.startEdit()" to "wlst.startEdit(waitTimeInMillis=60000)"
 * Repackage wslt-api-1.9.1.zip according to the original
 
-## Build Domibus
+## Usage
+
+In order to startup Domibus Weblogic Cluster corner 2 and corner 3 and execute the integration tests please execute the following steps. After test execution please shutdown and cleanup the environment.
+
+### Build Domibus
 
 Build Domibus artifacts. 
 
@@ -70,7 +74,7 @@ Build Domibus artifacts.
 ./1_build_Domibus.sh
 ```
 
-## Build Docker Images
+### Build Docker Images
 
 Build docker images containing Domibus distribution.
 * oraclexe-domibus
@@ -82,7 +86,7 @@ Build docker images containing Domibus distribution.
 ./2_buildImages_WeblogicClusterOracle.sh
 ```
 
-## Startup containers
+### Startup containers
 
 Startup docker compose containers for C2 and C3 running Weblogic Cluster with Oracle Database.
 
@@ -90,7 +94,7 @@ Startup docker compose containers for C2 and C3 running Weblogic Cluster with Or
 ./3_startup_C2C3_WeblogicClusterOracle.sh
 ```
 
-## Run Integration Tests
+### Run Integration Tests
 
 Run Soap UI integration tests for C2 and C3.
 
@@ -98,7 +102,7 @@ Run Soap UI integration tests for C2 and C3.
 ./4_test_C2C3_WeblogicClusterOracle.sh
 ```
 
-## Shutdown
+### Shutdown
 
 Shutdown and remove docker compose containers for C2 and C3.
 
@@ -106,10 +110,100 @@ Shutdown and remove docker compose containers for C2 and C3.
 ./5_shutdown_C2C3_WeblogicClusterOracle.sh
 ```
 
-## Cleanup
+### Cleanup
 
 Prune docker system.
 
 ```
 ./6_cleanup_C2C3_WeblogicClusterOracle.sh
+```
+
+## Configuration Extension
+
+The default configuration can be changed or extended in the following hooks.
+
+__setEnvironment.sh__
+
+```
+# Please set the following variables on your environment
+# export DOMIBUS_DOCKER_LOCAL_ENV=true
+#
+# Image external resources path, e.g.:
+# export REPO=/datadrive/repo
+```
+    
+__1_build_Domibus.sh__
+
+```
+# Select the Domibus repository branch to build
+# e.g.: DOMIBUS_BRANCH=development
+DOMIBUS_BRANCH=development
+```
+
+__images/docker-compose.build.yml__
+
+This is the compose file used to build the test environment docker images.
+
+```
+# Configuration:
+#
+#   oraclexe-domibus:
+#   ORACLE_SYS_PASSWORD   - Oracle password for SYS and SYSTEM users
+#   DOMIBUS_PASSWORD      - Oracle password for domibus user
+#   DOMIBUS_VERSION       - Domibus project version. (Define this value as an environment variable, e.g.: 4.0-SNAPSHOT)
+#   DOMIBUS_SHORT_VERSION - Domibus project short version
+#                           (Removing -SNAPSHOT suffix. Define this value as an environment variable, e.g.: 4.0)
+#
+#   edelivery-weblogic-cluster
+#   USER_ID               - The host user id
+#                           (Define this value as an environment variable, e.g.: export USER_ID=$(id -u $USER))
+#   ADMIN_PASSWORD        - Weblogic admin console password
+```
+
+__images/docker-compose.build.yml__
+
+This is the compose file used to startup the test environment.
+
+```
+# Configuration:
+#   This file represents the architecture of the Domibus Weblogic Cluster test environment containing both C2 and C3
+#   weblogic cluster instances:
+#
+#   Corner 2 (C2)
+#     - oraclexec2: Oracle XE Database with Domibus schema
+#     - wlsadminc2: Weblogic Admin Server
+#     - serverc2i1: Weblogic Managed Server (with domibus.war deployed)
+#     - serverc2i2: Weblogic Managed Server (with domibus.war deployed)
+#     - httpdc2:    Apache HTTPD Load Balancer
+#
+#   Corner 2 (C3)
+#     - oraclexec3: Oracle XE Database with Domibus schema
+#     - wlsadminc3: Weblogic Admin Server
+#     - serverc3i1: Weblogic Managed Server (with domibus.war deployed)
+#     - serverc3i2: Weblogic Managed Server (with domibus.war deployed)
+#     - httpdc3:    Apache HTTPD Load Balancer
+#
+#   Corner configuration variables:
+#     oraclexecX:
+#     ORACLE_ALLOW_REMOTE - Allow the database to be connected remotely
+#
+#     wlsadmincX:
+#     DB_HOST           - Database host name
+#     ADMIN_HOST        - Admin server host name
+#     ADMIN_PASSWORD    - Admin server password
+#     DOMIBUS_PASSWORD  - Oracle password for domibus user
+#     DOMIBUS_VERSION   - Domibus project version. (Define this value as an environment variable, e.g.: 4.0-SNAPSHOT)
+#
+#     servercXiN:
+#     INSTANCE_NAME   - Server instance name, e.g.: c2i1
+#     DB_HOST         - Database host name
+#     ADMIN_HOST      - Admin server host name
+#     PARTY_NAME      - Party name to be used used in domibus configuration, e.g.: blue_gw
+#
+#     httpdcX:
+#     VHOST_CORNER_HOSTNAME     - domibus corner host name
+#     CORNER_WL_NODE1_HOSTNAME  - managed server instance 1 host name, e.g.: ${COMPOSE_PROJECT_NAME}_serverc2i1_1
+#     CORNER_WL_NODE1_PORT      - managed server instance 1 port
+#     CORNER_WL_NODE2_HOSTNAME  - managed server instance 2 host name, e.g.: ${COMPOSE_PROJECT_NAME}_serverc2i1_1
+#     CORNER_WL_NODE2_PORT      - managed server instance 2 port
 ```

@@ -6,7 +6,7 @@ if [ "${DOMIBUS_DOCKER_LOCAL_ENV}" = "true"  ]; then
     # Please set the following variables on your environment
     # export DOMIBUS_DOCKER_LOCAL_ENV=true
     #
-    # Image External Resources Path, e.g.:
+    # Image external resources path, e.g.:
     # export REPO=/datadrive/repo
 else
     echo "Using bamboo environment variables..."

@@ -3,6 +3,10 @@
 # Clone and build Domibus repo
 #
 
+# Select the Domibus repository branch to build
+# e.g.: DOMIBUS_BRANCH=development
+DOMIBUS_BRANCH=development
+
 cloneDomibus() {
     echo "Clone domibus $1 branch..."
     git clone https://ec.europa.eu/cefdigital/code/scm/edelivery/domibus.git ../domibus --branch $1 --depth 1
@@ -18,7 +22,6 @@ buildDomibus() {
 #
 # main
 #
-DOMIBUS_BRANCH=development
 
 if [ ! -d "../domibus" ]; then
     source setEnvironment.sh && \

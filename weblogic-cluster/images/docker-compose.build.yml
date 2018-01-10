@@ -1,5 +1,5 @@
 #
-# Docker compose project used to build docker images
+# Docker compose project used to build the test environment docker images.
 #
 # NOTE: Please set required environment variables executing (setEnvironment.sh)
 #
@@ -9,8 +9,23 @@
 #   build specific image:
 #     docker-compose -f docker-compose.build.yml build [service-name]
 #
+# Configuration:
+#
+#   oraclexe-domibus:
+#   ORACLE_SYS_PASSWORD   - Oracle password for SYS and SYSTEM users
+#   DOMIBUS_PASSWORD      - Oracle password for domibus user
+#   DOMIBUS_VERSION       - Domibus project version. (Define this value as an environment variable, e.g.: 4.0-SNAPSHOT)
+#   DOMIBUS_SHORT_VERSION - Domibus project short version
+#                           (Removing -SNAPSHOT suffix. Define this value as an environment variable, e.g.: 4.0)
+#
+#   edelivery-weblogic-cluster
+#   USER_ID               - The host user id
+#                           (Define this value as an environment variable, e.g.: export USER_ID=$(id -u $USER))
+#   ADMIN_PASSWORD        - Weblogic admin console password
+#
 version: '3'
 services:
+  # Database
   oraclexe-domibus:
     build:
       context: ./oraclexe-domibus
@@ -20,10 +35,12 @@ services:
         - DOMIBUS_VERSION
         - DOMIBUS_SHORT_VERSION
     image: oraclexe-domibus:${DOMIBUS_VERSION}
+  # HTTPD (LB)
   edelivery-httpd:
     build:
       context: ./edelivery-httpd
     image: edelivery-httpd:2.4
+  # Application Server
   edelivery-weblogic-cluster:
     build:
       context: edelivery-weblogic-cluster
@@ -31,6 +48,7 @@ services:
         - USER_ID
         - ADMIN_PASSWORD=changeMe!
     image: edelivery-weblogic-cluster:12.1.3
+  # Application Server with Domibus
   weblogic-cluster-domibus:
     depends_on:
       - oraclexe-domibus
