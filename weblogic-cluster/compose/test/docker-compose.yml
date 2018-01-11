@@ -45,7 +45,7 @@
 #     VHOST_CORNER_HOSTNAME     - domibus corner host name
 #     CORNER_WL_NODE1_HOSTNAME  - managed server instance 1 host name, e.g.: ${COMPOSE_PROJECT_NAME}_serverc2i1_1
 #     CORNER_WL_NODE1_PORT      - managed server instance 1 port
-#     CORNER_WL_NODE2_HOSTNAME  - managed server instance 2 host name, e.g.: ${COMPOSE_PROJECT_NAME}_serverc2i1_1
+#     CORNER_WL_NODE2_HOSTNAME  - managed server instance 2 host name, e.g.: ${COMPOSE_PROJECT_NAME}_serverc2i2_1
 #     CORNER_WL_NODE2_PORT      - managed server instance 2 port
 #
 
@@ -100,7 +100,7 @@ services:
     #  - "7002:7002"
     volumes:
       - ./common/conf-override:/u01/oracle/conf-override
-      - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
+      - ./c2/conf:/u01/oracle/user_projects/domains/base_domain/conf
       - ./c2/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
     restart: always
     command: createServerEntrypoint.sh
@@ -118,7 +118,7 @@ services:
     #  - "7003:7002"
     volumes:
       - ./common/conf-override:/u01/oracle/conf-override
-      - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
+      - ./c2/conf:/u01/oracle/user_projects/domains/base_domain/conf
       - ./c2/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
     restart: always
     command: createServerEntrypoint.sh
@@ -186,7 +186,7 @@ services:
     #  - "7102:7002"
     volumes:
       - ./common/conf-override:/u01/oracle/conf-override
-      - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
+      - ./c3/conf:/u01/oracle/user_projects/domains/base_domain/conf
       - ./c3/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
     restart: always
     command: createServerEntrypoint.sh
@@ -204,7 +204,7 @@ services:
     #  - "7103:7002"
     volumes:
       - ./common/conf-override:/u01/oracle/conf-override
-      - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
+      - ./c3/conf:/u01/oracle/user_projects/domains/base_domain/conf
       - ./c3/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
     restart: always
     command: createServerEntrypoint.sh

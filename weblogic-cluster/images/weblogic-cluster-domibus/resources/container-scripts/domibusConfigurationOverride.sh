@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 overrideWeblogicClusterProperties() {
-    local FILE=${ORACLE_HOME}/wslt-api-1.9.1/WeblogicCluster.properties
+    local FILE=${DOMAIN_HOME}/conf/domibus/scripts/WeblogicCluster.properties
     echo "Overriding Weblogic Cluster Default Properties: ${FILE}"
 
     cp -v ${FILE} "${FILE}.orig"

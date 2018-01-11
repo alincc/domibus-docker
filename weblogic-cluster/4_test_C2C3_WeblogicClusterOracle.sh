@@ -29,7 +29,8 @@ copySoapUITestsPModes() {
 copySoapUITestsPolicies() {
     echo "Copy Soap UI Tests Policies..."
     local ORIGIN_POLICIES=../domibus/Domibus-MSH/src/main/conf/domibus/policies
-    cp -v ${ORIGIN_POLICIES}/*.xml compose/test/common/conf/domibus/policies
+    cp -v ${ORIGIN_POLICIES}/*.xml compose/test/c2/conf/domibus/policies
+    cp -v ${ORIGIN_POLICIES}/*.xml compose/test/c3/conf/domibus/policies
 }
 
 updatePModes() {
