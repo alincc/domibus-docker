@@ -79,9 +79,21 @@ prepareDomibusCorner() {
         --compressed
 }
 
+copyContainerLogs() {
+    echo "Copying container logs..."
+
+    local CONTAINER_DOMAIN=/u01/oracle/user_projects/domains/base_domain
+
+    for INSTANCE in c2i1 c2i2 c3i1 c3i2; do
+        local SERVER=test_server${INSTANCE}_1
+        echo "Copying server instance logs from ${SERVER}..."
+        docker cp ${SERVER}:${CONTAINER_DOMAIN}/logs/domibus.log logs/${SERVER}_domibus.log
+        docker cp ${SERVER}:${CONTAINER_DOMAIN}/servers/${INSTANCE}/logs/${INSTANCE}.out logs/${SERVER}_${INSTANCE}.out
+    done
+}
+
 runTests() {
-    cd ../domibus/Domibus-MSH-soapui-tests/
-    mvn com.smartbear.soapui:soapui-pro-maven-plugin:5.1.2:test \
+    mvn -f ../domibus/Domibus-MSH-soapui-tests/pom.xml com.smartbear.soapui:soapui-pro-maven-plugin:5.1.2:test \
         -DlocalUrl="localUrl=http://${DOMIBUS_IP_BLUE}/domibus-weblogic" \
         -DremoteUrl="remoteUrl=http://${DOMIBUS_IP_RED}/domibus-weblogic" \
         -DjdbcUrlBlue="jdbcUrlBlue=jdbc:oracle:thin:@${DB_IP_BLUE}:1521/XE" \
@@ -139,3 +151,4 @@ prepareDomibusCorner http://$DOMIBUS_IP_BLUE/domibus-weblogic domibus-gw-sample-
 prepareDomibusCorner http://$DOMIBUS_IP_RED/domibus-weblogic domibus-gw-sample-pmode-red.xml
 
 runTests
+copyContainerLogs
