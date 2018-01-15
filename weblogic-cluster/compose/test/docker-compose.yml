@@ -101,6 +101,7 @@ services:
     volumes:
       - ./common/conf-override:/u01/oracle/conf-override
       - ./c2/conf:/u01/oracle/user_projects/domains/base_domain/conf
+      - ./c2/persistent_filestore:/u01/oracle/user_projects/domains/base_domain/persistent_filestore
       - ./c2/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
     restart: always
     command: createServerEntrypoint.sh
@@ -119,6 +120,7 @@ services:
     volumes:
       - ./common/conf-override:/u01/oracle/conf-override
       - ./c2/conf:/u01/oracle/user_projects/domains/base_domain/conf
+      - ./c2/persistent_filestore:/u01/oracle/user_projects/domains/base_domain/persistent_filestore
       - ./c2/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
     restart: always
     command: createServerEntrypoint.sh
@@ -187,6 +189,7 @@ services:
     volumes:
       - ./common/conf-override:/u01/oracle/conf-override
       - ./c3/conf:/u01/oracle/user_projects/domains/base_domain/conf
+      - ./c3/persistent_filestore:/u01/oracle/user_projects/domains/base_domain/persistent_filestore
       - ./c3/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
     restart: always
     command: createServerEntrypoint.sh
@@ -205,6 +208,7 @@ services:
     volumes:
       - ./common/conf-override:/u01/oracle/conf-override
       - ./c3/conf:/u01/oracle/user_projects/domains/base_domain/conf
+      - ./c3/persistent_filestore:/u01/oracle/user_projects/domains/base_domain/persistent_filestore
       - ./c3/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
     restart: always
     command: createServerEntrypoint.sh
