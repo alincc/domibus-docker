@@ -1,10 +1,10 @@
-version: '3'
+version: '2'
 services:
   ##
   ## Corner 2 - Domibus Wildfly MySQL Blue Configuration
   ##
-  domibusmysqlblue:
-    container_name: domibus_mysql_blue
+  wildfly_mysql_blue:
+    container_name: wildfly_mysql_blue
     image: domibus-mysql:${DOMIBUS_VERSION}
     environment:
       - MYSQL_ROOT_PASSWORD=123456
@@ -15,26 +15,26 @@ services:
       - "3306"
     #ports:
     #  - "33306:3306"
-  domibuswildflyblue:
-    container_name: domibus_wildfly_blue
+  wildfly_domibus_blue:
+    container_name: wildfly_domibus_blue
     image: domibus-wildfly:${DOMIBUS_VERSION}
     environment:
-       - DB_TYPE=MySQL
-       - DB_HOST=domibus_mysql_blue
-       - DB_PORT=3306
-       - DB_USER=edelivery
-       - DB_PASS=edelivery
-    command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 20s
+      - DB_TYPE=MySQL
+      - DB_HOST=wildfly_mysql_blue
+      - DB_PORT=3306
+      - DB_USER=edelivery
+      - DB_PASS=edelivery
+    command: dockerize -wait tcp://wildfly_mysql_blue:3306 -timeout 20s
     #ports:
     #  - "28081:8080"
     depends_on:
-      - domibusmysqlblue
+      - wildfly_mysql_blue
   ##
   ## Corner 3 - Domibus Tomcat MySQL Red Configuration
   ##
-  domibusmysqlred:
-    container_name: domibus_mysql_red
+  mysqlred:
     image: domibus-mysql:${DOMIBUS_VERSION}
+    container_name: mysql_red
     environment:
       - MYSQL_ROOT_PASSWORD=123456
       - MYSQL_DATABASE=domibus
@@ -43,21 +43,21 @@ services:
     expose:
       - "3306"
     #ports:
-    #      - "23306:3306"
-  domibustomcatred:
-    container_name: domibus_tomcat_red
+    #  - "23306:3306"
+  domibusred:
+    container_name: domibus_red
     image: domibus-tomcat:${DOMIBUS_VERSION}
     environment:
      - DB_TYPE=MySQL
-     - DB_HOST=domibus_mysql_red
+     - DB_HOST=mysql_red
      - DB_PORT=3306
      - DB_USER=edelivery
      - DB_PASS=edelivery
      - CERT_ALIAS=red_gw
     volumes:
       - ../domibus-configs/tomcat/domibus_red/domibus:/data/tomcat/conf/domibus
-    command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 20s
+    command: dockerize -wait tcp://mysql_red:3306 -timeout 20s
     depends_on:
-      - domibusmysqlred
+      - mysqlred
     #ports:
     #  - "18082:8080"
