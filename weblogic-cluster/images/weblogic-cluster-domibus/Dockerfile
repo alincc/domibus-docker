@@ -45,8 +45,7 @@ RUN mkdir -p ${DOMAIN_HOME}/conf/domibus/keystores && \
     unzip ${ORACLE_HOME}/domibus-distribution-${DOMIBUS_VERSION}-weblogic-war.zip -d ${DOMAIN_HOME}/conf/domibus && \
     unzip ${ORACLE_HOME}/domibus-distribution-${DOMIBUS_VERSION}-sample-configuration-and-testing.zip -d ${DOMAIN_HOME}/conf/domibus/samples && \
     cp ${DOMAIN_HOME}/conf/domibus/samples/conf/domibus/keystores/*jks ${DOMAIN_HOME}/conf/domibus/keystores && \
-    unzip ${ORACLE_HOME}/wslt-api-1.9.1.zip -d ${ORACLE_HOME}/wslt-api-1.9.1 && \
-    cp ${DOMAIN_HOME}/conf/domibus/scripts/WeblogicCluster.properties ${ORACLE_HOME}/wslt-api-1.9.1
+    unzip ${ORACLE_HOME}/wslt-api-1.9.1.zip -d ${ORACLE_HOME}/wslt-api-1.9.1
 
 #
 # Install Domibus Plugins (WS, JMS, FS)
