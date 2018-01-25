@@ -21,49 +21,115 @@ suiteRunStatus() {
     echo $STATUS
 }
 
-##### main starts here #####
+copyMinderTestsPModes() {
+    echo "Copy Minder Tests PModes..."
+    local ORIGIN_PMODES=../../domibus-plugins/Domibus-kerkovi-plugin/src/main/resources/pmodes
+    cp -v ${ORIGIN_PMODES}/domibus-configuration-domibus_c2.xml . && \
+    cp -v ${ORIGIN_PMODES}/domibus-configuration-domibus_c3.xml .
+}
 
-RESULT=PASSED
+uploadPmode() {
+    local DOMIBUS_URL=$1
+    local PMODE_FILE_PATH=$2
 
-for SUITE in "${SUITES[@]}"
-do
-	SUITE_ID="${SUITE%%:*}"
-	SUITE_NAME="${SUITE##*:}"
-	echo Running suite $SUITE_ID - $SUITE_NAME .
+    echo "Uploading pMode for conformance tests..."
 
-	# Run suite and get the run id as the result
-	SUITE_RUN_ID=`runSuite $SUITE_ID`
- 	echo Result is: $SUITE_RUN_ID
+    echo "Logging to Domibus to obtain cookies"
+    curl ${DOMIBUS_URL}/rest/security/authentication \
+        -i \
+        -H "Content-Type: application/json" \
+        -X POST -d '{"username":"admin","password":"123456"}' \
+        -c /tmp/domibus_cookie.txt
 
-    # Get suite run status, wait until is ready
-    STATUS=`suiteRunStatus $SUITE_RUN_ID`
-    echo $STATUS
+    JSESSIONID=`grep JSESSIONID /tmp/domibus_cookie.txt | cut -d$'\t' -f 7`
+    XSRF_TOKEN=`grep XSRF-TOKEN /tmp/domibus_cookie.txt | cut -d$'\t' -f 7`
 
-    # Wait for runSuite to end
+    echo "JSESSIONID=${JSESSIONID}"
+    echo "X-XSRF-TOKEN=${XSRF_TOKEN}"
+
+    # Upload PMode
+    echo "Uploading PMode file ${PMODE_FILE_PATH}..."
+    curl ${DOMIBUS_URL}/rest/pmode -v \
+        --cookie /tmp/domibus_cookie.txt \
+        -H "X-XSRF-TOKEN: ${XSRF_TOKEN}" \
+        -F file=@${PMODE_FILE_PATH} \
+        -F description="Minder Test"
+}
+
+# Args:
+#   $1 - Domibus URL
+#   $2 - Retries
+function waitDomibusURL {
+    echo "Waiting for Domibus URL $1"
+
     NEXT_WAIT_TIME=0
-    while ([ "$STATUS" == "IN_PROGRESS" ] || [ "$STATUS" == "" ] ) && [ $NEXT_WAIT_TIME -ne 40 ]; do
-      echo  "Retrying after $NEXT_WAIT_TIME."
-      sleep 10
-      STATUS=`suiteRunStatus $SUITE_RUN_ID`
-      echo $STATUS
-      let NEXT_WAIT_TIME=NEXT_WAIT_TIME+1
+    until [ $(curl -s -o /dev/null -w "%{http_code}" $1/) -eq 200 ] || [ ${NEXT_WAIT_TIME} -eq $2 ]; do
+        echo "Domibus is not available... retrying in ${NEXT_WAIT_TIME} seconds..."
+        sleep $(( NEXT_WAIT_TIME++ ))
+    done
+}
+
+function runTests() {
+    RESULT=PASSED
+
+    for SUITE in "${SUITES[@]}"
+    do
+        SUITE_ID="${SUITE%%:*}"
+        SUITE_NAME="${SUITE##*:}"
+        echo Running suite $SUITE_ID - $SUITE_NAME .
+
+        # Run suite an get the run id as the result
+        SUITE_RUN_ID=`runSuite $SUITE_ID`
+        echo Result is: $SUITE_RUN_ID
+
+        # Get suite run status, wait until is ready
+        STATUS=`suiteRunStatus $SUITE_RUN_ID`
+        echo $STATUS
+
+        # Wait for runSuite to end
+        NEXT_WAIT_TIME=0
+        while ([ "$STATUS" == "IN_PROGRESS" ] || [ "$STATUS" == "" ] ) && [ $NEXT_WAIT_TIME -ne 40 ]; do
+          echo  "Retrying after $NEXT_WAIT_TIME."
+          sleep 10
+          STATUS=`suiteRunStatus $SUITE_RUN_ID`
+          echo $STATUS
+          let NEXT_WAIT_TIME=NEXT_WAIT_TIME+1
+        done
+
+        echo Status of suite $SUITE_ID is $STATUS
+
+        # If at least one suite failed, the plan will fail
+        if [ "$STATUS" != "SUCCESS" ]; then
+          echo Suite "$SUITE_ID" - "$SUITE_NAME" has status \"$STATUS\".
+          RESULT="FAILED"
+        fi
     done
 
-    echo Status of suite $SUITE_ID is $STATUS
+    echo  "RESULT: $RESULT"
 
-	# If at least one suite failed, the plan will fail
-    if [ "$STATUS" != "SUCCESS" ]; then
-      echo Suite "$SUITE_ID" - "$SUITE_NAME" has status \"$STATUS\".
-      RESULT="FAILED"
+    if [ "$RESULT" != "PASSED" ]; then
+        exit 1
     fi
-done
+    exit 0
+}
+##### main starts here #####
 
-echo  "RESULT: $RESULT"
+DOMIBUS_ENDPOINT_C2=52.174.157.171:18081
+DOMIBUS_ENDPOINT_C3=52.174.157.171:18082
 
-if [ "$RESULT" != "PASSED" ]; then
-	exit 1
-fi
-exit 0
+#DOMIBUS_ENDPOINT_C2=localhost:8080
+#DOMIBUS_ENDPOINT_C3=localhost:8180
 
+copyMinderTestsPModes
+
+# Wait for Domibus C2 and C3
+echo "Waiting for Domibus instances startup..."
+waitDomibusURL http://${DOMIBUS_ENDPOINT_C2}/domibus/ 40
+waitDomibusURL http://${DOMIBUS_ENDPOINT_C3}/domibus/ 40
+
+uploadPmode http://$DOMIBUS_ENDPOINT_C2/domibus domibus-configuration-domibus_c2.xml
+uploadPmode http://$DOMIBUS_ENDPOINT_C3/domibus domibus-configuration-domibus_c3.xml
+
+runTests
 
 
