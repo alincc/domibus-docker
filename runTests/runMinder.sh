@@ -89,9 +89,9 @@ function runTests() {
 
         # Wait for runSuite to end
         NEXT_WAIT_TIME=0
-        while ([ "$STATUS" == "IN_PROGRESS" ] || [ "$STATUS" == "" ] ) && [ $NEXT_WAIT_TIME -ne 100 ]; do
+        while ([ "$STATUS" == "IN_PROGRESS" ] || [ "$STATUS" == "" ] ) && [ $NEXT_WAIT_TIME -ne 20 ]; do
           echo  "Retrying after $NEXT_WAIT_TIME."
-          sleep $NEXT_WAIT_TIME
+          sleep 60
           STATUS=`suiteRunStatus $SUITE_RUN_ID`
           echo $STATUS
           let NEXT_WAIT_TIME=NEXT_WAIT_TIME+1
