@@ -1,11 +1,54 @@
 #
-# Docker compose project used to run test environment
+# Docker compose project used to startup the test environment.
 #
-# NOTE: Please verify the default environment vars override in .env file
+# NOTE: Please set required environment variables executing (setEnvironment.sh)
 #
 # Usage:
 #     docker-compose up -d
 #
+# Configuration:
+#   This file represents the architecture of the Domibus Weblogic Cluster test environment containing both C2 and C3
+#   weblogic cluster instances:
+#
+#   Corner 2 (C2)
+#     - oraclexec2: Oracle XE Database with Domibus schema
+#     - wlsadminc2: Weblogic Admin Server
+#     - serverc2i1: Weblogic Managed Server (with domibus.war deployed)
+#     - serverc2i2: Weblogic Managed Server (with domibus.war deployed)
+#     - httpdc2:    Apache HTTPD Load Balancer
+#
+#   Corner 2 (C3)
+#     - oraclexec3: Oracle XE Database with Domibus schema
+#     - wlsadminc3: Weblogic Admin Server
+#     - serverc3i1: Weblogic Managed Server (with domibus.war deployed)
+#     - serverc3i2: Weblogic Managed Server (with domibus.war deployed)
+#     - httpdc3:    Apache HTTPD Load Balancer
+#
+#   Corner configuration variables:
+#     oraclexecX:
+#     ORACLE_ALLOW_REMOTE - Allow the database to be connected remotely
+#
+#     wlsadmincX:
+#     DB_HOST           - Database host name
+#     ADMIN_HOST        - Admin server host name
+#     ADMIN_PASSWORD    - Admin server password
+#     DOMIBUS_PASSWORD  - Oracle password for domibus user
+#     DOMIBUS_VERSION   - Domibus project version. (Define this value as an environment variable, e.g.: 4.0-SNAPSHOT)
+#
+#     servercXiN:
+#     INSTANCE_NAME   - Server instance name, e.g.: c2i1
+#     DB_HOST         - Database host name
+#     ADMIN_HOST      - Admin server host name
+#     PARTY_NAME      - Party name to be used used in domibus configuration, e.g.: blue_gw
+#
+#     httpdcX:
+#     VHOST_CORNER_HOSTNAME     - domibus corner host name
+#     CORNER_WL_NODE1_HOSTNAME  - managed server instance 1 host name, e.g.: ${COMPOSE_PROJECT_NAME}_serverc2i1_1
+#     CORNER_WL_NODE1_PORT      - managed server instance 1 port
+#     CORNER_WL_NODE2_HOSTNAME  - managed server instance 2 host name, e.g.: ${COMPOSE_PROJECT_NAME}_serverc2i2_1
+#     CORNER_WL_NODE2_PORT      - managed server instance 2 port
+#
+
 version: '3'
 services:
   #
@@ -19,9 +62,8 @@ services:
       - ORACLE_ALLOW_REMOTE=true
     expose:
       - "1521"
-    # allow external access to oracle db via the host port 49161, at least during the development and test phases
-    ports:
-      - "49161:1521"
+    #ports:
+    #  - "49161:1521"
     restart: always
   # weblogic admin server
   # NOTE: wlst connect does not support underscores in server name
@@ -37,8 +79,10 @@ services:
       - DOMIBUS_VERSION
     image: weblogic-cluster-domibus:${DOMIBUS_VERSION}
     hostname: wlsadminc2
-    ports:
-      - "7001:7001"
+    volumes:
+      - ./common/conf-override:/u01/oracle/conf-override
+    #ports:
+    #  - "7001:7001"
     restart: always
   # weblogic cluster machines
   serverc2i1:
@@ -50,11 +94,14 @@ services:
       - INSTANCE_NAME=c2i1
       - DB_HOST=oraclexec2
       - ADMIN_HOST=wlsadminc2
+      - PARTY_NAME=blue_gw
     hostname: serverc2i1
-    ports:
-      - "7002:7002"
+    #ports:
+    #  - "7002:7002"
     volumes:
-      - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
+      - ./common/conf-override:/u01/oracle/conf-override
+      - ./c2/conf:/u01/oracle/user_projects/domains/base_domain/conf
+      - ./c2/persistent_filestore:/u01/oracle/user_projects/domains/base_domain/persistent_filestore
       - ./c2/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
     restart: always
     command: createServerEntrypoint.sh
@@ -66,11 +113,14 @@ services:
       - INSTANCE_NAME=c2i2
       - DB_HOST=oraclexec2
       - ADMIN_HOST=wlsadminc2
+      - PARTY_NAME=blue_gw
     hostname: serverc2i2
-    ports:
-      - "7003:7002"
+    #ports:
+    #  - "7003:7002"
     volumes:
-      - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
+      - ./common/conf-override:/u01/oracle/conf-override
+      - ./c2/conf:/u01/oracle/user_projects/domains/base_domain/conf
+      - ./c2/persistent_filestore:/u01/oracle/user_projects/domains/base_domain/persistent_filestore
       - ./c2/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
     restart: always
     command: createServerEntrypoint.sh
@@ -80,15 +130,13 @@ services:
       image: edelivery-httpd:2.4
       environment:
         - VHOST_CORNER_HOSTNAME=edelivery.domibus.eu
-        # Cookie domain
-        - VHOST_CORNER_DOMAIN=domibus.eu
         - CORNER_WL_NODE1_HOSTNAME=${COMPOSE_PROJECT_NAME}_serverc2i1_1
         - CORNER_WL_NODE1_PORT=7002
         - CORNER_WL_NODE2_HOSTNAME=${COMPOSE_PROJECT_NAME}_serverc2i2_1
         - CORNER_WL_NODE2_PORT=7002
       hostname: httpdc2
-      ports:
-        - "80:80"
+      #ports:
+      #  - "80:80"
       restart: always
 
   #
@@ -102,9 +150,8 @@ services:
       - ORACLE_ALLOW_REMOTE=true
     expose:
       - "1521"
-    # allow external access to oracle db via the host port 49161, at least during the development and test phases
-    ports:
-      - "49261:1521"
+    #ports:
+    #  - "49261:1521"
     restart: always
   # weblogic admin server
   # NOTE: wlst connect does not support underscores in server name
@@ -120,8 +167,10 @@ services:
       - DOMIBUS_VERSION
     image: weblogic-cluster-domibus:${DOMIBUS_VERSION}
     hostname: wlsadminc3
-    ports:
-      - "7101:7001"
+    volumes:
+      - ./common/conf-override:/u01/oracle/conf-override
+    #ports:
+    #  - "7101:7001"
     restart: always
   # weblogic cluster machines
   serverc3i1:
@@ -133,11 +182,14 @@ services:
       - INSTANCE_NAME=c3i1
       - DB_HOST=oraclexec3
       - ADMIN_HOST=wlsadminc3
+      - PARTY_NAME=red_gw
     hostname: serverc3i1
-    ports:
-      - "7102:7002"
+    #ports:
+    #  - "7102:7002"
     volumes:
-      - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
+      - ./common/conf-override:/u01/oracle/conf-override
+      - ./c3/conf:/u01/oracle/user_projects/domains/base_domain/conf
+      - ./c3/persistent_filestore:/u01/oracle/user_projects/domains/base_domain/persistent_filestore
       - ./c3/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
     restart: always
     command: createServerEntrypoint.sh
@@ -149,11 +201,14 @@ services:
       - INSTANCE_NAME=c3i2
       - DB_HOST=oraclexec3
       - ADMIN_HOST=wlsadminc3
+      - PARTY_NAME=red_gw
     hostname: serverc3i2
-    ports:
-      - "7103:7002"
+    #ports:
+    #  - "7103:7002"
     volumes:
-      - ./common/conf/domibus/policies:/u01/oracle/user_projects/domains/base_domain/conf/domibus/policies
+      - ./common/conf-override:/u01/oracle/conf-override
+      - ./c3/conf:/u01/oracle/user_projects/domains/base_domain/conf
+      - ./c3/persistent_filestore:/u01/oracle/user_projects/domains/base_domain/persistent_filestore
       - ./c3/fs_plugin_data/MAIN:/u01/oracle/user_projects/domains/base_domain/fs_plugin_data/MAIN
     restart: always
     command: createServerEntrypoint.sh
@@ -163,13 +218,11 @@ services:
     image: edelivery-httpd:2.4
     environment:
       - VHOST_CORNER_HOSTNAME=edelivery.domibus.eu
-      # Cookie domain
-      - VHOST_CORNER_DOMAIN=domibus.eu
       - CORNER_WL_NODE1_HOSTNAME=${COMPOSE_PROJECT_NAME}_serverc3i1_1
       - CORNER_WL_NODE1_PORT=7002
       - CORNER_WL_NODE2_HOSTNAME=${COMPOSE_PROJECT_NAME}_serverc3i2_1
       - CORNER_WL_NODE2_PORT=7002
     hostname: httpdc2
-    ports:
-      - "8080:80"
+    #ports:
+    #  - "8080:80"
     restart: always
