@@ -3,7 +3,7 @@
 set -x
 
 runSuite() {
-	RUN_SUITE_DATA="<suiteRunRequest xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"restRunRequestResponseTypes.xsd\"><suiteId>$1</suiteId></suiteRunRequest>"
+	RUN_SUITE_DATA="<suiteRunRequest xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"restRunRequestResponseTypes.xsd\"><suiteId>$1</suiteId><jobIdList>$2<jobIdList></suiteRunRequest>"
 	SUITE_RUN_ID=`curl -s --data "$RUN_SUITE_DATA" --digest --user root@minder:retset1 -X POST http://13.93.127.140:9000/rest/run/runSuite | awk -F "</suiteRunId>" '{print $1}' | awk -F "<suiteRunId>" '{print $2}'`
 	echo $SUITE_RUN_ID
 }
@@ -65,22 +65,22 @@ function waitDomibusURL {
 
 function runTests() {
 
-    SUITES=( "7:Domibus_basic_connectivity"
-             "5:Domibus_esens_specific_as4"
-             "4:Domibus_generic_as4" )
+#    SUITES=( "7:Domibus_basic_connectivity"
+#             "5:Domibus_esens_specific_as4"
+#             "4:Domibus_generic_as4" )
 
-    #SUITES=( "7:Domibus_basic_connectivity" )
+    SUITES=( "7:1693,1694" )
 
     RESULT=PASSED
 
     for SUITE in "${SUITES[@]}"
     do
         SUITE_ID="${SUITE%%:*}"
-        SUITE_NAME="${SUITE##*:}"
-        echo Running suite $SUITE_ID - $SUITE_NAME .
+        SUITE_JOB_LIST="${SUITE##*:}"
+        echo Running suite $SUITE_ID - $SUITE_JOB_LIST.
 
         # Run suite an get the run id as the result
-        SUITE_RUN_ID=`runSuite $SUITE_ID`
+        SUITE_RUN_ID=`runSuite $SUITE_ID $SUITE_JOB_LIST`
         echo Result is: $SUITE_RUN_ID
 
         # Get suite run status, wait until is ready
@@ -120,13 +120,10 @@ DOMIBUS_ENDPOINT_C2=52.174.157.171:18081
 DOMIBUS_ENDPOINT_C3=52.174.157.171:18082
 
 copyMinderTestsPModes
-echo "Waiting for Domibus instances startup..."
 waitDomibusURL http://${DOMIBUS_ENDPOINT_C2}/domibus/ 40
 waitDomibusURL http://${DOMIBUS_ENDPOINT_C3}/domibus/ 40
-
 uploadPmode http://$DOMIBUS_ENDPOINT_C2/domibus domibus-configuration-domibus_c2.xml
 uploadPmode http://$DOMIBUS_ENDPOINT_C3/domibus domibus-configuration-domibus_c3.xml
-
 runTests
 
 
