@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -ex
 
 # SUITES=( "7:Domibus_basic_connectivity"
 #          "5:Domibus_esens_specific_as4"
