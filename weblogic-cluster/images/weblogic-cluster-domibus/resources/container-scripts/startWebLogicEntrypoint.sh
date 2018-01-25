@@ -11,10 +11,10 @@
 #   https://docs.oracle.com/middleware/1213/wls/WLSTC/reference.htm
 # =============================
 
-source domibusCommon.sh
+source domibusConfigurationOverride.sh
 
 main() {
-    updateWeblogicClusterProperties
+    overrideWeblogicClusterProperties
     startAdminServer
     waitForDatabaseServer
     waitForAdminServer
@@ -54,6 +54,8 @@ storeUserConfigFile() {
 }
 
 importDomibusWeblogicClusterResources() {
+    cp -v ${DOMAIN_HOME}/conf/domibus/scripts/WeblogicCluster.properties ${ORACLE_HOME}/wslt-api-1.9.1
+
     cd /u01/oracle/wslt-api-1.9.1/
     # If WeblogicClusterImport.log does not exists, container is importing for 1st time
     if [ ! -f WeblogicClusterImport.log ]; then

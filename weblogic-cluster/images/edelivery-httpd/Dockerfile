@@ -3,9 +3,6 @@ FROM httpd:2.4
 # specify each corner public access hostname
 ENV VHOST_CORNER_HOSTNAME=corner_vhost_hostname
 
-# the vhosts domain to be used by the sticky session cookie
-ENV VHOST_CORNER_DOMAIN=corner_vhost_domain
-
 # each corner WebLogic Cluster node hostname and port, to be used by the load balancer
 ENV CORNER_WL_NODE1_HOSTNAME=corner_weblogic_node1_hostname
 ENV CORNER_WL_NODE1_PORT=corner_weblogic_node1_port
@@ -37,14 +34,6 @@ RUN apt-get update && apt-get install -y unzip net-tools vim wget && \
 ADD resources/httpd-default.conf /usr/local/apache2/conf/extra/
 ADD resources/httpd.conf /usr/local/apache2/conf/
 ADD resources/vhost_corner.conf /usr/local/apache2/conf/vhosts.d/
-
-# update the vhosts configuration
-# RUN sed -i "s/VHOST_CORNER_HOSTNAME/${VHOST_CORNER_HOSTNAME}/g" /usr/local/apache2/conf/vhosts.d/vhost_corner.conf && \
-#    sed -i "s/VHOST_CORNER_DOMAIN/${VHOST_CORNER_DOMAIN}/g" /usr/local/apache2/conf/vhosts.d/vhost_corner.conf && \
-#    sed -i "s/CORNER_WL_NODE1_HOSTNAME/${CORNER_WL_NODE1_HOSTNAME}/g" /usr/local/apache2/conf/vhosts.d/vhost_corner.conf && \
-#    sed -i "s/CORNER_WL_NODE1_PORT/${CORNER_WL_NODE1_PORT}/g" /usr/local/apache2/conf/vhosts.d/vhost_corner.conf && \
-#    sed -i "s/CORNER_WL_NODE2_HOSTNAME/${CORNER_WL_NODE2_HOSTNAME}/g" /usr/local/apache2/conf/vhosts.d/vhost_corner.conf && \
-#    sed -i "s/CORNER_WL_NODE2_PORT/${CORNER_WL_NODE2_PORT}/g" /usr/local/apache2/conf/vhosts.d/vhost_corner.conf
 
 # set the correct permissions for the copied files
 RUN chown -R root:www-data /usr/local/apache2/conf/

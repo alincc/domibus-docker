@@ -56,6 +56,18 @@ echo "   DB_PASS                 : ${DB_PASS}"
       domStartupParams="${domStartupParams} -Ddomibus.security.key.private.alias=${CERT_ALIAS}"
    fi
 
+   if [ ! "${PRIVATE_PASSWD}" == "" ] ; then
+      domStartupParams="${domStartupParams} -Ddomibus.security.key.private.password=${PRIVATE_PASSWD}"
+   fi
+
+   if [ ! "${KEYSTORE_PASSWD}" == "" ] ; then
+      domStartupParams="${domStartupParams} -Ddomibus.security.keystore.password=${KEYSTORE_PASSWD}"
+   fi
+
+   if [ ! "${TRUSTSTORE_PASSWD}" == "" ] ; then
+      domStartupParams="${domStartupParams} -Ddomibus.security.truststore.password=${TRUSTSTORE_PASSWD}"
+   fi
+
    if [ ! "${DB_TYPE}" == "" ] ; then
       case "${DB_TYPE}" in
          "MySQL")
