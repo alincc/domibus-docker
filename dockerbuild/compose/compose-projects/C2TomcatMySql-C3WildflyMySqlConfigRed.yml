@@ -1,0 +1,55 @@
+version: '2'
+services:
+  ##
+  ## Corner 2 - Domibus Tomcat MySQL Blue Configuration
+  ##
+  mysqlblue:
+    image: domibus-mysql:${DOMIBUS_VERSION}
+    container_name: mysql_blue
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=domibus
+      - MYSQL_USER=edelivery
+      - MYSQL_PASSWORD=edelivery
+    expose:
+      - "3306"
+  domibusblue:
+    container_name: domibus_blue
+    image: domibus-tomcat:${DOMIBUS_VERSION}
+    environment:
+       - DB_TYPE=MySQL
+       - DB_HOST=mysql_blue
+       - DB_PORT=3306
+       - DB_USER=edelivery
+       - DB_PASS=edelivery
+    command: dockerize -wait tcp:/mysql_blue:3306 -timeout 20s
+    depends_on:
+      - mysqlblue
+  ##
+  ## Corner 3 - Domibus Wildfly MySQL Red Configuration
+  ##
+  wildfly_mysql_red:
+    container_name: wildfly_mysql_red
+    image: domibus-mysql:${DOMIBUS_VERSION}
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=domibus
+      - MYSQL_USER=edelivery
+      - MYSQL_PASSWORD=edelivery
+    expose:
+      - "3306"
+  wildfly_domibus_red:
+    container_name: wildfly_domibus_red
+    image: domibus-wildfly:${DOMIBUS_VERSION}
+    environment:
+      - DB_TYPE=MySQL
+      - DB_HOST=wildfly_mysql_red
+      - DB_PORT=3306
+      - DB_USER=edelivery
+      - DB_PASS=edelivery
+      - CERT_ALIAS=red_gw
+    volumes:
+      - ../domibus-configs/wildfly/domibus_red/domibus:/data/wildfly/conf/domibus
+    command: dockerize -wait tcp://wildfly_mysql_red:3306 -timeout 20s
+    depends_on:
+      - wildfly_mysql_red
