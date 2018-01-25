@@ -2,12 +2,6 @@
 
 set -x
 
-# SUITES=( "7:Domibus_basic_connectivity"
-#          "5:Domibus_esens_specific_as4"
-#          "4:Domibus_generic_as4" )
-
-SUITES=( "7:Domibus_basic_connectivity" )
-
 runSuite() {
 	RUN_SUITE_DATA="<suiteRunRequest xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"restRunRequestResponseTypes.xsd\"><suiteId>$1</suiteId></suiteRunRequest>"
 	SUITE_RUN_ID=`curl -s --data "$RUN_SUITE_DATA" --digest --user root@minder:retset1 -X POST http://13.93.127.140:9000/rest/run/runSuite | awk -F "</suiteRunId>" '{print $1}' | awk -F "<suiteRunId>" '{print $2}'`
@@ -70,6 +64,13 @@ function waitDomibusURL {
 }
 
 function runTests() {
+
+    SUITES=( "7:Domibus_basic_connectivity"
+             "5:Domibus_esens_specific_as4"
+             "4:Domibus_generic_as4" )
+
+    #SUITES=( "7:Domibus_basic_connectivity" )
+
     RESULT=PASSED
 
     for SUITE in "${SUITES[@]}"
@@ -88,9 +89,9 @@ function runTests() {
 
         # Wait for runSuite to end
         NEXT_WAIT_TIME=0
-        while ([ "$STATUS" == "IN_PROGRESS" ] || [ "$STATUS" == "" ] ) && [ $NEXT_WAIT_TIME -ne 40 ]; do
+        while ([ "$STATUS" == "IN_PROGRESS" ] || [ "$STATUS" == "" ] ) && [ $NEXT_WAIT_TIME -ne 100 ]; do
           echo  "Retrying after $NEXT_WAIT_TIME."
-          sleep 10
+          sleep $NEXT_WAIT_TIME
           STATUS=`suiteRunStatus $SUITE_RUN_ID`
           echo $STATUS
           let NEXT_WAIT_TIME=NEXT_WAIT_TIME+1
@@ -112,17 +113,13 @@ function runTests() {
     fi
     exit 0
 }
+
 ##### main starts here #####
 
 DOMIBUS_ENDPOINT_C2=52.174.157.171:18081
 DOMIBUS_ENDPOINT_C3=52.174.157.171:18082
 
-#DOMIBUS_ENDPOINT_C2=localhost:8080
-#DOMIBUS_ENDPOINT_C3=localhost:8180
-
 copyMinderTestsPModes
-
-# Wait for Domibus C2 and C3
 echo "Waiting for Domibus instances startup..."
 waitDomibusURL http://${DOMIBUS_ENDPOINT_C2}/domibus/ 40
 waitDomibusURL http://${DOMIBUS_ENDPOINT_C3}/domibus/ 40
