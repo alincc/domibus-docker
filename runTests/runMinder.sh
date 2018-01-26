@@ -11,8 +11,22 @@ runSuite() {
 suiteRunStatus() {
     # Wait for runSuite to end and get the status
     SUITE_RUN_STATUS_DATA="<suiteRunStatusRequest xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"restRunRequestResponseTypes.xsd\"><suiteRunId>$1</suiteRunId></suiteRunStatusRequest>"
-    STATUS=`curl -s --data "$SUITE_RUN_STATUS_DATA" --digest --user root@minder:retset1 -X POST http://13.93.127.140:9000/rest/run/suiteRunStatus | awk -F "</status>" '{print $1}' | awk -F "<status>" '{print $2}'`
-    echo $STATUS
+    RESPONSE=`curl -s --data "$SUITE_RUN_STATUS_DATA" --digest --user root@minder:retset1 -X POST http://13.93.127.140:9000/rest/run/suiteRunStatus | awk -F "</status>" '{print $1}' | awk -F "<status>" '{print $2}'`
+    if [[ $RESPONSE = *"IN_PROGESS"* ]]; then
+        STATUS="IN_PROGESS"
+        echo $STATUS
+        return
+    fi
+    if [[ $RESPONSE = *"FAIL"* ]]; then
+        STATUS="FAIL"
+        echo $STATUS
+        return
+    fi
+    if [[ $RESPONSE = *"SUCCESS"* ]]; then
+        STATUS="SUCCESS"
+        echo $STATUS
+        return
+    fi
 }
 
 copyMinderTestsPModes() {
@@ -111,7 +125,7 @@ function runTests() {
     echo  "RESULT: $RESULT"
 
     if [ "$RESULT" != "PASSED" ]; then
-        exit 1
+        exit -1
     fi
     exit 0
 }
