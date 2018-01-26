@@ -83,6 +83,8 @@ function runTests() {
         SUITE_RUN_ID=`runSuite $SUITE_ID`
         echo Result is: $SUITE_RUN_ID
 
+        sleep 600 # allow 10 minutes for the suite to run
+
         # Get suite run status, wait until is ready
         STATUS=`suiteRunStatus $SUITE_RUN_ID`
         echo $STATUS
