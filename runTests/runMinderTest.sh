@@ -131,7 +131,7 @@ function runTests() {
 }
 
 ##### main starts here #####
-exit -1
+exit 0
 #DOMIBUS_ENDPOINT_C2=52.174.157.171:18081
 #DOMIBUS_ENDPOINT_C3=52.174.157.171:18082
 
