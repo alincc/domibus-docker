@@ -65,9 +65,10 @@ function waitDomibusURL {
 
 function runTests() {
 
-#    SUITES=( "7:Domibus_basic_connectivity"
-#             "5:Domibus_esens_specific_as4"
-#             "4:Domibus_generic_as4" )
+#  SUITE_ID:JOBS - the suite id to be run and the list of selected jobs inside this suite
+#    SUITES=( "7:1693,1694,1695,1692"
+#             "5:1610,1604,1613,1603,1601,1607,1611,1606,1609,1608,1605,1600,1599,1598,1602,1597,1596,1612"
+#             "4:1731,1719,1717,1716,1720,1721,1722,1736,1734,1735,1737,1733,1732,1723,1724,1725,1730,1726,1728,1729,1727,1718" )
 
     SUITES=( "7:1693,1694" )
 
