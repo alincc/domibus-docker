@@ -54,6 +54,6 @@ services:
     depends_on:
       - mysqlred
     ports:
-      - "9000:8080"
+      - "18082:8080"
 
 
