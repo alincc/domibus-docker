@@ -11,7 +11,7 @@ runSuite() {
 suiteRunStatus() {
     # Wait for runSuite to end and get the status
     SUITE_RUN_STATUS_DATA="<suiteRunStatusRequest xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"restRunRequestResponseTypes.xsd\"><suiteRunId>$1</suiteRunId></suiteRunStatusRequest>"
-    RESPONSE=`curl -s --data "$SUITE_RUN_STATUS_DATA" --digest --user root@minder:retset1 -X POST http://13.93.127.140:9000/rest/run/suiteRunStatus | awk -F "</status>" '{print $1}' | awk -F "<status>" '{print $2}'`
+    RESPONSE=`curl -s --data "$SUITE_RUN_STATUS_DATA" --digest --user root@minder:retset1 -X POST http://13.93.127.140:9000/rest/run/suiteRunStatus`
     if [[ $RESPONSE = *"IN_PROGESS"* ]]; then
         STATUS="IN_PROGESS"
         echo $STATUS
