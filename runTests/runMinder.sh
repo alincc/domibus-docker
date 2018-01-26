@@ -3,7 +3,7 @@
 set -x
 
 runSuite() {
-	RUN_SUITE_DATA="<suiteRunRequest xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"restRunRequestResponseTypes.xsd\"><suiteId>$1</suiteId><jobs>$2</jobs></suiteRunRequest>"
+	RUN_SUITE_DATA="<suiteRunRequest xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"restRunRequestResponseTypes.xsd\"><suiteId>$1</suiteId></suiteRunRequest>"
 	SUITE_RUN_ID=`curl -s --data "$RUN_SUITE_DATA" --digest --user root@minder:retset1 -X POST http://13.93.127.140:9000/rest/run/runSuite | awk -F "</suiteRunId>" '{print $1}' | awk -F "<suiteRunId>" '{print $2}'`
 	echo $SUITE_RUN_ID
 }
@@ -65,23 +65,22 @@ function waitDomibusURL {
 
 function runTests() {
 
-#  SUITE_ID:JOBS - the suite id to be run and the list of selected jobs inside this suite
-#    SUITES=( "7:1693,1694,1695,1692"
-#             "5:1610,1604,1613,1603,1601,1607,1611,1606,1609,1608,1605,1600,1599,1598,1602,1597,1596,1612"
-#             "4:1731,1719,1717,1716,1720,1721,1722,1736,1734,1735,1737,1733,1732,1723,1724,1725,1730,1726,1728,1729,1727,1718" )
+    SUITES=( "7:Domibus_basic_connectivity"
+             "5:Domibus_esens_specific_as4"
+             "4:Domibus_generic_as4" )
 
-    SUITES=( "7:1693,1694" )
+    #SUITES=( "7:Domibus_basic_connectivity" )
 
     RESULT=PASSED
 
     for SUITE in "${SUITES[@]}"
     do
         SUITE_ID="${SUITE%%:*}"
-        SUITE_JOB_LIST="${SUITE##*:}"
-        echo Running suite $SUITE_ID - $SUITE_JOB_LIST.
+        SUITE_NAME="${SUITE##*:}"
+        echo Running suite $SUITE_ID - $SUITE_NAME .
 
         # Run suite an get the run id as the result
-        SUITE_RUN_ID=`runSuite $SUITE_ID $SUITE_JOB_LIST`
+        SUITE_RUN_ID=`runSuite $SUITE_ID`
         echo Result is: $SUITE_RUN_ID
 
         # Get suite run status, wait until is ready
@@ -117,8 +116,12 @@ function runTests() {
 
 ##### main starts here #####
 
-DOMIBUS_ENDPOINT_C2=52.174.157.171:18081
-DOMIBUS_ENDPOINT_C3=52.174.157.171:18082
+#DOMIBUS_ENDPOINT_C2=52.174.157.171:18081
+#DOMIBUS_ENDPOINT_C3=52.174.157.171:18082
+
+DOMIBUS_ENDPOINT_C2=$1
+DOMIBUS_ENDPOINT_C3=$2
+
 
 copyMinderTestsPModes
 waitDomibusURL http://${DOMIBUS_ENDPOINT_C2}/domibus/ 40
