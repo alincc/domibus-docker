@@ -15,17 +15,12 @@ suiteRunStatus() {
     if [[ $RESPONSE = *"IN_PROGESS"* ]]; then
         STATUS="IN_PROGESS"
         echo $STATUS
-        return
-    fi
-    if [[ $RESPONSE = *"FAIL"* ]]; then
+    elif [[ $RESPONSE = *"FAIL"* ]]; then
         STATUS="FAIL"
         echo $STATUS
-        return
-    fi
-    if [[ $RESPONSE = *"SUCCESS"* ]]; then
+    elif [[ $RESPONSE = *"SUCCESS"* ]]; then
         STATUS="SUCCESS"
         echo $STATUS
-        return
     fi
 }
 
