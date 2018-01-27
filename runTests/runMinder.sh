@@ -8,20 +8,13 @@ runSuite() {
 	echo $SUITE_RUN_ID
 }
 
+# $1 - suiteID
+#
 suiteRunStatus() {
     # Wait for runSuite to end and get the status
     SUITE_RUN_STATUS_DATA="<suiteRunStatusRequest xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"restRunRequestResponseTypes.xsd\"><suiteRunId>$1</suiteRunId></suiteRunStatusRequest>"
     RESPONSE=`curl -s --data "$SUITE_RUN_STATUS_DATA" --digest --user root@minder:retset1 -X POST http://13.93.127.140:9000/rest/run/suiteRunStatus`
-    if [[ $RESPONSE = *"IN_PROGRESS"* ]]; then
-        STATUS="IN_PROGRESS"
-        echo $STATUS
-    elif [[ $RESPONSE = *"FAIL"* ]]; then
-        STATUS="FAIL"
-        echo $STATUS
-    elif [[ $RESPONSE = *"SUCCESS"* ]]; then
-        STATUS="SUCCESS"
-        echo $STATUS
-    fi
+    echo $RESPONSE
 }
 
 copyMinderTestsPModes() {
@@ -74,46 +67,44 @@ function waitDomibusURL {
 
 function runTests() {
 
-    SUITES=( "7:Domibus_basic_connectivity"
-             "5:Domibus_esens_specific_as4"
-             "4:Domibus_generic_as4" )
-
-    #SUITES=( "7:Domibus_basic_connectivity" )
+# suiteID:NumOfJobs
+    SUITES=( "7:4"
+             "5:18"
+             "4:22" )
 
     RESULT=PASSED
 
     for SUITE in "${SUITES[@]}"
     do
         SUITE_ID="${SUITE%%:*}"
-        SUITE_NAME="${SUITE##*:}"
-        echo Running suite $SUITE_ID - $SUITE_NAME .
+        SUITE_JOBS_NO="${SUITE##*:}"
+        echo Running suite $SUITE_ID - $SUITE_JOBS_NO.
 
         # Run suite an get the run id as the result
-        SUITE_RUN_ID=`runSuite $SUITE_ID`
+        SUITE_RUN_ID=`runSuiteMock $SUITE_ID`
         echo Result is: $SUITE_RUN_ID
 
-        sleep 300 # allow 5 minutes for the suite to run
+        #sleep 300 # allow 5 minutes for the suite to run
 
         # Get suite run status, wait until is ready
-        STATUS=`suiteRunStatus $SUITE_RUN_ID`
-        echo $STATUS
+        RESPONSE=`suiteRunStatus $SUITE_RUN_ID`
+        NUM=`echo $RESPONSE | awk -F"<status>" '{print NF-1}'`
 
         # Wait for runSuite to end
         NEXT_WAIT_TIME=0
-        while ([ "$STATUS" == "IN_PROGRESS" ] || [ "$STATUS" == "" ] ) && [ $NEXT_WAIT_TIME -ne 20 ]; do
+        while ([ $NUM -lt  $SUITE_JOBS_NO ] ) && [ $NEXT_WAIT_TIME -ne 20 ]; do
           echo  "Retrying after $NEXT_WAIT_TIME."
           sleep 60
-          STATUS=`suiteRunStatus $SUITE_RUN_ID`
-          echo $STATUS
+          RESPONSE=`suiteRunStatus $SUITE_RUN_ID `
+          NUM=`echo $RESPONSE | awk -F"<status>" '{print NF-1}'`
           let NEXT_WAIT_TIME=NEXT_WAIT_TIME+1
         done
 
-        echo Status of suite $SUITE_ID is $STATUS
-
-        # If at least one suite failed, the plan will fail
-        if [ "$STATUS" != "SUCCESS" ]; then
-          echo Suite "$SUITE_ID" - "$SUITE_NAME" has status \"$STATUS\".
-          RESULT="FAILED"
+        if [[ $RESPONSE = *"FAIL"* ]]; then
+            RESULT="FAILED"
+            echo Suite "$SUITE_ID" has status FAIL.
+        else
+            echo Suite "$SUITE_ID" has status SUCCESS.
         fi
     done
 
@@ -134,11 +125,11 @@ DOMIBUS_ENDPOINT_C2=$1
 DOMIBUS_ENDPOINT_C3=$2
 
 
-copyMinderTestsPModes
-waitDomibusURL http://${DOMIBUS_ENDPOINT_C2}/domibus/ 40
-waitDomibusURL http://${DOMIBUS_ENDPOINT_C3}/domibus/ 40
-uploadPmode http://$DOMIBUS_ENDPOINT_C2/domibus domibus-configuration-domibus_c2.xml
-uploadPmode http://$DOMIBUS_ENDPOINT_C3/domibus domibus-configuration-domibus_c3.xml
+#copyMinderTestsPModes
+#waitDomibusURL http://${DOMIBUS_ENDPOINT_C2}/domibus/ 40
+#waitDomibusURL http://${DOMIBUS_ENDPOINT_C3}/domibus/ 40
+#uploadPmode http://$DOMIBUS_ENDPOINT_C2/domibus domibus-configuration-domibus_c2.xml
+#uploadPmode http://$DOMIBUS_ENDPOINT_C3/domibus domibus-configuration-domibus_c3.xml
 runTests
 
 
