@@ -81,7 +81,7 @@ function runTests() {
         echo Running suite $SUITE_ID - $SUITE_JOBS_NO.
 
         # Run suite an get the run id as the result
-        SUITE_RUN_ID=`runSuiteMock $SUITE_ID`
+        SUITE_RUN_ID=`runSuite $SUITE_ID`
         echo Result is: $SUITE_RUN_ID
 
         sleep 300 # allow 5 minutes for the suite to run
