@@ -84,7 +84,7 @@ function runTests() {
         SUITE_RUN_ID=`runSuiteMock $SUITE_ID`
         echo Result is: $SUITE_RUN_ID
 
-        #sleep 300 # allow 5 minutes for the suite to run
+        sleep 300 # allow 5 minutes for the suite to run
 
         # Get suite run status, wait until is ready
         RESPONSE=`suiteRunStatus $SUITE_RUN_ID`
@@ -125,11 +125,11 @@ DOMIBUS_ENDPOINT_C2=$1
 DOMIBUS_ENDPOINT_C3=$2
 
 
-#copyMinderTestsPModes
-#waitDomibusURL http://${DOMIBUS_ENDPOINT_C2}/domibus/ 40
-#waitDomibusURL http://${DOMIBUS_ENDPOINT_C3}/domibus/ 40
-#uploadPmode http://$DOMIBUS_ENDPOINT_C2/domibus domibus-configuration-domibus_c2.xml
-#uploadPmode http://$DOMIBUS_ENDPOINT_C3/domibus domibus-configuration-domibus_c3.xml
+copyMinderTestsPModes
+waitDomibusURL http://${DOMIBUS_ENDPOINT_C2}/domibus/ 40
+waitDomibusURL http://${DOMIBUS_ENDPOINT_C3}/domibus/ 40
+uploadPmode http://$DOMIBUS_ENDPOINT_C2/domibus domibus-configuration-domibus_c2.xml
+uploadPmode http://$DOMIBUS_ENDPOINT_C3/domibus domibus-configuration-domibus_c3.xml
 runTests
 
 
