@@ -127,7 +127,7 @@ services:
   httpdc2:
       depends_on:
         - wlsadminc2
-      image: edelivery-httpd:2.4
+      image: edelivery-httpd:2.4.28
       environment:
         - VHOST_CORNER_HOSTNAME=edelivery.domibus.eu
         - CORNER_WL_NODE1_HOSTNAME=${COMPOSE_PROJECT_NAME}_serverc2i1_1
@@ -215,7 +215,7 @@ services:
   httpdc3:
     depends_on:
       - wlsadminc3
-    image: edelivery-httpd:2.4
+    image: edelivery-httpd:2.4.28
     environment:
       - VHOST_CORNER_HOSTNAME=edelivery.domibus.eu
       - CORNER_WL_NODE1_HOSTNAME=${COMPOSE_PROJECT_NAME}_serverc3i1_1
