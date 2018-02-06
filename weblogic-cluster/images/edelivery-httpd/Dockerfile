@@ -1,4 +1,4 @@
-FROM httpd:2.4
+FROM httpd:2.4.28
 
 # specify each corner public access hostname
 ENV VHOST_CORNER_HOSTNAME=corner_vhost_hostname

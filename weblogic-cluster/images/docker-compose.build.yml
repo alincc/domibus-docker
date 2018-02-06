@@ -39,7 +39,7 @@ services:
   edelivery-httpd:
     build:
       context: ./edelivery-httpd
-    image: edelivery-httpd:2.4
+    image: edelivery-httpd:2.4.28
   # Application Server
   edelivery-weblogic-cluster:
     build:
