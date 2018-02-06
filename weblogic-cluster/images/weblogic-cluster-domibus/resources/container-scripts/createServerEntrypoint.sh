@@ -7,10 +7,10 @@
 #
 # =============================
 
-source domibusCommon.sh
+source domibusConfigurationOverride.sh
 
-updateDomibusProperties
-updateFSPluginProperties
+overrideDomibusProperties
+overrideFSPluginProperties
 
 echo "Calling createServer.sh..."
 /u01/oracle/createServer.sh
