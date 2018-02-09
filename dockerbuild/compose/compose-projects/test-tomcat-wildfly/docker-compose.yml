@@ -45,7 +45,7 @@ services:
       - DB_PASS=edelivery
       - CERT_ALIAS=red_gw
     volumes:
-      - ../domibus-configs/wildfly/domibus_red/domibus:/data/wildfly/conf/domibus
+      - ../../domibus-configs/wildfly/domibus_red/domibus:/data/wildfly/conf/domibus
     command: dockerize -wait tcp://wildfly_mysql_red:3306 -timeout 20s
     depends_on:
       - mysqlc3

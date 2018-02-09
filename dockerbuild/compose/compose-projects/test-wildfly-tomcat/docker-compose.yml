@@ -51,7 +51,7 @@ services:
      - DB_PASS=edelivery
      - CERT_ALIAS=red_gw
     volumes:
-      - ../domibus-configs/tomcat/domibus_red/domibus:/data/tomcat/conf/domibus
+      - ../../domibus-configs/tomcat/domibus_red/domibus:/data/tomcat/conf/domibus
     command: dockerize -wait tcp://mysql_red:3306 -timeout 20s
     depends_on:
       - mysqlc3
