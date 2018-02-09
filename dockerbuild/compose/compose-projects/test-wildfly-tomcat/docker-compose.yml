@@ -18,7 +18,7 @@ services:
     image: domibus-wildfly:${DOMIBUS_VERSION}
     environment:
       - DB_TYPE=MySQL
-      - DB_HOST=wildfly_mysql_blue
+      - DB_HOST=mysqlc2
       - DB_PORT=3306
       - DB_USER=edelivery
       - DB_PASS=edelivery
@@ -45,7 +45,7 @@ services:
     image: domibus-tomcat:${DOMIBUS_VERSION}
     environment:
      - DB_TYPE=MySQL
-     - DB_HOST=mysql_red
+     - DB_HOST=mysqlc3
      - DB_PORT=3306
      - DB_USER=edelivery
      - DB_PASS=edelivery
