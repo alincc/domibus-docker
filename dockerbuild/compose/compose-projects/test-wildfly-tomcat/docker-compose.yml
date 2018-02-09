@@ -3,8 +3,7 @@ services:
   ##
   ## Corner 2 - Domibus Wildfly MySQL Blue Configuration
   ##
-  wildfly_mysql_blue:
-    container_name: wildfly_mysql_blue
+  mysqlc2:
     image: domibus-mysql:${DOMIBUS_VERSION}
     environment:
       - MYSQL_ROOT_PASSWORD=123456
@@ -15,8 +14,7 @@ services:
       - "3306"
     #ports:
     #  - "33306:3306"
-  wildfly_domibus_blue:
-    container_name: wildfly_domibus_blue
+  wildflyc2:
     image: domibus-wildfly:${DOMIBUS_VERSION}
     environment:
       - DB_TYPE=MySQL
@@ -32,9 +30,8 @@ services:
   ##
   ## Corner 3 - Domibus Tomcat MySQL Red Configuration
   ##
-  mysqlred:
+  mysqlc3:
     image: domibus-mysql:${DOMIBUS_VERSION}
-    container_name: mysql_red
     environment:
       - MYSQL_ROOT_PASSWORD=123456
       - MYSQL_DATABASE=domibus
@@ -44,8 +41,7 @@ services:
       - "3306"
     #ports:
     #  - "23306:3306"
-  domibusred:
-    container_name: domibus_red
+  tomcatc3:
     image: domibus-tomcat:${DOMIBUS_VERSION}
     environment:
      - DB_TYPE=MySQL
@@ -58,6 +54,6 @@ services:
       - ../domibus-configs/tomcat/domibus_red/domibus:/data/tomcat/conf/domibus
     command: dockerize -wait tcp://mysql_red:3306 -timeout 20s
     depends_on:
-      - mysqlred
+      - mysqlc3
     #ports:
     #  - "18082:8080"
