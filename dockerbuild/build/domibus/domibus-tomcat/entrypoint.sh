@@ -94,10 +94,21 @@ echo "   DB_PASS                 : ${DB_PASS}"
    echo ; echo "After: $CATALINA_OPTS"
 }
 
+function installFSPlugin {
+    [ -d ${DOMIBUS_CONFIG_LOCATION}/plugins/config ] || mkdir -p ${DOMIBUS_CONFIG_LOCATION}/plugins/config
+    [ -d ${DOMIBUS_CONFIG_LOCATION}/plugins/lib ] || mkdir -p ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
+
+    unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip conf/domibus/plugins/config/tomcat/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/config
+    unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip conf/domibus/plugins/lib/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
+    [ -d ${CATALINA_HOME}/fs_plugin_data/MAIN ] || mkdir -p ${CATALINA_HOME}/fs_plugin_data/MAIN
+    sed -i "s#^fsplugin.messages.location=.*#fsplugin.messages.location=${CATALINA_HOME}/fs_plugin_data/MAIN#g" ${DOMIBUS_CONFIG_LOCATION}/plugins/config/fs-plugin.properties
+}
+
 ##########################################################################
 # MAIN PROGRAMM STARTS HERE
 ##########################################################################
 
+installFSPlugin
 buildDomibusStartupParams
 waitForDatabase ${DB_TYPE} ${DB_HOST} ${DB_PORT} ${DB_USER} ${DB_PASS} ${DB_NAME}
 

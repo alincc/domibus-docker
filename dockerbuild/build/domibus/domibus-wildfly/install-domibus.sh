@@ -48,8 +48,6 @@ function configureArtefacts {
   mkdir -p ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
   unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/config/wildfly/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/config
   unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/lib/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
-  #unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip conf/domibus/plugins/config/wildfly/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/config
-  #unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip conf/domibus/plugins/lib/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
 }
 
 #####################################################################################################################

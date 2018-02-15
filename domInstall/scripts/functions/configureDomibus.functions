@@ -58,8 +58,11 @@ function installFSPlugin {
    echo ; echo "Installing Domibus Default FS Plugin for Application Server: ${1}"
    [ -d $DOMIBUS_DIR/conf/domibus/plugins/config ] || mkdir -p $DOMIBUS_DIR/conf/domibus/plugins/config
    [ -d $DOMIBUS_DIR/conf/domibus/plugins/lib ] || mkdir -p $DOMIBUS_DIR/domibus/plugins/lib
+
    unzip  -j  $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip conf/domibus/plugins/config/${1}/* -d $DOMIBUS_DIR/conf/domibus/plugins/config
    unzip  -j  $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip conf/domibus/plugins/lib/* -d $DOMIBUS_DIR/conf/domibus/plugins/lib
+   [ -d $DOMIBUS_DIR/fs_plugin_data/MAIN ] || mkdir -p $DOMIBUS_DIR/fs_plugin_data/MAIN
+   sed -i "s#^fsplugin.messages.location=.*#fsplugin.messages.location=$DOMIBUS_DIR/fs_plugin_data/MAIN#g" $DOMIBUS_DIR/conf/domibus/plugins/config/fs-plugin.properties
 }
 
 
@@ -67,6 +70,6 @@ function installPlugins {
    displayFunctionBanner "${FUNCNAME[0]} Called with Param1=${1}"
    installWSPlugin ${1}
    #installJMSPlugin ${1}
-   #installFSPlugin ${1}
+   installFSPlugin ${1}
 }
 
