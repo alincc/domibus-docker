@@ -60,6 +60,16 @@ function uploadPmode {
    -H "X-XSRF-TOKEN: ${XSRFTOKEN}" \
    -F  file=@${pmodeFile2Upload} \
    -F  description="soapUI tests"
+
+    # Set Message Filter Plugin Order
+    echo "Setting Message Filter Plugin Order..."
+    curl ${appServerURL}/rest/messagefilters -v \
+        --cookie cookie.txt \
+        -H "X-XSRF-TOKEN: ${XSRFTOKEN}" \
+        -H 'Content-Type: application/json' \
+        -X PUT \
+        --data-binary '[{"entityId":0,"index":1,"backendName":"backendWebservice","routingCriterias":[],"persisted":false,"from":null,"to":null,"action":null,"service":null,"$$index":0},{"entityId":0,"index":0,"backendName":"backendFSPlugin","routingCriterias":[],"persisted":false,"from":null,"to":null,"action":null,"service":null,"$$index":1},{"entityId":0,"index":2,"backendName":"Jms","routingCriterias":[],"persisted":false,"from":null,"to":null,"action":null,"service":null,"$$index":2}]' \
+        --compressed
 }
 
 PMODE_FILE_BLUE=$1

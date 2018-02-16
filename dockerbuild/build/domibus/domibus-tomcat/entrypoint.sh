@@ -94,10 +94,19 @@ echo "   DB_PASS                 : ${DB_PASS}"
    echo ; echo "After: $CATALINA_OPTS"
 }
 
-function installFSPlugin {
+function installDefaultPlugins {
     [ -d ${DOMIBUS_CONFIG_LOCATION}/plugins/config ] || mkdir -p ${DOMIBUS_CONFIG_LOCATION}/plugins/config
     [ -d ${DOMIBUS_CONFIG_LOCATION}/plugins/lib ] || mkdir -p ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
 
+    # WS
+    unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/config/tomcat/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/config
+    unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/lib/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
+
+    # JMS
+    unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/config/tomcat/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/config
+    unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/lib/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
+
+    # FS
     unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip conf/domibus/plugins/config/tomcat/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/config
     unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip conf/domibus/plugins/lib/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
     [ -d ${CATALINA_HOME}/fs_plugin_data/MAIN ] || mkdir -p ${CATALINA_HOME}/fs_plugin_data/MAIN
@@ -108,7 +117,7 @@ function installFSPlugin {
 # MAIN PROGRAMM STARTS HERE
 ##########################################################################
 
-installFSPlugin
+installDefaultPlugins
 buildDomibusStartupParams
 waitForDatabase ${DB_TYPE} ${DB_HOST} ${DB_PORT} ${DB_USER} ${DB_PASS} ${DB_NAME}
 
