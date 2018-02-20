@@ -30,7 +30,7 @@ function configurePmode4Tests {
 
 }
 
-function uploadPmode {
+function prepareDomibusCorner {
    local appServerURL=$1
    local pmodeFile2Upload=$2
 
@@ -97,5 +97,5 @@ echo "   DOMIBUS_RED_URL=${DOMIBUS_RED_URL}               \\"
 
 
 configurePmode4Tests ${DOMIBUS_BLUE_URL} ${TARGET_FILE_BLUE} ${DOMIBUS_RED_URL} ${TARGET_FILE_RED}
-uploadPmode ${DOMIBUS_BLUE_URL} ${TARGET_FILE_BLUE}
-uploadPmode ${DOMIBUS_RED_URL} ${TARGET_FILE_RED}
+prepareDomibusCorner ${DOMIBUS_BLUE_URL} ${TARGET_FILE_BLUE}
+prepareDomibusCorner ${DOMIBUS_RED_URL} ${TARGET_FILE_RED}
