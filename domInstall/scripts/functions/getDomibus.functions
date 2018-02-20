@@ -7,6 +7,7 @@ echo "   - ${functionsFile}"
 DOMIBUS_ARTEFACTS="
 default-ws-plugin.zip
 default-jms-plugin.zip
+default-fs-plugin.zip
 sample-configuration-and-testing.zip
 sql-scripts.zip
 tomcat-full.zip

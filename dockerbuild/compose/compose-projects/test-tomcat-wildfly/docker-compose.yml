@@ -1,0 +1,51 @@
+version: '2'
+services:
+  ##
+  ## Corner 2 - Domibus Tomcat MySQL Blue Configuration
+  ##
+  mysqlc2:
+    image: domibus-mysql:${DOMIBUS_VERSION}
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=domibus
+      - MYSQL_USER=edelivery
+      - MYSQL_PASSWORD=edelivery
+    expose:
+      - "3306"
+  tomcatc2:
+    image: domibus-tomcat:${DOMIBUS_VERSION}
+    environment:
+       - DB_TYPE=MySQL
+       - DB_HOST=mysqlc2
+       - DB_PORT=3306
+       - DB_USER=edelivery
+       - DB_PASS=edelivery
+    command: dockerize -wait tcp:/mysqlc2:3306 -timeout 20s
+    depends_on:
+      - mysqlc2
+  ##
+  ## Corner 3 - Domibus Wildfly MySQL Red Configuration
+  ##
+  mysqlc3:
+    image: domibus-mysql:${DOMIBUS_VERSION}
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=domibus
+      - MYSQL_USER=edelivery
+      - MYSQL_PASSWORD=edelivery
+    expose:
+      - "3306"
+  wildflyc3:
+    image: domibus-wildfly:${DOMIBUS_VERSION}
+    environment:
+      - DB_TYPE=MySQL
+      - DB_HOST=mysqlc3
+      - DB_PORT=3306
+      - DB_USER=edelivery
+      - DB_PASS=edelivery
+      - CERT_ALIAS=red_gw
+    volumes:
+      - ../../domibus-configs/wildfly/domibus_red/domibus:/data/wildfly/conf/domibus
+    command: dockerize -wait tcp://mysqlc3:3306 -timeout 20s
+    depends_on:
+      - mysqlc3
