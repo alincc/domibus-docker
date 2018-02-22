@@ -150,6 +150,5 @@ waitDomibusURL http://${DOMIBUS_IP_RED}/domibus-weblogic/ 40
 prepareDomibusCorner http://$DOMIBUS_IP_BLUE/domibus-weblogic domibus-gw-sample-pmode-blue.xml
 prepareDomibusCorner http://$DOMIBUS_IP_RED/domibus-weblogic domibus-gw-sample-pmode-red.xml
 
-sleep 30m
 runTests
 copyContainerLogs
