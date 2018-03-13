@@ -5,6 +5,7 @@ ENV CATALINA_HOME=/data/tomcat
 ARG WORKING_DIR=.
 ARG JDBC_DRIVER_DIR
 ARG DOM_INSTALL=/data/domInstall
+ARG JACOCO_PORT
 
 
 RUN mkdir -p $DOM_INSTALL
@@ -28,6 +29,9 @@ RUN chmod +x $CATALINA_HOME/entrypoint.sh
 
 # Exposing Domibus
 EXPOSE 8080
+
+# Exposing JaCoCo port
+EXPOSE ${JACOCO_PORT}
 
 ENTRYPOINT ["/data/tomcat/entrypoint.sh"]
 

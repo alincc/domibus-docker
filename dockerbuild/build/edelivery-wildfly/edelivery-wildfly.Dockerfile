@@ -8,6 +8,7 @@ ARG JDBC_DRIVER_DIR
 ARG WORKING_DIR=.
 ARG DOM_INSTALL=/data/domInstall
 ENV WILDFLY_ARCHIVE_DIR=$DOM_INSTALL/wildfly
+ARG JACOCO_PORT
 
 # Ensure signals are forwarded to the JVM process correctly for graceful shutdown
 ENV LAUNCH_JBOSS_IN_BACKGROUND true
@@ -40,6 +41,9 @@ EXPOSE 9990
 
 # Exposing http port
 EXPOSE 8080
+
+# Exposing JaCoCo port
+EXPOSE ${JACOCO_PORT}
 
 RUN rm -rf /data/wildfly/standalone/configuration/standalone_xml_history/current
 
