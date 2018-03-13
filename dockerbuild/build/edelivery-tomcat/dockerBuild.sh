@@ -23,7 +23,8 @@ dockerBuildContext=.
 
 
 DockerBuildArgs="
---build-arg JDBC_DRIVER_DIR=temp/domInstall/downloads/jdbc JACOCO_PORT=${JACOCO_PORT} \
+--build-arg JDBC_DRIVER_DIR=temp/domInstall/downloads/jdbc \
+--build-arg JACOCO_PORT=${JACOCO_PORT} \
 "
 
 echo
