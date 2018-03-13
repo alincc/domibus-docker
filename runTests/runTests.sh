@@ -13,6 +13,10 @@ blueDbUser=${10}
 redDbUser=${11}
 blueDbPassword=${12}
 redDbPassword=${13}
+jacocoRemotePortBlue=${14}
+jacocoRemoteAddressBlue=${15}
+jacocoRemotePortRed=${16}
+jacocoRemoteAddressRed=${17}
 
 ADMIN_USER="admin"
 ADMIN_PASSW="123456"
@@ -35,9 +39,14 @@ echo "   -DdatabaseRed=${databaseRed}           \\"
 echo "   -DblueDbUser=${blueDbUser}             \\"
 echo "   -DredDbUser=${redDbUser}               \\"
 echo "   -DblueDbPassword=${blueDbPassword}     \\"
-echo "   -DredDbPassword=${redDbPassword}"
+echo "   -DredDbPassword=${redDbPassword}       \\"
+echo "   -DjacocoRemotePortBlue=${jacocoRemotePortBlue}       \\"
+echo "   -DjacocoRemoteAddressBlue=${jacocoRemoteAddressBlue}       \\"
+echo "   -DjacocoRemotePortRed=${jacocoRemotePortRed}       \\"
+echo "   -DjacocoRemoteAddressRed=${jacocoRemoteAddressRed}"
 
-mvn com.smartbear.soapui:soapui-pro-maven-plugin:5.1.2:test \
+#mvn com.smartbear.soapui:soapui-pro-maven-plugin:5.1.2:test \
+mvn -Psoapui \
 -DlocalUrl="${localUrl}"                \
 -DremoteUrl="${remoteUrl}"              \
 -DjdbcUrlBlue="${jdbcUrlBlue}"          \
@@ -49,5 +58,8 @@ mvn com.smartbear.soapui:soapui-pro-maven-plugin:5.1.2:test \
 -DblueDbUser="${blueDbUser}"            \
 -DredDbUser="${redDbUser}"              \
 -DblueDbPassword="${blueDbPassword}"    \
--DredDbPassword="${redDbPassword}"
-
+-DredDbPassword="${redDbPassword}"  \
+-DjacocoRemotePortBlue=${jacocoRemotePortBlue}       \
+-DjacocoRemoteAddressBlue=${jacocoRemoteAddressBlue}       \
+-DjacocoRemotePortRed=${jacocoRemotePortRed}       \
+-DjacocoRemoteAddressRed=${jacocoRemoteAddressRed}
