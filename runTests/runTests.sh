@@ -25,7 +25,7 @@ ADMIN_PASSW="123456"
 echo ; echo "Waiting 180 seconds..."
 sleep 180
 
-echo ; echo "Starting SoaUI Tests with the following Parameters:"
+echo ; echo "Starting SoapUI Tests with the following Parameters:"
 echo "   ${DOMIBUS_ARTEFACTS}"
 echo "   mvn clean install -Psoapui \\"
 echo "   -DlocalUrl=${localUrl}                 \\"
