@@ -27,7 +27,7 @@ sleep 180
 
 echo ; echo "Starting SoaUI Tests with the following Parameters:"
 echo "   ${DOMIBUS_ARTEFACTS}"
-echo "   mvn com.smartbear.soapui:soapui-pro-maven-plugin:5.1.2:test \\"
+echo "   mvn test -Psoapui \\"
 echo "   -DlocalUrl=${localUrl}                 \\"
 echo "   -DremoteUrl=${remoteUrl}               \\"
 echo "   -DjdbcUrlBlue=${jdbcUrlBlue}           \\"
@@ -45,8 +45,7 @@ echo "   -DjacocoRemoteAddressBlue=${jacocoRemoteAddressBlue}       \\"
 echo "   -DjacocoRemotePortRed=${jacocoRemotePortRed}       \\"
 echo "   -DjacocoRemoteAddressRed=${jacocoRemoteAddressRed}"
 
-#mvn com.smartbear.soapui:soapui-pro-maven-plugin:5.1.2:test \
-mvn -Psoapui \
+mvn test -Psoapui \
 -DlocalUrl="${localUrl}"                \
 -DremoteUrl="${remoteUrl}"              \
 -DjdbcUrlBlue="${jdbcUrlBlue}"          \
