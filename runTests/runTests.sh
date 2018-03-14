@@ -27,7 +27,7 @@ sleep 180
 
 echo ; echo "Starting SoaUI Tests with the following Parameters:"
 echo "   ${DOMIBUS_ARTEFACTS}"
-echo "   mvn test -Psoapui \\"
+echo "   mvn clean install -Psoapui \\"
 echo "   -DlocalUrl=${localUrl}                 \\"
 echo "   -DremoteUrl=${remoteUrl}               \\"
 echo "   -DjdbcUrlBlue=${jdbcUrlBlue}           \\"
@@ -45,7 +45,7 @@ echo "   -DjacocoRemoteAddressBlue=${jacocoRemoteAddressBlue}       \\"
 echo "   -DjacocoRemotePortRed=${jacocoRemotePortRed}       \\"
 echo "   -DjacocoRemoteAddressRed=${jacocoRemoteAddressRed}"
 
-mvn test -Psoapui \
+mvn clean install -Psoapui \
 -DlocalUrl="${localUrl}"                \
 -DremoteUrl="${remoteUrl}"              \
 -DjdbcUrlBlue="${jdbcUrlBlue}"          \
