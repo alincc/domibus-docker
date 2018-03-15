@@ -19,6 +19,7 @@ echo "--------------DB_NAME: ${DB_NAME}"
 echo "--------------DB_USER: ${DB_USER}"
 echo "--------------DB_PASS: ${DB_PASS}"
 echo "--------------DOMIBUS_VERSION: ${DOMIBUS_VERSION}"
+echo "--------------JACOCO_AGENT: ${JACOCO_AGENT}"
 
 echo "ls DOCKER_DOMINSTALL"
 ls ${DOCKER_DOMINSTALL}
