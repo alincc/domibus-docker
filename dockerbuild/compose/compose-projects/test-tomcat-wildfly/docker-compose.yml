@@ -20,6 +20,8 @@ services:
        - DB_PORT=3306
        - DB_USER=edelivery
        - DB_PASS=edelivery
+    expose:
+        - "6400"
     command: dockerize -wait tcp:/mysqlc2:3306 -timeout 20s
     depends_on:
       - mysqlc2
@@ -44,6 +46,8 @@ services:
       - DB_USER=edelivery
       - DB_PASS=edelivery
       - CERT_ALIAS=red_gw
+    expose:
+      - "6500"
     volumes:
       - ../../domibus-configs/wildfly/domibus_red/domibus:/data/wildfly/conf/domibus
     command: dockerize -wait tcp://mysqlc3:3306 -timeout 20s
