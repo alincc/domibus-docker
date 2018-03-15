@@ -43,7 +43,7 @@ EXPOSE 9990
 EXPOSE 8080
 
 # Exposing JaCoCo port
-EXPOSE 6500
+EXPOSE 6400
 
 RUN rm -rf /data/wildfly/standalone/configuration/standalone_xml_history/current
 

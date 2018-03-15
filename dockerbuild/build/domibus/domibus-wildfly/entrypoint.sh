@@ -2,7 +2,7 @@
 
 #JaCoCo agent settings for collecting code coverage
 JACOCO_VERSION=0.7.7.201606060606
-JACOCO_PORT=6500
+JACOCO_PORT=6400
 JACOCO_ADDRESS=localhost
 JACOCO_AGENT="-javaagent:/data/jacoco/org.jacoco.agent-${JACOCO_VERSION}-runtime.jar=output=tcpserver,address=${JACOCO_ADDRESS},port=${JACOCO_PORT}"
 
