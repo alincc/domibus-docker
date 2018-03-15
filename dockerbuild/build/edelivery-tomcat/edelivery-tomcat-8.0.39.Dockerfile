@@ -31,7 +31,7 @@ RUN chmod +x $CATALINA_HOME/entrypoint.sh
 EXPOSE 8080
 
 # Exposing JaCoCo port
-EXPOSE ${JACOCO_PORT}
+EXPOSE 6400
 
 ENTRYPOINT ["/data/tomcat/entrypoint.sh"]
 
