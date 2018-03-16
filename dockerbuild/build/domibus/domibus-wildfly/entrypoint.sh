@@ -3,7 +3,7 @@
 #JaCoCo agent settings for collecting code coverage
 JACOCO_VERSION=0.7.7.201606060606
 JACOCO_PORT=6400
-JACOCO_ADDRESS=localhost
+JACOCO_ADDRESS=*
 JACOCO_AGENT="-javaagent:/data/jacoco/org.jacoco.agent-${JACOCO_VERSION}-runtime.jar=output=tcpserver,address=${JACOCO_ADDRESS},port=${JACOCO_PORT}"
 
 echo ; echo "--------------Domibus entry point"
@@ -77,16 +77,16 @@ function installDefaultPlugins {
     [ -d ${DOMIBUS_CONFIG_LOCATION}/plugins/lib ] || mkdir -p ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
 
     # WS
-    unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/config/wildfly/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/config
-    unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/lib/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
+    unzip -o -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/config/wildfly/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/config
+    unzip -o -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/lib/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
 
     # JMS
-    unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/config/wildfly/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/config
-    unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/lib/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
+    unzip -o -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/config/wildfly/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/config
+    unzip -o -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/lib/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
 
     # FS
-    unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip conf/domibus/plugins/config/wildfly/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/config
-    unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip conf/domibus/plugins/lib/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
+    unzip -o -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip conf/domibus/plugins/config/wildfly/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/config
+    unzip -o -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip conf/domibus/plugins/lib/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
     [ -d ${JBOSS_HOME}/fs_plugin_data/MAIN ] || mkdir -p ${JBOSS_HOME}/fs_plugin_data/MAIN
     sed -i "s#^fsplugin.messages.location=.*#fsplugin.messages.location=${JBOSS_HOME}/fs_plugin_data/MAIN#g" ${DOMIBUS_CONFIG_LOCATION}/plugins/config/fs-plugin.properties
 }

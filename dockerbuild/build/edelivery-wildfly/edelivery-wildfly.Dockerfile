@@ -8,7 +8,6 @@ ARG JDBC_DRIVER_DIR
 ARG WORKING_DIR=.
 ARG DOM_INSTALL=/data/domInstall
 ENV WILDFLY_ARCHIVE_DIR=$DOM_INSTALL/wildfly
-ARG JACOCO_PORT
 
 # Ensure signals are forwarded to the JVM process correctly for graceful shutdown
 ENV LAUNCH_JBOSS_IN_BACKGROUND true

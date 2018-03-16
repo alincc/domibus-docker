@@ -1,7 +1,6 @@
 #!/bin/bash
 
 REPO=$1
-JACOCO_PORT=$2
 
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -24,7 +23,6 @@ dockerBuildContext=.
 
 DockerBuildArgs="
 --build-arg JDBC_DRIVER_DIR=temp/domInstall/downloads/jdbc \
---build-arg JACOCO_PORT=${JACOCO_PORT} \
 "
 
 echo

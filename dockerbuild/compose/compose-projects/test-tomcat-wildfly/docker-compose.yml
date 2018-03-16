@@ -12,6 +12,8 @@ services:
       - MYSQL_PASSWORD=edelivery
     expose:
       - "3306"
+    ports:
+      - "3406:3306"
   tomcatc2:
     image: domibus-tomcat:${DOMIBUS_VERSION}
     environment:
@@ -21,7 +23,8 @@ services:
        - DB_USER=edelivery
        - DB_PASS=edelivery
     ports:
-        - "6400:6400"
+      - "8082:8080"
+      - "6401:6400"
     command: dockerize -wait tcp:/mysqlc2:3306 -timeout 20s
     depends_on:
       - mysqlc2
@@ -37,6 +40,8 @@ services:
       - MYSQL_PASSWORD=edelivery
     expose:
       - "3306"
+    ports:
+      - "3506:3306"
   wildflyc3:
     image: domibus-wildfly:${DOMIBUS_VERSION}
     environment:
@@ -47,7 +52,8 @@ services:
       - DB_PASS=edelivery
       - CERT_ALIAS=red_gw
     ports:
-      - "6500:6400"
+      - "8083:8080"
+      - "6402:6400"
     volumes:
       - ../../domibus-configs/wildfly/domibus_red/domibus:/data/wildfly/conf/domibus
     command: dockerize -wait tcp://mysqlc3:3306 -timeout 20s
