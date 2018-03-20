@@ -22,9 +22,10 @@ SQL_SCRIPTS_DISTRIBUTION=${DOMIBUS_DISTRIBUTION}/${SQL_SCRIPTS_DISTRIBUTION_NAME
 rm -rf  ${LOCAL_ARTEFACTS} ; mkdir -p ${LOCAL_ARTEFACTS}
 unzip -j ${SQL_SCRIPTS_DISTRIBUTION} sql-scripts/* -d ${LOCAL_ARTEFACTS}
 
-
-DDLDatabaseInitScriptName="`ls -1 ${LOCAL_ARTEFACTS} | grep mysql | grep -v migration`"
-echo ; echo "Discovered database script SQL:" ${DDLDatabaseInitScriptName}
+DOMIBUS_SHORT_VERSION=${DOMIBUS_VERSION/-SNAPSHOT/}
+echo ; echo "DOMIBUS_SHORT_VERSION is ${DOMIBUS_SHORT_VERSION}"
+DDLDatabaseInitScriptName="mysql5innoDb-${DOMIBUS_SHORT_VERSION}.ddl"
+echo ; echo "Database SQL script:" ${DDLDatabaseInitScriptName}
 SQLDatabaseInitScriptName=${DDLDatabaseInitScriptName}.sql
 echo ; echo "Renaming database script SQL:" ${SQLDatabaseInitScriptName}
 mv ${LOCAL_ARTEFACTS}/${DDLDatabaseInitScriptName} ${LOCAL_ARTEFACTS}/${SQLDatabaseInitScriptName}
