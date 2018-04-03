@@ -95,10 +95,11 @@ echo "   DB_PASS                 : ${DB_PASS}"
 }
 
 function installDefaultPlugins {
+    echo ; echo "NO_DEFAULT_PLUGINS=${NO_DEFAULT_PLUGINS}"
     if [ ! "${NO_DEFAULT_PLUGINS}" == "" ] ; then
         [ -d ${DOMIBUS_CONFIG_LOCATION}/plugins/config ] || mkdir -p ${DOMIBUS_CONFIG_LOCATION}/plugins/config
         [ -d ${DOMIBUS_CONFIG_LOCATION}/plugins/lib ] || mkdir -p ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
-
+        echo ; echo "Installing default plugins"
         # WS
         unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/config/tomcat/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/config
         unzip -j ${DOCKER_DOMIBUS_DISTRIBUTION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/lib/* -d ${DOMIBUS_CONFIG_LOCATION}/plugins/lib
