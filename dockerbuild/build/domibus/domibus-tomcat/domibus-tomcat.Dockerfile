@@ -11,7 +11,7 @@ ENV DOCKER_DOMIBUS_DISTRIBUTION=/data/temp/domibus
 ENV DOMIBUS_CONFIG_LOCATION=$CATALINA_HOME/conf/domibus
 ENV MEMORY_SETTINGS="-Xms128m -Xmx1024m -XX:MaxPermSize=256m"
 ENV CATALINA_OPTS="-Ddomibus.config.location=$DOMIBUS_CONFIG_LOCATION $MEMORY_SETTINGS"
-ENV DB_TYPE="" DB_HOST="" DB_PORT="" DB_NAME="domibus" DB_USER="" DB_PASS=""
+ENV DB_TYPE="" DB_HOST="" DB_PORT="" DB_NAME="domibus" DB_USER="" DB_PASS="" NO_DEFAULT_PLUGINS=""
 
 RUN rm -rf $DOCKER_DOMINSTALL
 RUN mkdir -p $DOCKER_DOMINSTALL
@@ -37,6 +37,7 @@ RUN su - domibus -c export CATALINA_HOME=${CATALINA_HOME} && \
     export DB_NAME=${DB_NAME} && \
     export DB_USER=${DB_USER} && \
     export DB_PASS=${DB_PASS} && \
+    export NO_DEFAULT_PLUGINS=${NO_DEFAULT_PLUGINS} && \
     $DOCKER_DOMINSTALL/install-domibus.sh
 
 ENTRYPOINT ["/data/tomcat/entrypoint.sh"]
