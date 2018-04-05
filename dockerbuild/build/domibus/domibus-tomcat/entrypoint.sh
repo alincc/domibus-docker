@@ -98,7 +98,8 @@ echo "   DB_PASS                 : ${DB_PASS}"
    echo ; echo "Before: $CATALINA_OPTS"
    CATALINA_OPTS="${CATALINA_OPTS} ${domStartupParams}"
    export CATALINA_OPTS=${CATALINA_OPTS}
-   export JAVA_OPTS="${JAVA_OPTS} ${JACOCO_AGENT}"
+   JAVA_OPTS="${JAVA_OPTS} ${JACOCO_AGENT}"
+   export JAVA_OPTS=${JAVA_OPTS}
    echo ; echo "After: $CATALINA_OPTS"
    echo ; echo "After: $JAVA_OPTS"
 }

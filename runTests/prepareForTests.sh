@@ -76,6 +76,8 @@ PMODE_FILE_BLUE=$1
 PMODE_FILE_RED=$2
 DOMIBUS_BLUE_URL=$3
 DOMIBUS_RED_URL=$4
+DOM_C2="`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' testtctc_tomcatc2_1`"
+DOM_C3="`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' testtctc_tomcatc3_1`"
 
 LOCAL_PMODES=${WORKING_DIR}/temp/pmodes
 echo "Deleting local PModes: " ${LOCAL_PMODES}
@@ -96,6 +98,6 @@ echo "   DOMIBUS_BLUE_URL=${DOMIBUS_BLUE_URL}                 \\"
 echo "   DOMIBUS_RED_URL=${DOMIBUS_RED_URL}               \\"
 
 
-configurePmode4Tests ${DOMIBUS_BLUE_URL} ${TARGET_FILE_BLUE} ${DOMIBUS_RED_URL} ${TARGET_FILE_RED}
+configurePmode4Tests http://${DOM_C2}:8080/domibus ${TARGET_FILE_BLUE} http://${DOM_C3}:8080/domibus ${TARGET_FILE_RED}
 prepareDomibusCorner ${DOMIBUS_BLUE_URL} ${TARGET_FILE_BLUE}
 prepareDomibusCorner ${DOMIBUS_RED_URL} ${TARGET_FILE_RED}
