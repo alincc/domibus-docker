@@ -61,4 +61,6 @@ mvn clean install -Psoapui \
 -DjacocoRemotePortBlue=${jacocoRemotePortBlue}       \
 -DjacocoRemoteAddressBlue=${jacocoRemoteAddressBlue}       \
 -DjacocoRemotePortRed=${jacocoRemotePortRed}       \
--DjacocoRemoteAddressRed=${jacocoRemoteAddressRed}
+-DjacocoRemoteAddressRed=${jacocoRemoteAddressRed} \
+-Druntime.cef.nexus.snapshot.username=${bamboo.nexus_username} \
+-Druntime.cef.nexus.snapshot.password='${bamboo.nexus_password}'
