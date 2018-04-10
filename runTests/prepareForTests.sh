@@ -82,12 +82,14 @@ function waitDomibusURL {
     until [ ${NEXT_WAIT_TIME} -eq $2 ]; do
         if [ $(curl -s -o /dev/null -w "%{http_code}" $1/) -eq 200 ]; then
             echo "Domibus at $1 is available"
-            return 0;
+            return 0
         else
             echo "Domibus is not available... retrying in ${NEXT_WAIT_TIME} seconds..."
             sleep $(( NEXT_WAIT_TIME++ ))
         fi
     done
+    echo "Domibus URL $1 not available even after ${NEXT_WAIT_TIME} retries..."
+    return 1
 }
 
 PMODE_FILE_BLUE=$1
