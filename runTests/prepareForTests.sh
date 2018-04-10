@@ -72,6 +72,24 @@ function prepareDomibusCorner {
         --compressed
 }
 
+# Args:
+#   $1 - Domibus URL
+#   $2 - Retries
+function waitDomibusURL {
+    echo "Waiting for Domibus URL $1"
+
+    NEXT_WAIT_TIME=0
+    until [ ${NEXT_WAIT_TIME} -eq $2 ]; do
+        if [ $(curl -s -o /dev/null -w "%{http_code}" $1/) -eq 200 ]; then
+            echo "Domibus at $1 is available"
+            return 0;
+        else
+            echo "Domibus is not available... retrying in ${NEXT_WAIT_TIME} seconds..."
+            sleep $(( NEXT_WAIT_TIME++ ))
+        fi
+    done
+}
+
 PMODE_FILE_BLUE=$1
 PMODE_FILE_RED=$2
 DOMIBUS_BLUE_URL=$3
@@ -99,5 +117,7 @@ echo "   DOMIBUS_RED_URL=${DOMIBUS_RED_URL}               \\"
 
 
 configurePmode4Tests http://${DOM_C2}:8080/domibus ${TARGET_FILE_BLUE} http://${DOM_C3}:8080/domibus ${TARGET_FILE_RED}
+waitDomibusURL ${DOMIBUS_BLUE_URL} 500
+waitDomibusURL ${DOMIBUS_RED_URL} 500
 prepareDomibusCorner ${DOMIBUS_BLUE_URL} ${TARGET_FILE_BLUE}
 prepareDomibusCorner ${DOMIBUS_RED_URL} ${TARGET_FILE_RED}
