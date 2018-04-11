@@ -96,8 +96,10 @@ PMODE_FILE_BLUE=$1
 PMODE_FILE_RED=$2
 DOMIBUS_BLUE_URL=$3
 DOMIBUS_RED_URL=$4
-DOM_C2="`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' testtctc_tomcatc2_1`"
-DOM_C3="`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' testtctc_tomcatc3_1`"
+DOCKER_NAME_BLUE=$5
+DOCKER_NAME_RED=$6
+DOM_C2="`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${DOCKER_NAME_BLUE}`"
+DOM_C3="`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${DOCKER_NAME_RED}`"
 
 LOCAL_PMODES=${WORKING_DIR}/temp/pmodes
 echo "Deleting local PModes: " ${LOCAL_PMODES}
