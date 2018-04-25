@@ -96,9 +96,20 @@ PMODE_FILE_BLUE=$1
 PMODE_FILE_RED=$2
 DOMIBUS_BLUE_URL=$3
 DOMIBUS_RED_URL=$4
-#internal docker ip/ports
-DOMIBUS_DOCKER_BLUE=$5
-DOMIBUS_DOCKER_RED=$6
+
+#internal docker ip/ports, passed as $5 and $6 params only
+# in case of soap ui code coverage plan
+if [ -z "$5" ]; then
+    DOMIBUS_DOCKER_BLUE=${DOMIBUS_BLUE_URL}
+else
+    DOMIBUS_DOCKER_BLUE=$5
+fi
+if [ -z "$6" ]; then
+    DOMIBUS_DOCKER_RED=${DOMIBUS_RED_URL}
+else
+    DOMIBUS_DOCKER_RED=$6
+fi
+
 
 
 LOCAL_PMODES=${WORKING_DIR}/temp/pmodes
