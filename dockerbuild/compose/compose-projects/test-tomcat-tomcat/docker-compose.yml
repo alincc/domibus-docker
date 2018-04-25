@@ -29,7 +29,7 @@ services:
     depends_on:
       - mysqlc2
   ##
-  ## Corner 3 - Domibus Wildfly MySQL Red Configuration
+  ## Corner 3 - Domibus Tomcat MySQL Red Configuration
   ##
   mysqlc3:
     image: domibus-mysql:${DOMIBUS_VERSION}
@@ -42,8 +42,8 @@ services:
       - "3306"
     ports:
       - "3506:3306"
-  wildflyc3:
-    image: domibus-wildfly:${DOMIBUS_VERSION}
+  tomcatc3:
+    image: domibus-tomcat:${DOMIBUS_VERSION}
     environment:
       - DB_TYPE=MySQL
       - DB_HOST=mysqlc3
@@ -55,7 +55,7 @@ services:
       - "8083:8080"
       - "6402:6400"
     volumes:
-      - ../../domibus-configs/wildfly/domibus_red/domibus:/data/wildfly/conf/domibus
+      - ../../domibus-configs/tomcat/domibus_red/domibus:/data/tomcat/conf/domibus
     command: dockerize -wait tcp://mysqlc3:3306 -timeout 20s
     depends_on:
       - mysqlc3

@@ -6,7 +6,6 @@ ARG WORKING_DIR=.
 ARG JDBC_DRIVER_DIR
 ARG DOM_INSTALL=/data/domInstall
 
-
 RUN mkdir -p $DOM_INSTALL
 COPY ${WORKING_DIR}/temp/domInstall $DOM_INSTALL
 COPY ${JDBC_DRIVER_DIR}/ $DOM_INSTALL/jdbcDrivers
@@ -28,6 +27,9 @@ RUN chmod +x $CATALINA_HOME/entrypoint.sh
 
 # Exposing Domibus
 EXPOSE 8080
+
+# Exposing JaCoCo port
+EXPOSE 6400
 
 ENTRYPOINT ["/data/tomcat/entrypoint.sh"]
 

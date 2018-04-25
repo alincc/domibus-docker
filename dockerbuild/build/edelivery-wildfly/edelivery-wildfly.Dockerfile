@@ -41,6 +41,9 @@ EXPOSE 9990
 # Exposing http port
 EXPOSE 8080
 
+# Exposing JaCoCo port
+EXPOSE 6400
+
 RUN rm -rf /data/wildfly/standalone/configuration/standalone_xml_history/current
 
 # Set the default command to run on boot

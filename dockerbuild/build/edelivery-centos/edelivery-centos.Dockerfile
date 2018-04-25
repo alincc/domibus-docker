@@ -5,6 +5,7 @@ ARG JavaVersion
 ENV JAVA_HOME /usr/local/java/jre1.8.0_144
 ENV PATH $JAVA_HOME/bin:$PATH
 ENV DOCKERIZE_VERSION v0.5.0
+ENV JACOCO_VERSION 0.7.7.201606060606
 
 # Creating Extra Groups
 RUN groupadd cefsup
@@ -76,6 +77,10 @@ COPY temp/SQLPlus /usr/local/Oracle
 RUN  cd /usr/local/Oracle ; for file in `ls -1 /usr/local/Oracle` ; do unzip ${file} && rm ${file} ; done && mv instantclient_12_2 SQLPlus
 RUN echo "export PATH=\$PATH:/usr/local/Oracle/SQLPlus" > /etc/profile.d/sqlplus_env.sh && echo "export LD_LIBRARY_PATH=/usr/local/Oracle/SQLPlus" >> /etc/profile.d/sqlplus_env.sh 
 RUN chmod +x /etc/profile.d/sqlplus_env.sh
+
+#JaCoCo Installation
+RUN mkdir /data/jacoco
+RUN cd /data/jacoco ; wget http://central.maven.org/maven2/org/jacoco/org.jacoco.agent/$JACOCO_VERSION/org.jacoco.agent-$JACOCO_VERSION-runtime.jar
 
 CMD bash
 

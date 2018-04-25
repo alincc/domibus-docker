@@ -1,5 +1,7 @@
 #!/bin/bash
 
+REPO=$1
+
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 echo ; echo "WORKING_DIR: ${WORKING_DIR}"
