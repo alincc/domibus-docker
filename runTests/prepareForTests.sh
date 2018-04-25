@@ -81,7 +81,7 @@ function waitDomibusURL {
     NEXT_WAIT_TIME=0
     until [ ${NEXT_WAIT_TIME} -eq $2 ]; do
         if [ $(curl -s -o /dev/null -w "%{http_code}" $1/) -eq 200 ]; then
-            echo "Domibus at $1 is available"
+            echo "Domibus URL $1 is available"
             return 0
         else
             echo "Domibus is not available... retrying in ${NEXT_WAIT_TIME} seconds..."
