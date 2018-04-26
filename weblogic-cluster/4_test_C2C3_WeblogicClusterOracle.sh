@@ -93,7 +93,7 @@ copyContainerLogs() {
 }
 
 runTests() {
-    mvn -f ../domibus/Domibus-MSH-soapui-tests/pom.xml com.smartbear.soapui:soapui-pro-maven-plugin:5.1.2:test \
+    mvn -f ../domibus/Domibus-MSH-soapui-tests/pom.xml clean install -Psoapui \
         -DlocalUrl="localUrl=http://${DOMIBUS_IP_BLUE}/domibus-weblogic" \
         -DremoteUrl="remoteUrl=http://${DOMIBUS_IP_RED}/domibus-weblogic" \
         -DjdbcUrlBlue="jdbcUrlBlue=jdbc:oracle:thin:@${DB_IP_BLUE}:1521/XE" \
