@@ -1,0 +1,30 @@
+#
+# Docker compose override project file used to startup the test environment.
+# Properties defined here will be merged with the ones from docker-compose.yml file
+#
+
+version: '3'
+services:
+  #
+  # CORNER 2
+  #
+
+  # weblogic cluster machines
+  serverc2i1:
+    environment:
+      - domibus.msh.pull.cron=0/20 * * * * ?
+  serverc2i2:
+    environment:
+      - domibus.msh.pull.cron=0/20 * * * * ?
+
+  #
+  # CORNER 3
+  #
+
+  # weblogic cluster machines
+  serverc3i1:
+    environment:
+      - domibus.msh.pull.cron=0/20 * * * * ?
+  serverc3i2:
+    environment:
+      - domibus.msh.pull.cron=0/20 * * * * ?
