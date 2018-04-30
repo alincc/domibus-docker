@@ -13,7 +13,7 @@ xa-data-source add \
 
 /subsystem=datasources/xa-data-source=eDeliveryMysqlXADS/xa-datasource-properties=ServerName:add(value=${DB_HOST})
 /subsystem=datasources/xa-data-source=eDeliveryMysqlXADS/xa-datasource-properties=PortNumber:add(value=${DB_PORT})
-/subsystem=datasources/xa-data-source=eDeliveryMysqlXADS/xa-datasource-properties=DatabaseName:add(value=${DB_NAME})
+/subsystem=datasources/xa-data-source=eDeliveryMysqlXADS/xa-datasource-properties=DatabaseName:add(value=${DB_NAME}&noAccessToProcedureBodies=true&sessionVariables=innodb_lock_wait_timeout=1)
 
 xa-data-source enable --name=eDeliveryMysqlXADS
 
