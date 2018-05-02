@@ -96,6 +96,8 @@ PMODE_FILE_BLUE=$1
 PMODE_FILE_RED=$2
 DOMIBUS_BLUE_URL=$3
 DOMIBUS_RED_URL=$4
+#time to wait for Domibus to be up
+TIME_TO_WAIT=100
 
 #internal docker ip/ports, passed as $5 and $6 params only
 # in case of soap ui code coverage plan
@@ -109,8 +111,6 @@ if [ -z "$6" ]; then
 else
     DOMIBUS_DOCKER_RED=$6
 fi
-
-
 
 LOCAL_PMODES=${WORKING_DIR}/temp/pmodes
 echo "Deleting local PModes: " ${LOCAL_PMODES}
@@ -132,7 +132,7 @@ echo "   DOMIBUS_RED_URL=${DOMIBUS_RED_URL}               \\"
 
 
 configurePmode4Tests ${DOMIBUS_DOCKER_BLUE} ${TARGET_FILE_BLUE} ${DOMIBUS_DOCKER_RED} ${TARGET_FILE_RED}
-waitDomibusURL ${DOMIBUS_BLUE_URL} 500
-waitDomibusURL ${DOMIBUS_RED_URL} 500
+waitDomibusURL ${DOMIBUS_BLUE_URL} ${TIME_TO_WAIT}
+waitDomibusURL ${DOMIBUS_RED_URL} ${TIME_TO_WAIT}
 prepareDomibusCorner ${DOMIBUS_BLUE_URL} ${TARGET_FILE_BLUE}
 prepareDomibusCorner ${DOMIBUS_RED_URL} ${TARGET_FILE_RED}
