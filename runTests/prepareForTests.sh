@@ -97,7 +97,7 @@ PMODE_FILE_RED=$2
 DOMIBUS_BLUE_URL=$3
 DOMIBUS_RED_URL=$4
 #time to wait for Domibus to be up
-TIME_TO_WAIT=100
+TIME_TO_WAIT=120
 
 #internal docker ip/ports, passed as $5 and $6 params only
 # in case of soap ui code coverage plan
