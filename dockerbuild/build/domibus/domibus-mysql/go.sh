@@ -25,19 +25,28 @@ unzip -j ${SQL_SCRIPTS_DISTRIBUTION} sql-scripts/* -d ${LOCAL_ARTEFACTS}
 DOMIBUS_SHORT_VERSION=${DOMIBUS_VERSION/-SNAPSHOT/}
 echo ; echo "DOMIBUS_SHORT_VERSION is ${DOMIBUS_SHORT_VERSION}"
 DDLDatabaseInitScriptName="mysql5innoDb-${DOMIBUS_SHORT_VERSION}.ddl"
+DDLDatabaseInitDataScriptName="mysql5innoDb-${DOMIBUS_SHORT_VERSION}-data.ddl"
 echo ; echo "Database SQL script:" ${DDLDatabaseInitScriptName}
+echo ; echo "Database SQL data script:" ${DDLDatabaseInitDataScriptName}
 SQLDatabaseInitScriptName=${DDLDatabaseInitScriptName}.sql
+SQLDatabaseInitDataScriptName=${DDLDatabaseInitDataScriptName}.sql
 echo ; echo "Renaming database script SQL:" ${SQLDatabaseInitScriptName}
+echo ; echo "Renaming database data script SQL:" ${SQLDatabaseInitDataScriptName}
 mv ${LOCAL_ARTEFACTS}/${DDLDatabaseInitScriptName} ${LOCAL_ARTEFACTS}/${SQLDatabaseInitScriptName}
+mv ${LOCAL_ARTEFACTS}/${DDLDatabaseInitDataScriptName} ${LOCAL_ARTEFACTS}/${SQLDatabaseInitDataScriptName}
 SQLDatabaseInitScript=${LOCAL_ARTEFACTS}/${SQLDatabaseInitScriptName}
+SQLDatabaseInitDataScript=${LOCAL_ARTEFACTS}/${SQLDatabaseInitDataScriptName}
 
 echo ; echo "Database schema SQL creation is:" ${SQLDatabaseInitScript}
+echo ; echo "Database schema SQL data creation is:" ${SQLDatabaseInitDataScript}
 
 domibusVersionLowerCase="`echo ${DOMIBUS_VERSION} | tr '[:upper:]' '[:lower:]'`"
 dockerBuildContext="${WORKING_DIR}"
 dockerFile="`ls -1 ${WORKING_DIR}/*.Dockerfile`"
 dockerImage=domibus-mysql:${domibusVersionLowerCase}
-DockerBuildArgs="--build-arg DOMIBUS_SCHEMA=${SQLDatabaseInitScript}"
+DockerBuildArgs="--build-arg DOMIBUS_SCHEMA=${SQLDatabaseInitScript} \
+--build-arg DOMIBUS_DATA_INIT=${SQLDatabaseInitDataScript}
+"
 
 echo
 echo "Building Docker Image: ${dockerImage}:"
