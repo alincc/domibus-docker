@@ -28,8 +28,8 @@ DDLDatabaseInitScriptName="mysql5innoDb-${DOMIBUS_SHORT_VERSION}.ddl"
 DDLDatabaseInitDataScriptName="mysql5innoDb-${DOMIBUS_SHORT_VERSION}-data.ddl"
 echo ; echo "Database SQL script:" ${DDLDatabaseInitScriptName}
 echo ; echo "Database SQL data script:" ${DDLDatabaseInitDataScriptName}
-SQLDatabaseInitScriptName=${DDLDatabaseInitScriptName}.sql
-SQLDatabaseInitDataScriptName=${DDLDatabaseInitDataScriptName}.sql
+SQLDatabaseInitScriptName="1.${DDLDatabaseInitScriptName}.sql"
+SQLDatabaseInitDataScriptName="2.${DDLDatabaseInitDataScriptName}.sql"
 echo ; echo "Renaming database script SQL:" ${SQLDatabaseInitScriptName}
 echo ; echo "Renaming database data script SQL:" ${SQLDatabaseInitDataScriptName}
 mv ${LOCAL_ARTEFACTS}/${DDLDatabaseInitScriptName} ${LOCAL_ARTEFACTS}/${SQLDatabaseInitScriptName}
