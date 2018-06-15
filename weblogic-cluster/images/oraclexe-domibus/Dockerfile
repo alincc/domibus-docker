@@ -20,6 +20,7 @@ ADD resources/init_domibus_schema.sql /docker-entrypoint-initdb.d/
 # sql script which initializes domibus schema data structure
 ADD resources/domibus-distribution-${DOMIBUS_VERSION}-sql-scripts.zip /docker-entrypoint-initdb.d/
 RUN unzip -j /docker-entrypoint-initdb.d/domibus-distribution-${DOMIBUS_VERSION}-sql-scripts.zip sql-scripts/oracle10g-${DOMIBUS_SHORT_VERSION}.ddl -d /docker-entrypoint-initdb.d/
+RUN unzip -j /docker-entrypoint-initdb.d/domibus-distribution-${DOMIBUS_VERSION}-sql-scripts.zip sql-scripts/oracle10g-${DOMIBUS_SHORT_VERSION}-data.ddl -d /docker-entrypoint-initdb.d/
 
 # apply the environment variables values to the sql scripts
 RUN sed -i "s/ORACLE_SYS_PASSWORD/${ORACLE_SYS_PASSWORD}/g" /docker-entrypoint-initdb.d/setup_oracle.sql && \
