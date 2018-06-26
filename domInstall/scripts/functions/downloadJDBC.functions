@@ -8,7 +8,7 @@ function downloadJDBCMySQL {
 
    echo ; echo "Downloading JDBC Drivers for Database: ${DatabaseType}"
 
-   jdbcFile="mysql-connector-java-${MySQLJDBCDriverVersion}"
+   jdbcFile="mysql-connector-java-5.1.40"
    jdbcDownloadURL="https://dev.mysql.com/get/Downloads/Connector-J/${jdbcFile}.tar.gz"
 
    if [ ! -f "${DOWNLOAD_DIR}/jdbc/${jdbcFile}.tar.gz" ] ; then
@@ -33,9 +33,7 @@ function downloadJDBCOracle {
 
    echo "  - Downloading JDBC for ${DatabaseType}"
    jdbcDownload="
-   ojdbc6.jar
    ojdbc7.jar
-   ojdbc8.jar
    "
 
    for jdbcFile in $jdbcDownload ; do

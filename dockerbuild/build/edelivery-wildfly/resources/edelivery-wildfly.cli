@@ -1,0 +1,8 @@
+embed-server --server-config=standalone-full.xml
+
+module add --name=com.mysql --resources=${env.JDBC_DRIVER_DIR}/${env.MYSQL_DRIVER} --dependencies=javax.api,javax.transaction.api
+module add --name=com.oracle --resources=${env.JDBC_DRIVER_DIR}/${env.ORACLE_DRIVER} --dependencies=javax.api,javax.transaction.api
+/subsystem=datasources/jdbc-driver=com.mysql:add(driver-name="com.mysql", driver-module-name="com.mysql", driver-xa-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource)
+/subsystem=datasources/jdbc-driver=com.oracle:add(driver-name="com.oracle", driver-module-name="com.oracle", driver-xa-datasource-class-name=oracle.jdbc.xa.client.OracleXADataSource)
+
+

@@ -124,6 +124,9 @@ function startWebLogic {
 function waitForMySQLDatabase {
 
    echo ; echo "Wait for MySQL Database to be ready"
+   echo "DB_HOST" ${DB_HOST}
+   echo "domibus.database.serverName" ${domibus.database.serverName}
+   echo "domibus.database.port" ${domibus.database.port}
 
    while [ ! "${MySQLTableCheck}" == "admin" ] ; do
       MySQLTableCheck=$(mysql -sN -h${DB_HOST} -uedelivery -pedelivery domibus 2> /dev/null << EOF | sed 's/[  ]//g'
@@ -268,62 +271,28 @@ function deployWarFileWebLogic {
    DOWNLOAD_DIR="/data/domInstall/downloads"
    DOMIBUS_VERSION="$DomibusVersion"
 
-   if [ "$DOMIBUS_VERSION" == "3.1.1" ] ; then
-      DOMIBUS_PREFIX="distribution-${DOMIBUS_VERSION}"
-   fi
-   if [ "$DOMIBUS_VERSION" == "3.2.0" ] ; then
-      DOMIBUS_PREFIX=`echo MSH-${DOMIBUS_VERSION}  | cut -c1-7`
-   fi
-   if [ "$DOMIBUS_VERSION" == "3.2.1" ] ; then
-      DOMIBUS_PREFIX=`echo MSH-${DOMIBUS_VERSION}  | cut -c1-9`
-   fi
-   if [ "$DOMIBUS_VERSION" == "3.2.2" ] ; then
-      DOMIBUS_PREFIX=`echo MSH-${DOMIBUS_VERSION}  | cut -c1-18`
-   fi
-   if [ "$DOMIBUS_VERSION" == "3.2.3-SNAPSHOT" ] ; then
-      DOMIBUS_PREFIX=`echo MSH-$DOMIBUS_VERSION-SNAPSHOT  | cut -c1-18`
-   fi
-   if [ "$DOMIBUS_VERSION" == "3.2.3" ] ; then
-      DOMIBUS_PREFIX=`echo MSH-${DOMIBUS_VERSION}  | cut -c1-18`
-   fi
-   if [ "$DOMIBUS_VERSION" == "3.2.4" ] ; then
-      DOMIBUS_PREFIX=`echo MSH-${DOMIBUS_VERSION}  | cut -c1-18`
-   fi
-   if [ "$DOMIBUS_VERSION" == "3.2.5" ] ; then
-      DOMIBUS_PREFIX=`echo MSH-${DOMIBUS_VERSION}  | cut -c1-18`
-   fi
-   if [ "$DOMIBUS_VERSION" == "3.3" ] ; then
-      DOMIBUS_PREFIX="distribution-${DOMIBUS_VERSION}"
-   fi
-   if [ "$DOMIBUS_VERSION" == "4.0-SNAPSHOT" ] ; then
-      DOMIBUS_PREFIX="distribution-${DOMIBUS_VERSION}"
-   fi
-
-
-   echo ; echo "\$DOMIBUS_PREFIX=$DOMIBUS_PREFIX"
-
-   echo "Deploying  domibus-${DOMIBUS_PREFIX}-weblogic war file"
+   echo "Deploying  domibus-distribution-${DOMIBUS_VERSION}-weblogic war file"
    if [ ${DOMIBUS_VERSION:0:3} == "3.3" ]  || [ ${DOMIBUS_VERSION} == "4.0-SNAPSHOT" ] ; then
-      echo "   Unzipping  domibus-${DOMIBUS_PREFIX}-weblogic-war.zip"
-      unzip -d ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/ ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-weblogic-war.zip
+      echo "   Unzipping  domibus-distribution-${DOMIBUS_VERSION}-weblogic-war.zip"
+      unzip -d ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/ ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-weblogic-war.zip
       if [ ${DOMIBUS_VERSION} == "3.3" ] ; then
          mv ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-MSH-weblogic-3.3.war \
-            ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-weblogic.war
+            ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-weblogic.war
       fi
       if [ ${DOMIBUS_VERSION} == "4.0-SNAPSHOT" ] ; then
-         echo "   Renaming domibus-MSH-weblogic-4.0-SNAPSHOT.war to: domibus-${DOMIBUS_PREFIX}-weblogic.war"
+         echo "   Renaming domibus-MSH-weblogic-4.0-SNAPSHOT.war to: domibus-distribution-${DOMIBUS_VERSION}-weblogic.war"
          mv ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-MSH-weblogic-4.0-SNAPSHOT.war \
-            ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-weblogic.war
+            ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-weblogic.war
       fi
    fi
 
-   echo "   Deploying domibus-${DOMIBUS_PREFIX}-weblogic.war: "
+   echo "   Deploying domibus-distribution-${DOMIBUS_VERSION}-weblogic.war: "
    cmd="java weblogic.Deployer -adminurl t3://${WebLogicAdminServerListenAddress}:${WebLogicAdminServerPort} \
 			-username ${WebLogicAdminUserName} \
 			-password ${WebLogicAdminUserPassword} \
-       			-deploy -name domibus-${DOMIBUS_PREFIX}-weblogic.war \
+       			-deploy -name domibus-distribution-${DOMIBUS_VERSION}-weblogic.war \
 			-targets ${WebLogicManagedServer1Name} \
-			-source ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-weblogic.war"
+			-source ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-weblogic.war"
    echo "cmd=${cmd}"
    eval "${cmd}"
 }

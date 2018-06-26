@@ -1,8 +1,7 @@
-#C2TomcatMySql-C3TomcatMySqlConfigRed.yml
 version: '2'
 services:
   mysqlblue:
-    image: c7mys7
+    image: domibus-mysql:${DOMIBUS_VERSION}
     container_name: mysql_blue
     environment:
       - MYSQL_ROOT_PASSWORD=123456
@@ -14,7 +13,7 @@ services:
     ports:
           - "13306:3306"
   mysqlred:
-    image: c7mys7
+    image: domibus-mysql:${DOMIBUS_VERSION}
     container_name: mysql_red
     environment:
       - MYSQL_ROOT_PASSWORD=123456
@@ -27,10 +26,13 @@ services:
           - "23306:3306"
   domibusblue:
     container_name: domibus_blue
-    image: c7-domibus-tomcat:${DOMIBUS_VERSION}
+    image: domibus-tomcat:${DOMIBUS_VERSION}
     environment:
-      - DB_TYPE=MySQL
-      - DB_HOST=mysql_blue
+       - DB_TYPE=MySQL
+       - DB_HOST=mysql_blue
+       - DB_PORT=3306
+       - DB_USER=edelivery
+       - DB_PASS=edelivery
     command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 20s
     depends_on:
       - mysqlblue
@@ -38,13 +40,16 @@ services:
       - "18081:8080"
   domibusred:
     container_name: domibus_red
-    image: c7-domibus-tomcat:${DOMIBUS_VERSION}
+    image: domibus-tomcat:${DOMIBUS_VERSION}
     environment:
-      - pmodeFile2Upload=/data/domInstall/domibus-gw-sample-pmode-red.xml
-      - DB_TYPE=MySQL
-      - DB_HOST=mysql_red
+     - DB_TYPE=MySQL
+     - DB_HOST=mysql_red
+     - DB_PORT=3306
+     - DB_USER=edelivery
+     - DB_PASS=edelivery
+     - CERT_ALIAS=red_gw
     volumes:
-      - ../domibus-configs/tomcat/domibus_red/domibus:/data/domibus/domibus/conf/domibus
+      - ../domibus-configs/tomcat/domibus_red/domibus:/data/tomcat/conf/domibus
     command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 20s
     depends_on:
       - mysqlred

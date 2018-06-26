@@ -1,0 +1,70 @@
+version: '2'
+services:
+  mysqlblue:
+    image: domibus-mysql:${DOMIBUS_VERSION}
+    container_name: mysql_blue
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=domibus
+      - MYSQL_USER=edelivery
+      - MYSQL_PASSWORD=edelivery
+    expose:
+      - "3306"
+    ports:
+          - "13306:3306"
+  mysqlred:
+    image: domibus-mysql:${DOMIBUS_VERSION}
+    container_name: mysql_red
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=domibus
+      - MYSQL_USER=edelivery
+      - MYSQL_PASSWORD=edelivery
+    expose:
+      - "3306"
+    ports:
+          - "23306:3306"
+  domibusblue:
+    container_name: domibus_c2
+    image: domibus-tomcat:${DOMIBUS_VERSION}
+    environment:
+       - DB_TYPE=MySQL
+       - DB_HOST=mysql_blue
+       - DB_PORT=3306
+       - DB_USER=edelivery
+       - DB_PASS=edelivery
+       - CERT_ALIAS=domibus-c2
+       - KEYSTORE_PASSWD=123456
+       - PRIVATE_PASSWD=123456
+       - TRUSTSTORE_PASSWD=123456
+       - NO_DEFAULT_PLUGINS=true
+    volumes:
+      - ../domibus-configs/tomcat/domibus_blue/domibus:/data/tomcat/conf/domibus
+    command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 20s
+    depends_on:
+      - mysqlblue
+    ports:
+      - "18081:8080"
+  domibusred:
+    container_name: domibus_c3
+    image: domibus-tomcat:${DOMIBUS_VERSION}
+    environment:
+     - DB_TYPE=MySQL
+     - DB_HOST=mysql_red
+     - DB_PORT=3306
+     - DB_USER=edelivery
+     - DB_PASS=edelivery
+     - CERT_ALIAS=domibus-c3
+     - KEYSTORE_PASSWD=123456
+     - PRIVATE_PASSWD=123456
+     - TRUSTSTORE_PASSWD=123456
+     - NO_DEFAULT_PLUGINS=true
+    volumes:
+      - ../domibus-configs/tomcat/domibus_red/domibus:/data/tomcat/conf/domibus
+    command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 20s
+    depends_on:
+      - mysqlred
+    ports:
+      - "18082:8080"
+
+

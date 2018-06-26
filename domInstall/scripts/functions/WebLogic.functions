@@ -307,8 +307,8 @@ function configureWebLogicDomibusSingle {
 
    mkdir -p ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus
 
-   echo ; echo " unzip \${TEMP_DIR}/domibus-\${DOMIBUS_PREFIX}-weblogic-configuration.zip -d \${DomibusInstallationDir}/\${WebLogicDomainName}/conf/domibus"
-   unzip $TEMP_DIR/domibus-${DOMIBUS_PREFIX}-weblogic-configuration.zip -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus
+   echo ; echo " unzip \${TEMP_DIR}/domibus-\distribution-${DOMIBUS_VERSION}-weblogic-configuration.zip -d \${DomibusInstallationDir}/\${WebLogicDomainName}/conf/domibus"
+   unzip $TEMP_DIR/domibus-distribution-${DOMIBUS_VERSION}-weblogic-configuration.zip -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus
 
    echo ; echo "cp \${DomibusInstallationDir}/\${WebLogicDomainName}/conf/domibus/scripts/WeblogicSingleServer.properties \${TEMP_DIR}"
    cp ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/scripts/WeblogicSingleServer.properties $TEMP_DIR
@@ -612,21 +612,21 @@ function installWSPluginWebLogic {
 
    echo "Installing Domibus Default WS Plugin:"
 
-   echo  "  unzip  -j \${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-default-ws-plugin.zip conf/domibus/plugins/config/weblogic/* -d \${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/config"
-   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-default-ws-plugin.zip conf/domibus/plugins/config/weblogic/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/config
+   echo  "  unzip  -j \${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/config/weblogic/* -d \${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/config"
+   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/config/weblogic/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/config
 
-   echo "   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-default-ws-plugin.zip conf/domibus/plugins/lib/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/lib"
-   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-default-ws-plugin.zip conf/domibus/plugins/lib/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/lib
+   echo "   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/lib/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/lib"
+   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/lib/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/lib
 }
 
 function installJMSPluginWebLogic {
    displayFunctionBanner ${FUNCNAME[0]}
 
-   echo "   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-default-jms-plugin.zip conf/domibus/plugins/config/weblogic/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/config"
-   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-default-jms-plugin.zip conf/domibus/plugins/config/weblogic/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/config
+   echo "   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/config/weblogic/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/config"
+   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/config/weblogic/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/config
 
-   echo "   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-default-jms-plugin.zip conf/domibus/plugins/lib/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/lib"
-   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-default-jms-plugin.zip conf/domibus/plugins/lib/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/lib
+   echo "   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/lib/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/lib"
+   unzip -j ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/lib/* -d ${DomibusInstallationDir}/${WebLogicDomainName}/conf/domibus/plugins/lib
 }
 
 function installPluginsWebLogic {
@@ -644,25 +644,25 @@ function installPluginsWebLogic {
 function deployWarFileWebLogic {
    displayFunctionBanner ${FUNCNAME[0]}
 
-   echo "Deploying  domibus-${DOMIBUS_PREFIX}-weblogic war file"
+   echo "Deploying  domibus-distribution-${DOMIBUS_VERSION}-weblogic war file"
    if [ ${DOMIBUS_VERSION:0:3} == "3.3" ] || [ ${DOMIBUS_VERSION} == "4.0-SNAPSHOT" ] ; then
-      echo "   Unzipping  domibus-${DOMIBUS_PREFIX}-weblogic-war.zip"
-      unzip -d ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/ ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-weblogic-war.zip
+      echo "   Unzipping  domibus-distribution-${DOMIBUS_VERSION}-weblogic-war.zip"
+      unzip -d ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/ ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-weblogic-war.zip
       if [ ${DOMIBUS_VERSION} == "3.3" ] ; then
          mv ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-MSH-weblogic-3.3.war \
-            ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-weblogic.war
+            ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-weblogic.war
       fi
       if [ ${DOMIBUS_VERSION} == "4.0-SNAPSHOT" ] ; then
-         echo "   Renaming domibus-MSH-weblogic-4.0-SNAPSHOT.war to: domibus-${DOMIBUS_PREFIX}-weblogic.war"
+         echo "   Renaming domibus-MSH-weblogic-4.0-SNAPSHOT.war to: domibus-distribution-${DOMIBUS_VERSION}-weblogic.war"
          mv ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-MSH-weblogic-4.0-SNAPSHOT.war \
-            ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-weblogic.war
+            ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-weblogic.war
       fi
    else
-      echo ; echo "Deploying  domibus-${DOMIBUS_PREFIX}-weblogic.war"
+      echo ; echo "Deploying  domibus-distribution-${DOMIBUS_VERSION}-weblogic.war"
    fi
-   echo "   Deploying domibus-${DOMIBUS_PREFIX}-weblogic.war: "
+   echo "   Deploying domibus-distribution-${DOMIBUS_VERSION}-weblogic.war: "
     java weblogic.Deployer -adminurl t3://${WebLogicAdminServerListenAddress}:${WebLogicAdminServerPort} -username ${WebLogicAdminUserName} -password ${WebLogicAdminUserPassword} \
-       -deploy -name domibus-${DOMIBUS_PREFIX}-weblogic.war -targets ${WebLogicManagedServer1Name} -source ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-${DOMIBUS_PREFIX}-weblogic.war
+       -deploy -name domibus-distribution-${DOMIBUS_VERSION}-weblogic.war -targets ${WebLogicManagedServer1Name} -source ${DOWNLOAD_DIR}/Domibus/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-weblogic.war
 }
 
 function setJVMParamsWebLogic {
@@ -677,6 +677,12 @@ export EXTRA_JAVA_PROPERTIES\n\
 echo "Configuring ${cef_edelivery_path}/${WebLogicDomainName}/bin/setDomainEnv.sh"
 echo "Adding: $dummy"
 sed -i -e "/export DOMAIN_HOME/c $dummy"  ${cef_edelivery_path}/${WebLogicDomainName}/bin/setDomainEnv.sh
+}
+
+function downloadWebLogic {
+   displayFunctionBanner ${FUNCNAME[0]}
+
+   echo "   - Tricky one to be developped.... Wait a bit more !!!"
 }
 
 function installDomibusWebLogicSingle {
@@ -695,7 +701,7 @@ function installDomibusWebLogicSingle {
    #setJVMParamsWebLogic
    #restartWebLogicManagedServer
    ##changeWebConsolePwd
-   configureDomibus
+
    #startWebLogic
    deployWarFileWebLogic
    stopWebLogic

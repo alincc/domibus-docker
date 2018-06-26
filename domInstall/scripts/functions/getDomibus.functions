@@ -3,14 +3,11 @@
 functionsFile="${BASH_SOURCE[0]}"
 echo "   - ${functionsFile}"
 
-NEXUS_REPOSITORIES="https://ec.europa.eu/cefdigital/artifact/service/local/repositories"
-DOMIBUS_REPO="${NEXUS_REPOSITORIES}/eDelivery/content/eu/domibus"
-DOMIBUS_REPO_MSH="${NEXUS_REPOSITORIES}/eDelivery/content/eu/domibus/domibus-MSH"
-DOMIBUS_REPO_DISTRIBUTION="${NEXUS_REPOSITORIES}/eDelivery/content/eu/domibus/domibus-distribution"
 
 DOMIBUS_ARTEFACTS="
 default-ws-plugin.zip
 default-jms-plugin.zip
+default-fs-plugin.zip
 sample-configuration-and-testing.zip
 sql-scripts.zip
 tomcat-full.zip
@@ -22,197 +19,6 @@ wildfly-full.zip
 wildfly-configuration.zip
 wildfly.war
 "
-
-function getDomibusPrefix {
-   displayFunctionBanner "${FUNCNAME[0]}: \$1=${1}" >&2
-
-   if [ "${1}" == "" ] ; then
-     domibus_artefacts_prefix="domibus-distribution-4.0-SNAPSHOT"
-   else
-      if [ "$1" == "3.1.0" ] || [ "$1" == "3.1.1" ] || [ "$1" == "3.3" ] ; then
-         domibus_artefacts_prefix="domibus-distribution"
-      else
-         domibus_artefacts_prefix="domibus-MSH"
-      fi
-   fi
-
-  echo ${domibus_artefacts_prefix}
-}
-
-function getDomibusRepository {
-   if [ "$1" == "3.1.0" ] || [ "$1" == "3.1.1" ] || [ "$1" == "3.3" ] ; then
-      domibus_artefacts_repo="domibus-distribution"
-   else
-      domibus_artefacts_repo="domibus-MSH"
-   fi
-
-   echo ${domibus_artefacts_repo}
-}
-
-function getDomibusArtefactList {
-   displayFunctionBanner "${FUNCNAME[0]}: \$1=${1} \$2=${2} \$3=${3} \$4=${4}" >&2
-
-   domibus_artefacts_prefix="`getDomibusPrefix $1`"
-
-   if [ "${1}" == "" ] ; then
-     domibus_artefacts_prefix="domibus-distribution-4.0-SNAPSHOT"
-   else
-      if [ "$1" == "3.1.0" ] || [ "$1" == "3.1.1" ] || [ "$1" == "3.3" ] ; then
-         domibus_artefacts_prefix="domibus-distribution"
-      else
-         domibus_artefacts_prefix="domibus-MSH"
-      fi
-   fi
-
-   domibus_artefacts=""
-   for artefact in ${DOMIBUS_ARTEFACTS} ; do
-      if [ "${1}" == "" ] ; then
-         domibus_artefacts="${domibus_artefacts} ${domibus_artefacts_prefix}-${artefact}"
-      else
-         if [ "${1}" == "3.3" ] && [ "`echo ${artefact} | cut -d. -f2`" == "war" ]; then
-            artefact2=$artefact
-            artefact="`echo ${artefact2} | cut -d. -f1`-war.zip"
-         fi
-         domibus_artefacts="${domibus_artefacts} ${domibus_artefacts_prefix}-$1-${artefact}"
-      fi
-   done
-
-   domibus_artefacts_common=`
-      for artifact in ${domibus_artefacts} ; do \
-      echo ${artifact} 		\
-      | grep -v tomcat		\
-      | grep -v wildfly      	\
-      | grep -v weblogic     	\
-      ; done`
-
-   if [ "${3}" == "single" ] ; then	\
-      domibus_artefacts_specific=`	\
-         for artifact in ${domibus_artefacts} ; do \
-            echo ${artifact}		\
-            | grep ${2}			\
-            | grep -v full		\
-            ; done`
-   else
-      domibus_artefacts_specific=`	\
-         for artifact in ${domibus_artefacts} ; do \
-            echo ${artifact}	\
-            | grep ${2}    	\
-            | grep full		\
-            ; done`
-   fi
-
-   echo >&2 ; echo "   Domibus ALL Artefacts for V${1}		:" >&2
-   for artefact in ${domibus_artefacts} ; do echo "      - ${artefact}" >&2 ; done
-   echo >&2 ; echo "   Domibus Common Artefacts for V${1}:" >&2
-   for artefact in ${domibus_artefacts_common} ; do echo "      - ${artefact}"  >&2 ; done
-   echo >&2 ; echo "   Domibus Specific Artefacts for V${1} - ${2}-${3}:" >&2
-   for artefact in ${domibus_artefacts_specific} ; do echo "      - ${artefact}" >&2 ; done
-
-   domibusArtefactsList="${domibus_artefacts_common} ${domibus_artefacts_specific}"
-
-   echo ${domibusArtefactsList}
-}
-
-function getDomibusArtefactListSQL {
-   displayFunctionBanner "${FUNCNAME[0]}: \$1=${1}" >&2
-
-   domibus_artefacts_prefix="`getDomibusPrefix $1`"
-
-   if [ "${1}" == "" ] ; then
-     domibus_artefacts_prefix="domibus-distribution-4.0-SNAPSHOT"
-   else
-      if [ "$1" == "3.1.0" ] || [ "$1" == "3.1.1" ] || [ "$1" == "3.3" ] ; then
-         domibus_artefacts_prefix="domibus-distribution"
-      else
-         domibus_artefacts_prefix="domibus-MSH"
-      fi
-   fi
-
-   domibusArtefact="${domibus_artefacts_prefix}-$1-sql-scripts.zip"
-
-   echo >&2 ; echo "   Domibus SQL Artefact for V${1}	:" >&2
-   echo "      - ${domibusArtefact}" >&2
-
-   echo ${domibusArtefact}
-}
-
-function downloadDomibus {
-   displayFunctionBanner "${FUNCNAME[0]}: \$1=${1} \$2=${2} \$3=${3} \$4=${4}"
-
-   domVersion="${1}"
-   domAppServer="${2}"
-   domInstallType="${3}"
-   domTargetDir="${4}"
-
-   echo ; echo "Downloading Domibus Artefacts:"
-   echo
-   echo "   - Version		: ${domVersion}"
-   echo "   - Application Server	: ${domAppServer}"
-   echo "   - Installation Type	: ${domInstallType}"
-   echo "   - Target Directory	: ${domTargetDir}"
-
-   if [ "${domTargetDir}" == "" ] ; then
-      domTargetDir="./temp"
-   fi
-
-   domibusArtefactsList="`getDomibusArtefactList ${1} ${2} ${3} ${4}`"
-   echo domibusArtefactsList=${domibusArtefactsList}
-   domibus_artefacts_repo="`getDomibusRepository ${1}`"
-
-   echo ; echo "   The following Domibus Artefacts will be downloaded:" >&2
-   for artefact in ${domibusArtefactsList} ; do echo "      - ${artefact}" >&2 ; done
-
-   for artefact in ${domibusArtefactsList} ; do
-      if [ ! -f $DOWNLOAD_DIR/Domibus/${1}/${artefact} ] ; then
-         echo ; echo "   Downloading: ${artefact} into: ${domTargetDir}"
-         cmd="   wget -q -P \"${domTargetDir}\" \"${DOMIBUS_REPO}/${domibus_artefacts_repo}/${1}/${artefact}\" --no-check-certificate"
-         echo "${cmd}" >&2
-         eval ${cmd}
-         return_code=$?
-         if [ ${return_code} -ne 0 ] ; then
-            ABORT_JOB " COULD NOT DOWNLOAD: Return Code: ${return_code} - ${artefact}"
-         fi
-      fi
-   done
-}
-
-function downloadDomibusSQLScripts {
-   displayFunctionBanner "${FUNCNAME[0]}: \$1=${1} \$2=${2}"
-
-   domVersion="${1}"
-   domTargetDir="${2}"
-
-   if [ "${domTargetDir}" == "" ] ; then
-      echo "Target Directory not specified,"
-      echo "SQL Scripts will be copied to default dir '.' (`pwd`)"
-      domTargetDir="."
-   fi
-
-   echo ; echo "Downloading Domibus SQL Scripts:"
-   echo
-   echo "   - Version           : ${domVersion}"
-   echo "   - Target Directory  : ${domTargetDir}"
-
-   domibusArtefactsList="`getDomibusArtefactListSQL ${domVersion}`"
-   domibus_artefacts_repo="`getDomibusRepository ${1}`"
-
-   echo ; echo "   The following Domibus SQL Artefacts will be downloaded:" >&2
-   for artefact in ${domibusArtefactsList} ; do echo "      - ${artefact}" >&2 ; done
-
-   for artefact in ${domibusArtefactsList} ; do
-      if [ ! -f $DOWNLOAD_DIR/Domibus/${1}/${artefact} ] ; then
-         echo ; echo "   Downloading: ${artefact} into: ${domTargetDir}"
-         cmd="   wget -q -P \"${domTargetDir}\" \"${DOMIBUS_REPO}/${domibus_artefacts_repo}/${1}/${artefact}\" --no-check-certificate"
-         echo "${cmd}" >&2
-         eval ${cmd}
-         return_code=$?
-         if [ ${return_code} -ne 0 ] ; then
-            ABORT_JOB " COULD NOT DOWNLOAD: Return Code: ${return_code} - ${artefact}"
-         fi
-      fi
-   done
-
-} 
 
 function copyDomibus {
    displayFunctionBanner "${FUNCNAME[0]}: \$1=${1} \$2=${2} \$3=${3} \$4=${4}"
@@ -238,21 +44,14 @@ function copyDomibus {
       | grep -v weblogic        \
       ; done`
 
-   if [ "${3}" == "single" ] ; then     \
+
       domibus_artefacts_specific=`      \
          for artifact in ${domibus_artefacts} ; do \
             echo ${artifact}            \
             | grep ${2}                 \
             | grep -v full              \
             ; done`
-   else
-      domibus_artefacts_specific=`      \
-         for artifact in ${domibus_artefacts} ; do \
-            echo ${artifact}    \
-            | grep ${2}         \
-            | grep full         \
-            ; done`
-   fi
+
 
    echo >&2 ; echo "   Domibus ALL Artefacts in Directory	: ${1}" >&2
    for artefact in ${domibus_artefacts} ; do echo "      - ${artefact}" >&2 ; done
@@ -268,7 +67,7 @@ function copyDomibus {
 
    echo
    for artefact in ${domibusArtefactsList} ; do
-      if [ -f ${DomibusSnapshotLocation}/${artefact} ] ; then
+      if [ -f ${1}/${artefact} ] ; then
          cmd="     cp -r ${1}/${artefact} ${4}"
          echo "${cmd}"
          eval ${cmd}
@@ -278,41 +77,12 @@ function copyDomibus {
    done
 }
 
-function copyDomibusSQLScripts {
-   displayFunctionBanner "${FUNCNAME[0]}: \$1=${1} \$2=${2}"
-
-   echo ; echo "Copying Domibus Artefacts:"
-   echo "   - From              : ${1}"
-   echo "   - to		: ${2}"
-
-   echo ; echo "   cp $1/*sql-scripts*.zip $2"
-   cp $1/*sql-scripts*.zip $2
-}
-
-function getDomibusSQLScripts {
-   displayFunctionBanner "${FUNCNAME[0]}: \$1=${1} \$2=${2}"
-
-   if [ ! "${1}" == "" ] ; then
-      if [ "${1:0:1}" == "/" ] || [  "${1:0:1}" == "." ]; then
-         copyDomibusSQLScripts "${1}" "${2}"
-      else
-         downloadDomibusSQLScripts "${1}" "${2}"
-      fi
-   fi
-}
 
 function getDomibus { 
    displayFunctionBanner "${FUNCNAME[0]}: \$1=${1} \$2=${2} \$3=${3} \$4=${4}"
 
-   if [ ! "${1}" == "" ] ; then
-      #if [ "${1:0:1}" == "/" ] || [  "${1:0:1}" == "." ]; then
-      if [ "${1}" == "4.0-SNAPSHOT" ] ; then
-         echo "DO NOTHING: Domibus v${DomibusVersion} already copied to /data/DomInstall/downloads/Domibus/${DomibusVersion}"
-         #copyDomibus "${1}"  "`echo ${2} | tr '[:upper:]' '[:lower:]'`" "`echo ${3} | tr '[:upper:]' '[:lower:]'`" "${4}"
-         #copyDomibus "${1}"
-      else
-         downloadDomibus "${1}" "`echo ${2} | tr '[:upper:]' '[:lower:]'`" "`echo ${3} | tr '[:upper:]' '[:lower:]'`" "${4}"
-      fi
-   fi
+
+   copyDomibus "${1}"  "`echo ${2} | tr '[:upper:]' '[:lower:]'`" "`echo ${3} | tr '[:upper:]' '[:lower:]'`" "${4}"
+
 }
 

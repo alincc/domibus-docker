@@ -7,14 +7,14 @@ function installKeystoreTruststore {
    displayFunctionBanner ${FUNCNAME[0]}
 
    echo ; echo "   Installing the keystore and trustore:"
-   echo "      unzip \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-sample-configuration-and-testing.zip"
+   echo "      unzip \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-sample-configuration-and-testing.zip"
    if [ "${ApplicationServer}" == "WebLogic" ] ; then
       echo "      -d ${DomibusInstallationDir}/${WebLogicDomainName}"
-      unzip $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-sample-configuration-and-testing.zip \
+      unzip $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-sample-configuration-and-testing.zip \
          -d ${DomibusInstallationDir}/${WebLogicDomainName}
    else
       echo "      -d \${cef_edelivery_path}/domibus"
-      unzip $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-sample-configuration-and-testing.zip \
+      unzip $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-sample-configuration-and-testing.zip \
          -d ${cef_edelivery_path}/domibus
    fi
 }
@@ -39,9 +39,9 @@ function installWSPlugin {
    [ -d $DOMIBUS_DIR/conf/domibus/plugins/config ] || mkdir -p $DOMIBUS_DIR/conf/domibus/plugins/config
    echo ' Creating directory $DOMIBUS_DIR/conf/domibus/plugins/lib'
    [ -d $DOMIBUS_DIR/conf/domibus/plugins/lib ] || mkdir -p $DOMIBUS_DIR/domibus/conf/domibus/plugins/lib
-   echo "Installing Domibus Default WS Plugin: unzip  -j \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-default-ws-plugin.zip conf/domibus/plugins/config/wildfly/* -d \$DOMIBUS_DIR/conf/domibus/plugins/config"
-   unzip -j $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-default-ws-plugin.zip conf/domibus/plugins/config/${1}/* -d $DOMIBUS_DIR/conf/domibus/plugins/config
-   unzip -j $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-default-ws-plugin.zip conf/domibus/plugins/lib/* -d $DOMIBUS_DIR/conf/domibus/plugins/lib
+   echo "Installing Domibus Default WS Plugin: unzip  -j \$DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/config/wildfly/* -d \$DOMIBUS_DIR/conf/domibus/plugins/config"
+   unzip -j $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/config/${1}/* -d $DOMIBUS_DIR/conf/domibus/plugins/config
+   unzip -j $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-default-ws-plugin.zip conf/domibus/plugins/lib/* -d $DOMIBUS_DIR/conf/domibus/plugins/lib
 }
 
 function installJMSPlugin {
@@ -49,203 +49,27 @@ function installJMSPlugin {
    echo ; echo "Installing Domibus Default JMS Plugin for Application Server: ${1}"
    [ -d $DOMIBUS_DIR/conf/domibus/plugins/config ] || mkdir -p $DOMIBUS_DIR/conf/domibus/plugins/config
    [ -d $DOMIBUS_DIR/conf/domibus/plugins/lib ] || mkdir -p $DOMIBUS_DIR/domibus/plugins/lib
-   unzip  -j  $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-default-jms-plugin.zip conf/domibus/plugins/config/${1}/* -d $DOMIBUS_DIR/conf/domibus/plugins/config
-   unzip  -j  $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-$DOMIBUS_PREFIX-default-jms-plugin.zip conf/domibus/plugins/lib/* -d $DOMIBUS_DIR/conf/domibus/plugins/lib
+   unzip  -j  $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/config/${1}/* -d $DOMIBUS_DIR/conf/domibus/plugins/config
+   unzip  -j  $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-default-jms-plugin.zip conf/domibus/plugins/lib/* -d $DOMIBUS_DIR/conf/domibus/plugins/lib
 }
+
+function installFSPlugin {
+   displayFunctionBanner "${FUNCNAME[0]} - Called with Param1=${1}"
+   echo ; echo "Installing Domibus Default FS Plugin for Application Server: ${1}"
+   [ -d $DOMIBUS_DIR/conf/domibus/plugins/config ] || mkdir -p $DOMIBUS_DIR/conf/domibus/plugins/config
+   [ -d $DOMIBUS_DIR/conf/domibus/plugins/lib ] || mkdir -p $DOMIBUS_DIR/domibus/plugins/lib
+
+   unzip  -j  $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip conf/domibus/plugins/config/${1}/* -d $DOMIBUS_DIR/conf/domibus/plugins/config
+   unzip  -j  $DOWNLOAD_DIR/Domibus/$DOMIBUS_VERSION/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip conf/domibus/plugins/lib/* -d $DOMIBUS_DIR/conf/domibus/plugins/lib
+   [ -d $DOMIBUS_DIR/fs_plugin_data/MAIN ] || mkdir -p $DOMIBUS_DIR/fs_plugin_data/MAIN
+   sed -i "s#^fsplugin.messages.location=.*#fsplugin.messages.location=$DOMIBUS_DIR/fs_plugin_data/MAIN#g" $DOMIBUS_DIR/conf/domibus/plugins/config/fs-plugin.properties
+}
+
 
 function installPlugins {
    displayFunctionBanner "${FUNCNAME[0]} Called with Param1=${1}"
    installWSPlugin ${1}
    #installJMSPlugin ${1}
-}
-
-function configureLocalPartnerId {
-   echo ; echo "Function: ${FUNCNAME[0]}"
-   echo ; echo "Configuring LocalPartnerId in \${cef_edelivery_path}/domibus/conf/domibus/domibus-security.xml."
-   if [ "${LocalPartnerId}" == "" ] ; then
-      echo "   LocalPartnerId is not specified in , Keeping Default to \"blue_gw\""
-   else
-      echo "   LocalPartnerId is being set to ${LocalPartnerId}"
-      if [  ${DOMIBUS_VERSION:0:3} == "3.3" ] || [ ${DOMIBUS_VERSION:0:3} == "4.0" ] || [ ${DOMIBUS_VERSION} == "LATEST" ] ; then
-         initialString="blue_gw"
-         replacedString="${LocalPartnerId}"
-         targetFile="${cef_edelivery_path}/domibus/conf/domibus/domibus.properties"
-         echo "   Replacing : ${initialString}"
-         echo "   By        : ${replacedString}"
-         echo "   In file   : ${targetFile}"
-         echo "   sed -i -e s/${initialString}/${replacedString}/ ${targetFile}"
-         sed -i -e "s/${initialString}/${replacedString}/" ${targetFile}
-      else
-         initialString="blue_gw"
-         replacedString="${LocalPartnerId}"
-         targetFile="${cef_edelivery_path}/domibus/conf/domibus/domibus-security.xml"
-         echo "   Replacing : ${initialString}"
-         echo "   By        : ${replacedString}"
-         echo "   In file   : ${targetFile}"
-         echo "   sed -i -e s/${initialString}/${replacedString}/ ${targetFile}"
-         sed -i -e "s/${initialString}/${replacedString}/" ${targetFile}
-      fi
-   fi
-}
-
-function configureDomibusMSHMessageIdSuffix {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   echo "   Domibus MSH MessageId Suffix"
-   if [ -z ${domibus_msh_messageid_suffix+x} ] ; then
-       echo "   domibus_msh_messageid_suffix IS UNSET Keeping DOMIBUS DEFAULT VALUE"
-   else
-      if  [ "${domibus_msh_messageid_suffix}" == "" ] ; then
-         echo "   domibus_msh_messageid_suffix IS EMPTY. Keeping DOMIBUS DEFAULT VALUE"
-      else
-         if  [ ! ${DOMIBUS_VERSION:0:3} == "3.3" ] && [ ! ${DOMIBUS_VERSION:0:3} == "4.0" ] && [ ! ${DOMIBUS_VERSION} == "LATEST" ] ; then
-            echo "Domibus version ${DOMIBUS_VERSION:0:3}.x"
-            echo ; echo "Configuring domibus.msh.messageid.suffix."
-
-            initialString="<prop key=\"domibus.msh.messageid.suffix\">domibus.eu</prop>"
-            replacedString="<prop key=\"domibus.msh.messageid.suffix\">${domibus_msh_messageid_suffix}</prop>"
-            targetFile="${cef_edelivery_path}/domibus/conf/domibus/domibus-configuration.xml"
-            echo "   Replacing : ${initialString}"
-            echo "   By        : ${replacedString}"
-            echo "   In file   : ${targetFile}"
-            sed -i -e "s#${initialString}#${replacedString}#" ${targetFile}
-         else
-            echo "   domibus.msh.messageid.suffix is defined as \"${domibus_msh_messageid_suffix}\" in domibus.properties"
-         fi
-      fi
-   fi
-}
-
-function configureKeystore {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   if  [ ! ${DOMIBUS_VERSION:0:3} == "3.3" ] && [ ! ${DOMIBUS_VERSION:0:3} == "4.0" ] && [ ! ${DOMIBUS_VERSION} == "LATEST" ] ; then
-      echo "   Configuring Keystore location & Password / Private Key Alias & Password"
-      initialString="<entry key=\"blue_gw\" value=\"test123\"/>"
-      replacedString="<entry key=\"${domibus_security_key_private_alias}\" value=\"${domibus_security_key_private_password}\"/>"
-      targetFile="${cef_edelivery_path}/domibus/conf/domibus/domibus-security.xml"
-      echo "   Replacing : ${initialString}"
-      echo "   By        : ${replacedString}"
-      echo "   In file   : ${targetFile}"
-      sed -i -e "s#${initialString}#${replacedString}#" ${targetFile}
-
-#      echo ; echo "   Configuring Keystore Name in \${cef_edelivery_path}/domibus/conf/domibus/domibus-security.xml"
-#      initialString="<prop key=\"org.apache.ws.security.crypto.merlin.keystore.password\">"
-#      sed -i -e "/${initialString}/!b;n;c           ${KeystorePassword}" ${cef_edelivery_path}/domibus/conf/domibus/domibus-security.xml
-#      echo "   Configuring keystore Password in ${cef_edelivery_path}/domibus/conf/domibus/domibus-security.xml"
-#      initialString="<prop key=\"org.apache.ws.security.crypto.merlin.file\">"
-#      sed -i -e "/${initialString}/!b;n;c${KeystoreName}" ${cef_edelivery_path}/domibus/conf/domibus/domibus-security.xml
-#      echo "   Configuring Private Key Password"
-#      searchString="<prop key=\"org.apache.ws.security.crypto.merlin.keystore.private.password\">"
-#      sed -i -e "/${searchString}/!b;n;c${KeystorePrivateKeyPassword}" ${cef_edelivery_path}/domibus/conf/domibus/domibus-security.xml
-   else
-      echo ; echo "PROVIDED BY DOMIBUS.PROPERTIES:"
-      echo
-      #echo "domibus.security.keystore.location             : ${domibus_security_keystore_location}"
-      #echo "domibus.security.keystore.type                 : ${domibus_security_keystore_type}"
-      #echo "domibus.security.keystore.password             : ${domibus_security_keystore_password}"
-      #echo "domibus.security.key.private.alia              : ${domibus_security_key_private_alias}"
-      #echo "domibus.security.key.private.password          : ${domibus_security_key_private_password}"
-   fi
-}
-
-function configureTruststore {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   if  [ ! ${DOMIBUS_VERSION:0:3} == "3.3" ] && [ ! ${DOMIBUS_VERSION:0:3} == "4.0" ] && [ ! ${DOMIBUS_VERSION} == "LATEST" ] ; then
-      echo "   Configuring Truststore:"
-      echo "      Configuring Truststore Name"
-      initialString="\${domibus.config.location}/keystores/gateway_truststore.jks"
-      replacedString="\${domibus.config.location}/keystores/${domibus_security_truststore_location}"
-      targetFile= ${cef_edelivery_path}/domibus/conf/domibus/domibus-security.xml
-      echo "      Replacing : ${initialString}"
-      echo "      By        : ${replacedString}"
-      echo "      In file   : ${targetFile}"
-      sed -i -e "s#${initialString}#${replacedString}#" ${targetFile}
-
-      echo "      Configuring Truststore Password:"
-      initialString="<prop key=\"org.apache.ws.security.crypto.merlin.trustStore.password\""
-      replacedString="\${domibus.config.location}/keystores/${domibus_security_truststore_password}"
-      targetFile= ${cef_edelivery_path}/domibus/conf/domibus/domibus-security.xml
-      echo "      Replacing : ${initialString}"
-      echo "      By        : ${replacedString}"
-      echo "     In file   : ${targetFile}"
-      sed -i -e "s#${initialString}#!b;n;c${replacedString}#" ${targetFile}
-   else
-      echo ; echo "Domibus version ${DOMIBUS_VERSION:0:3}-x. Configured via domibus.properties:"
-      echo
-      #echo "      domibus.security.truststore.location           : ${domibus_security_truststore_location}"
-      #echo "      domibus.security.truststore.type               : ${domibus_security_truststore_type}"
-      #echo "      domibus.security.truststore.password           : ${domibus_security_truststore_password}"
-   fi
-}
-
-function configureWebConsolePassword {
-   displayFunctionBanner ${FUNCNAME[0]}
-   if [ ! ${WebConsoleAdminPassword} == "" ] ; then
-      echo ; echo "Changing Domibus Default Web Console \"admin\" password (123456) to something less obvious..."
-      if  [  ${DOMIBUS_VERSION:0:3} == "4.0" ] || [ ${DOMIBUS_VERSION:0:3} == "3.3" ] || [ ${DOMIBUS_VERSION} == "LATEST" ] ; then
-         echo "UPDATE TB_USER set USER_PASSWORD='`generateBCRYPTPassword ${WebConsoleAdminPassword}`' where USER_NAME='admin';"
-         echo "UPDATE TB_USER set USER_PASSWORD='`generateBCRYPTPassword ${WebConsoleAdminPassword}`' where USER_NAME='admin';" | \
-         mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseUserId} -p${MySQLDatabaseUserPassword} ${MySQLDatabaseName}
-      else
-         initialString="<sec:user name=\"admin\" password=\"\$2a\$10\$5uKS72xK2ArGDgb2CwjYnOzQcOmB7CPxK6fz2MGcDBM9vJ4rUql36\""
-         replacedString="<sec:user name=\"admin\" password=\"`generateBCRYPTPassword ${WebConsoleAdminPassword}`\""
-         echo "   Replacing : ${initialString}"
-         echo "   By        : ${replacedString}"
-         sed -i -e "s#${initialString}#${replacedString}#" ${cef_edelivery_path}/domibus/conf/domibus/domibus-security.xml
-      fi
-   fi
-   if [ ! ${WebConsoleUserPassword} == "" ] ; then
-      echo ; echo "Changing Domibus Default Web Console \"user\" password (123456) to something less obvious..."
-      if  [  ${DOMIBUS_VERSION:0:3} == "3.3" ] || [ ${DOMIBUS_VERSION:0:3} == "4.0" ] || [ ${DOMIBUS_VERSION} == "LATEST" ] ; then
-         echo "UPDATE TB_USER set USER_PASSWORD='`generateBCRYPTPassword ${WebConsoleAdminPassword}`' where USER_NAME='user';"
-         echo "UPDATE TB_USER set USER_PASSWORD='`generateBCRYPTPassword ${WebConsoleAdminPassword}`' where USER_NAME='user';" | \
-         mysql -h ${MySQLDatabaseHost} -u ${MySQLDatabaseUserId} -p${MySQLDatabaseUserPassword} ${MySQLDatabaseName}
-      else
-         initialString="<sec:user name=\"user\" password=\"\$2a\$10\$HApapHvDStTEwjjneMCvxuqUKVyycXZRfXMwjU0rRmaWMsjWQp/Zu\""
-         replacedString="<sec:user name=\"user\" password=\"`generateBCRYPTPassword ${WebConsoleUserPassword}`\""
-         echo "   Replacing : ${initialString}"
-         echo "   By        : ${replacedString}"
-         sed -i -e "s#${initialString}#${replacedString}#" ${cef_edelivery_path}/domibus/conf/domibus/domibus-security.xml
-      fi
-   fi
-}
-
-function configureWSPluginPasswords {
-   displayFunctionBanner ${FUNCNAME[0]}
-   echo ; echo "Function: ${FUNCNAME[0]}"
-   echo ; echo "Configuring Default WS Plugin Passwords."
-   if [ "${DOMIBUS_VERSION}" == "3.2.1" ] ; then
-      if [ "${DatabaseType}" == "Oracle" ] ; then
-         echo "   To be done..."
-      else
-         echo "   Changing password for default WS Plugin user: admin/123456"
-         dummyString=`generateSHA256Password ${WSPluginAdminPassword}`
-         echo "      ${WSPluginAdminPassword} --> ${dummyString}"
-         echo "      mysql -u${DatabaseUser} -p${DatabasePassword} ${DatabaseName} -e \"update TB_AUTHENTICATION_ENTRY set PASSWD='${dummyString}' where USERNAME='admin';\""
-         mysql -u${DatabaseUser} -p${DatabasePassword} ${DatabaseName} -e "update TB_AUTHENTICATION_ENTRY set PASSWD='${dummyString}' where USERNAME='admin';"
-         echo "   Changing password for default WS Plugin user: user/123456"
-         dummyString=`generateSHA256Password ${WSPluginUserPassword}`
-         echo "      ${WSPluginUserPassword} --> ${dummyString}"
-         echo "      mysql -u${DatabaseUser} -p${DatabasePassword} ${DatabaseName} -e \"update TB_AUTHENTICATION_ENTRY set PASSWD='${dummyString}' where USERNAME='user';\""
-         mysql -u${DatabaseUser} -p${DatabasePassword} ${DatabaseName} -e "update TB_AUTHENTICATION_ENTRY set PASSWD='${dummyString}' where USERNAME='admin';"
-      fi
-   else
-      echo "Not Apllication to Domibus ${DOMIBUS_VERSION}"
-   fi
-}
-
-function configureDomibus {
-   displayFunctionBanner ${FUNCNAME[0]}
-
-   #configureWSPlugin
-   #configureTNS
-   #configureLocalPartnerId
-   configureDomibusMSHMessageIdSuffix
-   configureKeystore
-   configureTruststore
-   #configureWebConsolePassword
-   #configureDisableCNCheck
+   installFSPlugin ${1}
 }
 
