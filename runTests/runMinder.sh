@@ -68,9 +68,9 @@ function waitDomibusURL {
 function runTests() {
 
 # suiteID:NumOfJobs
-    SUITES=( "7:4"
-             "5:18"
-             "4:22" )
+    SUITES=( "7:4" )
+
+#             "71:10" )
 
     RESULT=PASSED
 
