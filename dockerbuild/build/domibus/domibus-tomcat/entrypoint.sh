@@ -63,6 +63,10 @@ echo "   DB_PASS                 : ${DB_PASS}"
       domStartupParams="${domStartupParams} -Ddomibus.security.key.private.alias=${CERT_ALIAS}"
    fi
 
+   if [ ! "${FOUR_CORNER_MODEL}" == "" ] ; then
+      domStartupParams="${domStartupParams} -Ddomibus.fourcornermodel.enabled=${FOUR_CORNER_MODEL}"
+   fi
+
    if [ ! "${PRIVATE_PASSWD}" == "" ] ; then
       domStartupParams="${domStartupParams} -Ddomibus.security.key.private.password=${PRIVATE_PASSWD}"
    fi
