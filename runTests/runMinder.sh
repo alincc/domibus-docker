@@ -126,8 +126,8 @@ DOMIBUS_ENDPOINT_C3=$2
 
 
 copyMinderTestsPModes
-waitDomibusURL http://${DOMIBUS_ENDPOINT_C2}/domibus/ 40
-waitDomibusURL http://${DOMIBUS_ENDPOINT_C3}/domibus/ 40
+waitDomibusURL http://${DOMIBUS_ENDPOINT_C2}/domibus 40
+waitDomibusURL http://${DOMIBUS_ENDPOINT_C3}/domibus 40
 uploadPmode http://$DOMIBUS_ENDPOINT_C2/domibus domibus-configuration-domibus_c2.xml
 uploadPmode http://$DOMIBUS_ENDPOINT_C3/domibus domibus-configuration-domibus_c3.xml
 runTests
