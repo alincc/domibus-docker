@@ -69,8 +69,8 @@ function runTests() {
 
 # suiteID:NumOfJobs
     SUITES=( "7:4",
-            "66:37",
-             "67:3" )
+             66 37 ,
+             "67:3"      "71:10" )
 
     RESULT=PASSED
 
@@ -89,15 +89,25 @@ function runTests() {
         # Get suite run status, wait until is ready
         RESPONSE=`suiteRunStatus $SUITE_RUN_ID`
         NUM=`echo $RESPONSE | awk -F"<status>" '{print NF-1}'`
+        echo $NUM
 
         # Wait for runSuite to end
         NEXT_WAIT_TIME=0
-        while ([ $NUM -lt  $SUITE_JOBS_NO ] ) && [ $NEXT_WAIT_TIME -ne 20 ]; do
+        while ([ $NUM -lt  2 ] ) && [ $NEXT_WAIT_TIME -ne 20 ]; do
           echo  "Retrying after $NEXT_WAIT_TIME."
           sleep 60
           RESPONSE=`suiteRunStatus $SUITE_RUN_ID `
           NUM=`echo $RESPONSE | awk -F"<status>" '{print NF-1}'`
-          let NEXT_WAIT_TIME=NEXT_WAIT_TIME+1
+          let "NEXT_WAIT_TIME++"
+        done
+
+        echo $NUM
+
+        NEXT_WAIT_TIME=0
+        while [[ $RESPONSE = *"IN_PROGRESS"* ]] ; do
+          echo  "Suites IN_PROGRESS - retrying ..."
+          sleep 60
+          RESPONSE=`suiteRunStatus $SUITE_RUN_ID `
         done
 
         if [[ $RESPONSE = *"FAIL"* ]]; then
@@ -126,8 +136,8 @@ DOMIBUS_ENDPOINT_C3=$2
 
 
 copyMinderTestsPModes
-waitDomibusURL http://${DOMIBUS_ENDPOINT_C2}/domibus 40
-waitDomibusURL http://${DOMIBUS_ENDPOINT_C3}/domibus 40
+waitDomibusURL http://${DOMIBUS_ENDPOIN_C2}/domibus/ 40
+waitDomibusURL http://${DOMIBUS_ENDPOIN_C3}/domibus/ 40
 uploadPmode http://$DOMIBUS_ENDPOINT_C2/domibus domibus-configuration-domibus_c2.xml
 uploadPmode http://$DOMIBUS_ENDPOINT_C3/domibus domibus-configuration-domibus_c3.xml
 runTests
