@@ -93,7 +93,7 @@ function runTests() {
 
         # Wait for runSuite to end
         NEXT_WAIT_TIME=0
-        while ([ $NUM -lt  2 ] ) && [ $NEXT_WAIT_TIME -ne 20 ]; do
+        while ([ $NUM -lt  $SUITE_JOBS_NO ] ) && [ $NEXT_WAIT_TIME -ne 20 ]; do
           echo  "Retrying after $NEXT_WAIT_TIME."
           sleep 60
           RESPONSE=`suiteRunStatus $SUITE_RUN_ID `
@@ -136,8 +136,8 @@ DOMIBUS_ENDPOINT_C3=$2
 
 
 copyMinderTestsPModes
-waitDomibusURL http://${DOMIBUS_ENDPOIN_C2}/domibus/ 40
-waitDomibusURL http://${DOMIBUS_ENDPOIN_C3}/domibus/ 40
+waitDomibusURL http://${DOMIBUS_ENDPOINT_C2}/domibus 40
+waitDomibusURL http://${DOMIBUS_ENDPOINT_C3}/domibus 40
 uploadPmode http://$DOMIBUS_ENDPOINT_C2/domibus domibus-configuration-domibus_c2.xml
 uploadPmode http://$DOMIBUS_ENDPOINT_C3/domibus domibus-configuration-domibus_c3.xml
 runTests
