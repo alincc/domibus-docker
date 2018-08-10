@@ -84,7 +84,7 @@ function runTests() {
         SUITE_RUN_ID=`runSuite $SUITE_ID`
         echo Result is: $SUITE_RUN_ID
 
-        sleep 300 # allow 5 minutes for the suite to run
+        sleep 60 # allow time for the suite to run
 
         # Get suite run status, wait until is ready
         RESPONSE=`suiteRunStatus $SUITE_RUN_ID`
@@ -96,14 +96,16 @@ function runTests() {
         while ([ $NUM -lt  $SUITE_JOBS_NO ] ) && [ $NEXT_WAIT_TIME -ne 20 ]; do
           echo  "Retrying after $NEXT_WAIT_TIME."
           sleep 60
-          RESPONSE=`suiteRunStatus $SUITE_RUN_ID `
+
+          RESPONSE=`suiteRunStatus $SUITE_RUN_ID`
+
           NUM=`echo $RESPONSE | awk -F"<status>" '{print NF-1}'`
+          echo Num is $NUM
           let "NEXT_WAIT_TIME++"
+          echo NEXT_WAIT_TIME is $NEXT_WAIT_TIME
         done
 
         echo $NUM
-
-        NEXT_WAIT_TIME=0
         while [[ $RESPONSE = *"IN_PROGRESS"* ]] ; do
           echo  "Suites IN_PROGRESS - retrying ..."
           sleep 60
