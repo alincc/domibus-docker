@@ -92,17 +92,15 @@ function runTests() {
         echo $NUM
 
         # Wait for runSuite to end
-        NEXT_WAIT_TIME=0
-        while ([ $NUM -lt  $SUITE_JOBS_NO ] ) && [ $NEXT_WAIT_TIME -ne 20 ]; do
-          echo  "Retrying after $NEXT_WAIT_TIME."
-          sleep 60
+        NEXT_WAIT_TIME=30
+        while ([ $NUM -lt  $SUITE_JOBS_NO ] ) && [ $NEXT_WAIT_TIME -ne 60 ]; do
+          echo  "Retrying after $NEXT_WAIT_TIME seconds."
+          sleep $(( NEXT_WAIT_TIME++ ))
 
           RESPONSE=`suiteRunStatus $SUITE_RUN_ID`
 
           NUM=`echo $RESPONSE | awk -F"<status>" '{print NF-1}'`
           echo Num is $NUM
-          let "NEXT_WAIT_TIME++"
-          echo NEXT_WAIT_TIME is $NEXT_WAIT_TIME
         done
 
         echo $NUM
