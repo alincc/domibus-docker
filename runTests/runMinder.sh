@@ -77,7 +77,7 @@ function runTests() {
     for SUITE in "${SUITES[@]}"
     do
         SUITE_ID="${SUITE%%:*}"
-        SUITE_JOBS_NO="${SUITE##*:}"
+        SUITE_JOBS_NO=${SUITE##*:}
         echo Running suite $SUITE_ID - $SUITE_JOBS_NO.
 
         # Run suite an get the run id as the result
@@ -93,7 +93,7 @@ function runTests() {
 
         # Wait for runSuite to end
         NEXT_WAIT_TIME=30
-        while ([ $NUM -lt  $SUITE_JOBS_NO ] ) && [ $NEXT_WAIT_TIME -ne 60 ]; do
+        while [ $NUM -lt  $SUITE_JOBS_NO ]  && [ $NEXT_WAIT_TIME -ne 60 ]; do
           echo  "Retrying after $NEXT_WAIT_TIME seconds."
           sleep $(( NEXT_WAIT_TIME++ ))
 
