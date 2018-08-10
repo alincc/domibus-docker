@@ -69,8 +69,8 @@ function runTests() {
 
 # suiteID:NumOfJobs
     SUITES=( "7:4",
-             66 37 ,
-             "67:3"      "71:10" )
+             "66 37" ,
+             "67:3" )
 
     RESULT=PASSED
 
