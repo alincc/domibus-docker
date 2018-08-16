@@ -68,23 +68,23 @@ function waitDomibusURL {
 function runTests() {
 
 # suiteID:NumOfJobs
-    SUITES=( "7:4",
-             66 37 ,
-             "67:3"      "71:10" )
+    SUITES=( "7:4"
+             "66:37"
+             "67:3" )
 
     RESULT=PASSED
 
     for SUITE in "${SUITES[@]}"
     do
         SUITE_ID="${SUITE%%:*}"
-        SUITE_JOBS_NO="${SUITE##*:}"
+        SUITE_JOBS_NO=${SUITE##*:}
         echo Running suite $SUITE_ID - $SUITE_JOBS_NO.
 
         # Run suite an get the run id as the result
         SUITE_RUN_ID=`runSuite $SUITE_ID`
         echo Result is: $SUITE_RUN_ID
 
-        sleep 300 # allow 5 minutes for the suite to run
+        sleep 60 # allow time for the suite to run
 
         # Get suite run status, wait until is ready
         RESPONSE=`suiteRunStatus $SUITE_RUN_ID`
@@ -92,18 +92,18 @@ function runTests() {
         echo $NUM
 
         # Wait for runSuite to end
-        NEXT_WAIT_TIME=0
-        while ([ $NUM -lt  $SUITE_JOBS_NO ] ) && [ $NEXT_WAIT_TIME -ne 20 ]; do
-          echo  "Retrying after $NEXT_WAIT_TIME."
-          sleep 60
-          RESPONSE=`suiteRunStatus $SUITE_RUN_ID `
+        NEXT_WAIT_TIME=30
+        while [ $NUM -lt  $SUITE_JOBS_NO ]  && [ $NEXT_WAIT_TIME -ne 60 ]; do
+          echo  "Retrying after $NEXT_WAIT_TIME seconds."
+          sleep $(( NEXT_WAIT_TIME++ ))
+
+          RESPONSE=`suiteRunStatus $SUITE_RUN_ID`
+
           NUM=`echo $RESPONSE | awk -F"<status>" '{print NF-1}'`
-          let "NEXT_WAIT_TIME++"
+          echo Num is $NUM
         done
 
         echo $NUM
-
-        NEXT_WAIT_TIME=0
         while [[ $RESPONSE = *"IN_PROGRESS"* ]] ; do
           echo  "Suites IN_PROGRESS - retrying ..."
           sleep 60
