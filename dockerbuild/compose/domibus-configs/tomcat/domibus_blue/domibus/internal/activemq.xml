@@ -58,9 +58,9 @@
 
             <!-- Internal queues of JMS backend plugin -->
             <queue id="jmsPluginToBackendQueue"
-                       physicalName="domibus.backend.jms.replyQueue"/>
+                   physicalName="domibus.backend.jms.replyQueue"/>
             <queue id="businessMessageOutQueue"
-                       physicalName="domibus.backend.jms.outQueue"/>
+                   physicalName="domibus.backend.jms.outQueue"/>
             <queue id="businessMessageInQueue"
                    physicalName="domibus.backend.jms.inQueue"/>
             <queue id="errorNotifyConsumerQueue" physicalName="domibus.backend.jms.errorNotifyConsumer" />
@@ -123,7 +123,7 @@
                     </redeliveryPolicyMap>
                 </redeliveryPolicyMap>
             </redeliveryPlugin>
-           <!--<loggingBrokerPlugin logAll="true" logConnectionEvents="false" logSessionEvents="false" perDestinationLogger="true"/>-->
+            <!--<loggingBrokerPlugin logAll="true" logConnectionEvents="false" logSessionEvents="false" perDestinationLogger="true"/>-->
             <!--spring:bean id="throughputLimiterPlugin" class="eu.domibus.messaging.amq.plugins.ThroughputLimiterPlugin">
                 <spring:constructor-arg name="filter" ref="testFilter" />
                 <spring:constructor-arg name="resendDelay" value="10000" />
