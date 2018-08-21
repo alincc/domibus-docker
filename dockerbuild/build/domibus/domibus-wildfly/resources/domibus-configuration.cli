@@ -75,6 +75,8 @@ jms-topic add --topic-address=DomibusClusterCommandTopic --entries=[java:/jms/do
 jms-queue remove --queue-address=ExpiryQueue
 jms-queue remove --queue-address=DLQ
 
+/system-property=jboss.as.management.blocking.timeout:add(value=600)
+
 exit
 
 
