@@ -36,8 +36,8 @@ copySoapUITestsPolicies() {
 updatePModes() {
     for FILE in domibus-gw-sample-pmode-*.xml; do
         echo "Processing ${FILE} file.."
-        sed -i "s/http:\/\/localhost:8080\/domibus\/services\/msh/http:\/\/${DOMIBUS_IP_BLUE}\/domibus-weblogic\/services\/msh/g" ${FILE}
-        sed -i "s/http:\/\/localhost:8180\/domibus\/services\/msh/http:\/\/${DOMIBUS_IP_RED}\/domibus-weblogic\/services\/msh/g" ${FILE}
+        sed -i "s/http:\/\/localhost:8080\/domibus\/services\/msh/http:\/\/${DOMIBUS_IP_BLUE}\/domibus\/services\/msh/g" ${FILE}
+        sed -i "s/http:\/\/localhost:8180\/domibus\/services\/msh/http:\/\/${DOMIBUS_IP_RED}\/domibus\/services\/msh/g" ${FILE}
     done
 }
 
@@ -94,8 +94,8 @@ copyContainerLogs() {
 
 runTests() {
     mvn -f ../domibus/Domibus-MSH-soapui-tests/pom.xml clean install -Psoapui \
-        -DlocalUrl="localUrl=http://${DOMIBUS_IP_BLUE}/domibus-weblogic" \
-        -DremoteUrl="remoteUrl=http://${DOMIBUS_IP_RED}/domibus-weblogic" \
+        -DlocalUrl="localUrl=http://${DOMIBUS_IP_BLUE}/domibus" \
+        -DremoteUrl="remoteUrl=http://${DOMIBUS_IP_RED}/domibus" \
         -DjdbcUrlBlue="jdbcUrlBlue=jdbc:oracle:thin:@${DB_IP_BLUE}:1521/XE" \
         -DjdbcUrlRed="jdbcUrlRed=jdbc:oracle:thin:@${DB_IP_RED}:1521/XE" \
         -DdriverBlue="driverBlue=oracle.jdbc.OracleDriver" \
@@ -144,11 +144,11 @@ updatePModes
 # Wait for Domibus C2 and C3
 echo "Waiting for Domibus Cluster startup... (sleeping $1)"
 sleep $1
-waitDomibusURL http://${DOMIBUS_IP_BLUE}/domibus-weblogic/ 40
-waitDomibusURL http://${DOMIBUS_IP_RED}/domibus-weblogic/ 40
+waitDomibusURL http://${DOMIBUS_IP_BLUE}/domibus/ 40
+waitDomibusURL http://${DOMIBUS_IP_RED}/domibus/ 40
 
-prepareDomibusCorner http://$DOMIBUS_IP_BLUE/domibus-weblogic domibus-gw-sample-pmode-blue.xml
-prepareDomibusCorner http://$DOMIBUS_IP_RED/domibus-weblogic domibus-gw-sample-pmode-red.xml
+prepareDomibusCorner http://$DOMIBUS_IP_BLUE/domibus domibus-gw-sample-pmode-blue.xml
+prepareDomibusCorner http://$DOMIBUS_IP_RED/domibus domibus-gw-sample-pmode-red.xml
 
 runTests
 copyContainerLogs
