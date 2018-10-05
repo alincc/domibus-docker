@@ -36,7 +36,7 @@ function initInstallation {
 
   #copy the war in the webapps directory
   unzip $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-tomcat-war.zip -d ${CATALINA_HOME}/webapps
-  mv ${CATALINA_HOME}/webapps/domibus-MSH-tomcat-4.0-SNAPSHOT.war ${CATALINA_HOME}/webapps/domibus.war
+  mv ${CATALINA_HOME}/webapps/domibus-MSH-tomcat-${DOMIBUS_VERSION}.war ${CATALINA_HOME}/webapps/domibus.war
 
   #copy the sample keystore/truststore
   unzip -j $DOCKER_DOMIBUS_DISTRIBUTION/domibus-distribution-${DOMIBUS_VERSION}-sample-configuration-and-testing.zip conf/domibus/keystores/* -d ${DOMIBUS_CONFIG_LOCATION}/keystores
