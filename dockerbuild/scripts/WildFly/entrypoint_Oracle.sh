@@ -137,9 +137,9 @@ function startDomibus {
 function wait4Domibus {
    displayFunctionBanner ${FUNCNAME[0]}
 
-#   while ! curl --output /dev/null --silent --head --fail http://localhost:8080/domibus-wildfly/home ; do
+#   while ! curl --output /dev/null --silent --head --fail http://localhost:8080/domibus/home ; do
    while ! curl -X POST --silent --output /dev/null \
-         http://localhost:8080/domibus-wildfly/rest/security/authentication \
+         http://localhost:8080/domibus/rest/security/authentication \
          -i -H "Content-Type: application/json" \
          -d '{"username":"","password":""}' ; do
      sleep 1 && echo -n .
