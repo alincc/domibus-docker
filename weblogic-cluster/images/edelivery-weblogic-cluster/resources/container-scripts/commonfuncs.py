@@ -24,7 +24,7 @@ def editMode():
     #   startEdit command, WLST waits until the current edit session lock is released before starting the new edit
     #   session. The exclusive lock times out according to the time specified in timeoutInMillis. This argument defaults
     #   to false.
-    startEdit(waitTimeInMillis=60000, exclusive="true")
+    startEdit(waitTimeInMillis=600000, exclusive="true")
 
 def saveActivate():
     save()
