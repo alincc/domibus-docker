@@ -47,6 +47,8 @@ echo "   DB_NAME                 : ${DB_NAME}"
 echo "   DB_USER                 : ${DB_USER}"
 echo "   DB_PASS                 : ${DB_PASS}"
 
+   domStartupParams="${domStartupParams} -Ddomibus.passwordPolicy.checkDefaultPassword=false"
+
    if [ ! "${CERT_ALIAS}" == "" ] ; then
       domStartupParams="${domStartupParams} -Ddomibus.security.key.private.alias=${CERT_ALIAS}"
    fi
