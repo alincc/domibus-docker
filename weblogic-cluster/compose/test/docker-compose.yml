@@ -95,6 +95,7 @@ services:
       - DB_HOST=oraclexec2
       - ADMIN_HOST=wlsadminc2
       - PARTY_NAME=blue_gw
+      - CHECK_DEFAULT_PASSWD=false
     hostname: serverc2i1
     #ports:
     #  - "7002:7002"
@@ -114,6 +115,7 @@ services:
       - DB_HOST=oraclexec2
       - ADMIN_HOST=wlsadminc2
       - PARTY_NAME=blue_gw
+      - CHECK_DEFAULT_PASSWD=false
     hostname: serverc2i2
     #ports:
     #  - "7003:7002"
@@ -183,6 +185,7 @@ services:
       - DB_HOST=oraclexec3
       - ADMIN_HOST=wlsadminc3
       - PARTY_NAME=red_gw
+      - CHECK_DEFAULT_PASSWD=false
     hostname: serverc3i1
     #ports:
     #  - "7102:7002"
@@ -202,6 +205,7 @@ services:
       - DB_HOST=oraclexec3
       - ADMIN_HOST=wlsadminc3
       - PARTY_NAME=red_gw
+      - CHECK_DEFAULT_PASSWD=false
     hostname: serverc3i2
     #ports:
     #  - "7103:7002"

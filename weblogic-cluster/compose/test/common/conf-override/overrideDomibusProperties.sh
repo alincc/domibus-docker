@@ -6,4 +6,4 @@ sed -i "s/^domibus.deployment.clustered=.*/domibus.deployment.clustered=true/g" 
 sed -i "s/^domibus.security.key.private.alias=.*/domibus.security.key.private.alias=${PARTY_NAME}/g" ${FILE} && \
 sed -i "s/^domibus.jmx.user=.*/domibus.jmx.user=weblogic/g" ${FILE} && \
 sed -i "s/^domibus.jmx.password=.*/domibus.jmx.password=${ADMIN_PASSWORD}/g" ${FILE}
-sed -i "s/^#domibus.passwordPolicy.checkDefaultPassword=true/domibus.passwordPolicy.checkDefaultPassword=false/g" ${FILE}
+sed -i "s/^#domibus.passwordPolicy.checkDefaultPassword=true/domibus.passwordPolicy.checkDefaultPassword=${CHECK_DEFAULT_PASSWD}/g" ${FILE}
