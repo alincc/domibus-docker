@@ -20,6 +20,7 @@ services:
       - DB_PORT=3306
       - DB_USER=edelivery
       - DB_PASS=edelivery
+      - CHECK_DEFAULT_PASSWD=false
     command: dockerize -wait tcp://mysqlc2:3306 -timeout 20s
     depends_on:
       - mysqlc2
@@ -44,6 +45,7 @@ services:
      - DB_USER=edelivery
      - DB_PASS=edelivery
      - CERT_ALIAS=red_gw
+     - CHECK_DEFAULT_PASSWD=false
     volumes:
       - ../../domibus-configs/tomcat/domibus_red/domibus:/data/tomcat/conf/domibus
     command: dockerize -wait tcp://mysqlc3:3306 -timeout 20s
