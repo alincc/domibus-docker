@@ -33,6 +33,7 @@ services:
        - DB_PORT=3306
        - DB_USER=edelivery
        - DB_PASS=edelivery
+       - CHECK_DEFAULT_PASSWD=false
     command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 20s
     depends_on:
       - mysqlblue
@@ -48,6 +49,7 @@ services:
      - DB_USER=edelivery
      - DB_PASS=edelivery
      - CERT_ALIAS=red_gw
+     - CHECK_DEFAULT_PASSWD=false
     volumes:
       - ../domibus-configs/tomcat/domibus_red/domibus:/data/tomcat/conf/domibus
     command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 20s

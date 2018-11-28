@@ -22,6 +22,7 @@ services:
        - DB_PORT=3306
        - DB_USER=edelivery
        - DB_PASS=edelivery
+       - CHECK_DEFAULT_PASSWD=false
     ports:
       - "8082:8080"
       - "6401:6400"
@@ -51,6 +52,7 @@ services:
       - DB_USER=edelivery
       - DB_PASS=edelivery
       - CERT_ALIAS=red_gw
+      - CHECK_DEFAULT_PASSWD=false
     ports:
       - "8083:8080"
       - "6402:6400"

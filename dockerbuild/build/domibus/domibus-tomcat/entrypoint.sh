@@ -40,6 +40,9 @@ echo "   DB_NAME                 : ${DB_NAME}"
 echo "   DB_USER                 : ${DB_USER}"
 echo "   DB_PASS                 : ${DB_PASS}"
 
+   if [ ! "${CHECK_DEFAULT_PASSWD}" == "" ] ; then
+      domStartupParams="${domStartupParams} -Ddomibus.passwordPolicy.checkDefaultPassword=${CHECK_DEFAULT_PASSWD}"
+   fi
 
    if [ ! "${DB_HOST}" == "" ] ; then
       domStartupParams="${domStartupParams} -Ddomibus.database.serverName=${DB_HOST}"
