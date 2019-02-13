@@ -96,16 +96,7 @@ runTests() {
     mvn -f ../domibus/Domibus-MSH-soapui-tests/pom.xml clean install -Psoapui \
         -DlocalUrl="localUrl=http://${DOMIBUS_IP_BLUE}/domibus" \
         -DremoteUrl="remoteUrl=http://${DOMIBUS_IP_RED}/domibus" \
-        -DjdbcUrlBlue="jdbcUrlBlue=jdbc:oracle:thin:@${DB_IP_BLUE}:1521/XE" \
-        -DjdbcUrlRed="jdbcUrlRed=jdbc:oracle:thin:@${DB_IP_RED}:1521/XE" \
-        -DdriverBlue="driverBlue=oracle.jdbc.OracleDriver" \
-        -DdriverRed="driverRed=oracle.jdbc.OracleDriver" \
-        -DdatabaseBlue="databaseBlue=oracle" \
-        -DdatabaseRed="databaseRed=oracle" \
-        -DblueDbUser="blueDbUser=domibus" \
-        -DredDbUser="redDbUser=domibus" \
-        -DblueDbPassword="blueDbPassword=changeMe!" \
-        -DredDbPassword="redDbPassword=changeMe!"
+		-DallDomainsProperties="allDomainsProperties={\"C2Default\":{\"site\":\"C2\",\"domainName\":\"default\",\"domNo\":0,\"dbType\":\"oracle\",\"dbDriver\":\"oracle.jdbc.OracleDriver\",\"dbJdbcUrl\":\"jdbc:oracle:thin:@${DB_IP_BLUE}:1521/XE\",\"dbUser\":\"domibus\",\"dbPassword\":\"changeMe!\"},\"C3Default\":{\"site\":\"C3\",\"domainName\":\"default\",\"domNo\":0,\"dbType\":\"oracle\",\"dbDriver\":\"oracle.jdbc.OracleDriver\",\"dbJdbcUrl\":\"jdbc:oracle:thin:@${DB_IP_RED}:1521/XE\",\"dbUser\":\"domibus\",\"dbPassword\":\"changeMe!\"}}"
 }
 
 # Args:
