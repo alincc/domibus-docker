@@ -1,4 +1,4 @@
-FROM oraclelinux:7-slim
+FROM deepdiver/docker-oracle-xe-11g
 
 # set some environment variables defaults to be used in the image setup
 ARG ORACLE_SYS_PASSWORD
