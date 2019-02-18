@@ -1,4 +1,4 @@
-FROM wnameless/oracle-xe-11g
+FROM oraclelinux:7-slim
 
 # set some environment variables defaults to be used in the image setup
 ARG ORACLE_SYS_PASSWORD
